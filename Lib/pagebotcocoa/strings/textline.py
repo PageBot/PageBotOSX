@@ -15,8 +15,8 @@
 #     textline.py
 #
 import re
-from drawBotContext.textrun import TextRun
-from drawBotContext.pattern import FoundPattern
+from pagebotcocoa.strings.textrun import TextRun
+from pagebotcocoa.strings.pattern import FoundPattern
 from pagebot.toolbox.units import pt, upt
 
 from CoreText import (CGPoint, CTLineGetGlyphRuns,

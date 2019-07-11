@@ -15,7 +15,7 @@ from pagebot.toolbox.transformer import path2Name, path2Dir
 
 import drawBot
 from vanilla import *
-from drawBotContext.string import DrawBotString as stringClass
+from pagebotcocoa.contexts.drawbot.string import DrawBotString as stringClass
 drawBotBuilder = drawBot
 # Identifier to make builder hook name. Views will try to call e.build_html()
 drawBotBuilder.PB_ID = 'drawBot'

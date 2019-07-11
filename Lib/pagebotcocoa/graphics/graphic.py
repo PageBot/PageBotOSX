@@ -17,7 +17,7 @@
 
 from pagebot.color.color import *
 from pagebot.bezierpaths.bezierpath import BezierPath
-from drawBotContext.formattedstring import FormattedString
+from pagebotcocoa.strings.formattedstring import FormattedString
 
 class Graphic:
     """A graphical object to be drawn."""

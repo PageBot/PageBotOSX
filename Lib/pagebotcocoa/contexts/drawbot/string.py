@@ -10,10 +10,10 @@ from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
         DEFAULT_FALLBACK_FONT_PATH, XXXL, DEFAULT_LANGUAGE)
 from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
 from pagebot.strings.babelstring import BabelString
-from drawBotContext.textline import TextLine
 from pagebot.style import css
 from pagebot.toolbox.color import color, Color, noColor, inheritColor, blackColor
 from pagebot.toolbox.units import pt, upt, isUnit, units, em
+from pagebotcocoa.strings.textline import TextLine
 
 import drawBot as drawBotBuilder
 from AppKit import NSAttributeDictionary, NSRange

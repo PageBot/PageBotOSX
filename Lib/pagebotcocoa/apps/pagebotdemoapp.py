@@ -15,19 +15,19 @@
 #
 from vanilla import *
 from pagebot import getResourcesPath
-from pagebot.apps.baseapp import BaseApp
 from pagebot.publications import PublicationCategories
 from pagebot.elements import newRect
 from pagebot.constants import *
 from pagebot.composer import Composer
 from pagebot.typesetter import Typesetter
 from pagebot.themes import ThemeClasses, BaseTheme, DEFAULT_THEME_CLASS
-from pagebot.contexts.drawbotcontext import DrawBotContext
 from pagebot.fonttoolbox.objects.font import findFont
 from pagebot.conditions import *
 from pagebot.document import Document
 from pagebot.toolbox.units import inch, pt
 from pagebot.toolbox.color import color
+from pagebotcocoa.apps.baseapp import BaseApp
+from pagebotcocoa.contexts.drawbot.context import DrawBotContext
 from drawBot.ui.drawView import DrawView
 
 ADD_MENU = True

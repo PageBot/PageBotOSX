@@ -13,9 +13,7 @@
 #
 #     baseapp.py
 #
-#from pagebot.publications.publication import Publication
 
-#class BaseApp(Publication):
 class BaseApp():
     """The BaseApp class implements generic functions for more specialize App classes.
     The main function of apps is to create applications (with window UI) that

@@ -26,8 +26,8 @@ from pagebot.color.color import *
 from pagebot.contexts.base.builder import BaseBuilder
 from pagebot.errors import PageBotError
 from pagebot.toolbox.color import noColor, cmyk2Rgb
-from drawBotContext.graphic import Graphic
-from drawBotContext.formattedstring import FormattedString
+from pagebotCocoa.graphics.graphic import Graphic
+from pagebotCocoa.strings.formattedstring import FormattedString
 
 # FIXME: using drawBot for now.
 def _tryInstallFontFromFontName(fontName):
