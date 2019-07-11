@@ -6,31 +6,19 @@
 
 import os
 import traceback
-from pagebot.contexts.basecontext import BaseContext
+
+from pagebot.constants import *
+from pagebot.contexts.base.context import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
-from pagebot.constants import *
 
-try:
-    import drawBot
-    from vanilla import *
-    from drawBotContext.string import DrawBotString as stringClass
-    drawBotBuilder = drawBot
-    # Identifier to make builder hook name. Views will try to call e.build_html()
-    drawBotBuilder.PB_ID = 'drawBot'
-except (AttributeError, ImportError, ModuleNotFoundError):
-    print(traceback.format_exc())
-    NSFont = None
-    CTFontDescriptorCreateWithNameAndSize = None
-    CTFontDescriptorCopyAttribute = None
-    kCTFontURLAttribute = None
-    from pagebot.contexts.builders.nonebuilder import NoneDrawBotBuilder
-    from pagebot.contexts.strings.drawbotstring import NoneDrawBotString as stringClass
-
-    # If DrawBot is not available on the platform, the noneDrawBotBuilder
-    # instance is used to run DrawBot related docTests.
-    drawBotBuilder = NoneDrawBotBuilder()
+import drawBot
+from vanilla import *
+from drawBotContext.string import DrawBotString as stringClass
+drawBotBuilder = drawBot
+# Identifier to make builder hook name. Views will try to call e.build_html()
+drawBotBuilder.PB_ID = 'drawBot'
 
 class DrawBotContext(BaseContext):
     """The DrawBotContext implements the DrawBot functionality within the
