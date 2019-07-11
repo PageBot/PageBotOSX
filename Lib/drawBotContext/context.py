@@ -15,9 +15,9 @@ from pagebot.constants import *
 try:
     import drawBot
     from vanilla import *
-    from pagebot.contexts.strings.drawbotstring import DrawBotString as stringClass
+    from drawBotContext.string import DrawBotString as stringClass
     drawBotBuilder = drawBot
-    # Id to make builder hook name. Views will try to call e.build_html()
+    # Identifier to make builder hook name. Views will try to call e.build_html()
     drawBotBuilder.PB_ID = 'drawBot'
 except (AttributeError, ImportError, ModuleNotFoundError):
     print(traceback.format_exc())
@@ -180,7 +180,7 @@ class DrawBotContext(BaseContext):
         in case we do recursive component drawing.
 
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> f = findFont('Roboto-Regular')
         >>> print(f)
