@@ -6,29 +6,20 @@
 
 import re
 from copy import copy
-from pagebot.contexts.strings.babelstring import BabelString
-from pagebot.style import css
-from pagebot.constants import LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING
-from pagebot.constants import DEFAULT_FALLBACK_FONT_PATH, XXXL, DEFAULT_LANGUAGE
+from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
+        DEFAULT_FALLBACK_FONT_PATH, XXXL, DEFAULT_LANGUAGE)
 from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
+from pagebot.strings.babelstring import BabelString
+from pagebot.strings.textline import TextLine
+from pagebot.style import css
 from pagebot.toolbox.color import color, Color, noColor, inheritColor, blackColor
 from pagebot.toolbox.units import pt, upt, isUnit, units, em
-from pagebot.contexts.strings.textline import TextLine
 
-try:
-    import drawBot as drawBotBuilder
-    from AppKit import NSAttributeDictionary, NSRange
-    from CoreText import (CTFramesetterCreateWithAttributedString,
-            CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
-    from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
-except (AttributeError, ImportError):
-    from pagebot.contexts.builders.nonebuilder import NoneDrawBotBuilder as drawBotBuilder
-    # When importing doesn't work because not on OS X, set variables to None.
-    NSFont = None
-    NSAttributeDictionary = NSRange = None
-    CGPathAddRect = CGPathCreateMutable = CGRectMake = None
-    CTFramesetterCreateWithAttributedString = None
-    CTFrameGetLines = None
+import drawBot as drawBotBuilder
+from AppKit import NSAttributeDictionary, NSRange
+from CoreText import (CTFramesetterCreateWithAttributedString,
+        CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
+from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 
 def pixelBounds(fs):
     """Answers the pixel-bounds rectangle of the text.
