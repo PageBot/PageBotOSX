@@ -60,7 +60,7 @@ class DrawBotString(BabelString):
         FormattedString. Optionally store the (latest) style that was used to
         produce the formatted string.
 
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> style = dict(font='Verdana', fontSize=pt(80))
         >>> bs = context.newString('Example Text', style=style)
@@ -143,7 +143,7 @@ class DrawBotString(BabelString):
         """Answers the current state of the fontSize.
 
         >>> from pagebot.toolbox.units import mm
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> style = dict(font='Verdana', fontSize=pt(85), leading=em(1.4))
         >>> bs = context.newString('Example Text', style=style)
@@ -170,7 +170,7 @@ class DrawBotString(BabelString):
     def getStyleAtIndex(self, index):
         """Answer the style dictionary with values at position index of the string.
 
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> c1 = color(0.2, 0.3, 0.4)
         >>> c2 = color(1, 0, 0.22)
@@ -232,7 +232,7 @@ class DrawBotString(BabelString):
     def asText(self):
         """Answers the text string.
 
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> bs = context.newString('Example Text')
         >>> bs.asText()
@@ -246,7 +246,7 @@ class DrawBotString(BabelString):
         descender+) and the string width (including margins).
 
         >>> from pagebot.toolbox.units import mm, uRound
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> style = dict(font='Verdana', fontSize=pt(12))
         >>> bs = context.newString('Example Text ' * 20, style=style)
@@ -400,7 +400,7 @@ class DrawBotString(BabelString):
         """
         FIX
         >>> from pagebot.toolbox.units import mm, uRound
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> style = dict(font='Verdana', fontSize=pt(12))
         >>> bs = context.newString('Example Text ' * 10, style=style)
@@ -417,7 +417,7 @@ class DrawBotString(BabelString):
         the line.
 
         >>> from pagebot.toolbox.units import mm, uRound
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> style = dict(font='Verdana', fontSize=pt(12))
         >>> bs = context.newString('Example Text ' * 10, style=style)
@@ -490,7 +490,7 @@ class DrawBotString(BabelString):
         to get a Font instance for that path, as we need to test it for
         existing axes as Variable Font.
 
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('RobotoDelta-VF')
@@ -779,7 +779,7 @@ class DrawBotString(BabelString):
 
         TODO: move shared functionality to BabelString.
 
-        >>> from pagebot.contexts.drawbotcontext import DrawBotContext
+        >>> from drawBotContext.context import DrawBotContext
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('Roboto-Black')
         >>> context = DrawBotContext()
