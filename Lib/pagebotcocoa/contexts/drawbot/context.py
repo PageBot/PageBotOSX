@@ -51,9 +51,14 @@ class DrawBotContext(BaseContext):
 
     #   D O C U M E N T
 
-    def newDocument(self, w, h):
+    def newDocument(self, w, h, doc=None):
         """Can be ignored for DrawBot; document opens automatically if first page
-        is created."""
+        is created. The @doc argument is the optional calling PageBot Document
+        instance.
+
+        >>> context = DrawBotContext()
+        >>> context.newDocument(500, 700)
+        """
         #self.b.size(upt(w), upt(h))
 
     def saveDocument(self, path, multiPage=None):
