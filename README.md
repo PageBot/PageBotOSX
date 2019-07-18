@@ -1,2 +1,2 @@
 # DrawBotContext
-Sources for PageBot with DrawBot and Cocoa (OS X only).
+Cocoa parts for PageBot, including the DrawBot and Canvas contexts and formatted strings (OS X only).

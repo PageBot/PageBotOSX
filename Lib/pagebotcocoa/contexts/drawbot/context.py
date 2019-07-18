@@ -28,7 +28,7 @@ class DrawBotContext(BaseContext):
     EXPORT_TYPES = (FILETYPE_PDF, FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG,
             FILETYPE_GIF, FILETYPE_MOV)
 
-    SCALED_PATH = 'scaled' # /scaled with upload on Git. /_scaled will be ignored.
+    SCALED_PATH = '_scaled' # /scaled with upload on Git. /_scaled will be ignored.
 
     def __init__(self):
         """Constructor of DrawBotContext if drawBot import exists.
@@ -51,9 +51,14 @@ class DrawBotContext(BaseContext):
 
     #   D O C U M E N T
 
-    def newDocument(self, w, h):
+    def newDocument(self, w, h, doc=None):
         """Can be ignored for DrawBot; document opens automatically if first page
-        is created."""
+        is created. The @doc argument is the optional calling PageBot Document
+        instance.
+
+        >>> context = DrawBotContext()
+        >>> context.newDocument(500, 700)
+        """
         #self.b.size(upt(w), upt(h))
 
     def saveDocument(self, path, multiPage=None):
@@ -312,34 +317,42 @@ class DrawBotContext(BaseContext):
         """Answers the number of images in the file referenced by path."""
         return self.b.numberOfPages(path)
 
-    def image(self, path, p=None, alpha=1, pageNumber=None, w=None, h=None):
+    def translate(self, tx, ty):
+        self.b.translate(tx, ty)
+
+    def scale(self, sx, sy=None):
+        if sy is None:
+            sy = sx
+        self.b.scale(sx, sy)
+
+    def image(self, path, p=None, alpha=1, pageNumber=None, 
+            w=None, h=None, scaleType=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
             p = ORIGIN
 
         iw, ih = self.imageSize(path)
 
-        if w and not h: # Scale proportional
-            wpt = upt(w)
-            hpt = ih * wpt/iw # iw : ih = w : h
-        elif not w and h:
-            hpt = upt(h)
-            wpt = iw * hpt/ih
-        elif not w and not h:
-            wpt = iw
-            hpt = ih
-        else: # Both are defined, scale disproportional
-            wpt = upt(w)
-            hpt = upt(h)
+        if not w and not h:
+            w = iw
+            h = ih
+            sx = sy = 1
+        elif scaleType == SCALE_TYPE_FITWH:
+            sx = upt(w/iw)
+            sy = upt(h/ih)
+        elif scaleType == SCALE_TYPE_FITW:
+            sx = sy = upt(w/iw)
+        elif scaleType == SCALE_TYPE_FITH:
+            sx = sy = upt(h/ih)
+        else: # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
+            sx = sy = min(upt(w/iw), upt(h/ih))
 
         # Else both w and h are defined, scale disproportionally.
         xpt, ypt, = point2D(p)
-        sx, sy = upt(wpt/iw, hpt/ih) # We need ratio values, not units
 
         self.save()
         self.translate(xpt, ypt)
         self.scale(sx, sy)
-        #self.b.image(path, (x, y), alpha=alpha, pageNumber=pageNumber)
         self.b.image(path, (0, 0), alpha=alpha, pageNumber=pageNumber)
         self.restore()
 
