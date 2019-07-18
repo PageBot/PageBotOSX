@@ -23,44 +23,21 @@ from drawBot.context.tools.variation import *
 
 from pagebot.color.color import *
 from pagebot.errors import PageBotError
+from pagebotcocoa.strings.tryinstallfont import _tryInstallFromFontName
 
 import logging
 logger = logging.getLogger(__name__)
 
 _FALLBACKFONT = "LucidaGrande"
 
-class Warnings():
-    # NOTE: Temporary solution for now, need to switch to logging.
-
-    def __init__(self):
-        self._warnMessages = set()
-        self.shouldShowWarnings = False
-
-    def resetWarnings(self):
-        self._warnMessages = set()
-
-    def warn(self, message):
-        if not self.shouldShowWarnings:
-            return
-        if message in self._warnMessages:
-            return
-        sys.stderr.write("*** warning: %s ***\n" % message)
-        self._warnMessages.add(message)
-
-warnings = Warnings()
-
-def _tryInstallFontFromFontName(fontName):
-    # TODO: too much drawBot, need to port.
-    try:
-        from drawBot.drawBotDrawingTools import _drawBotDrawingTool
-        return _drawBotDrawingTool._tryInstallFontFromFontName(fontName)
-    except Exception as e:
-        logger.error('_tryInstallFontFromFontName: %s', e)
-
 class FormattedString:
-    """FormattedString is a reusable object, if you want to draw the same over
+    """Based on drawBot.context.baseContext.FormattedString.
+
+    FormattedString is a reusable object, if you want to draw the same over
     and over again. FormattedString objects can be drawn with the `text(txt,
-    (x, y))` and `textBox(txt, (x, y, w, h))` methods."""
+    (x, y))` and `textBox(txt, (x, y, w, h))` methods.
+
+    """
 
     _colorClass = Color
     _cmykColorClass = CMYKColor
@@ -242,7 +219,7 @@ class FormattedString:
                 ff = self._fallbackFont
                 if ff is None:
                     ff = _FALLBACKFONT
-                warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
+                logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
                 font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
             coreTextfeatures = []
 
@@ -258,11 +235,11 @@ class FormattedString:
                     if coreTextFeatureTag in featureMap:
                         if value and featureTag not in existingOpenTypeFeatures:
                             # only warn when the feature is on and not existing for the current font
-                            warnings.warn("OpenType feature '%s' not available for '%s'" % (featureTag, self._font))
+                            logger.warning("OpenType feature '%s' not available for '%s'" % (featureTag, self._font))
                         feature = featureMap[coreTextFeatureTag]
                         coreTextfeatures.append(feature)
                     else:
-                        warnings.warn("OpenType feature '%s' not available" % (featureTag))
+                        logger.warning("OpenType feature '%s' not available" % (featureTag))
             coreTextFontVariations = dict()
             if self._fontVariations:
                 existingAxes = getVariationAxesForFontName(self._font)
@@ -276,7 +253,7 @@ class FormattedString:
                             value = existinsAxis["maxValue"]
                         coreTextFontVariations[convertVariationTagToInt(axis)] = value
                     else:
-                        warnings.warn("variation axis '%s' not available for '%s'" % (axis, self._font))
+                        logger.warning("variation axis '%s' not available for '%s'" % (axis, self._font))
             fontAttributes = {}
             if coreTextfeatures:
                 fontAttributes[CoreText.NSFontFeatureSettingsAttribute] = coreTextfeatures
@@ -585,7 +562,7 @@ class FormattedString:
                 raise PageBotError("There can only be one positional argument")
             if args[0] is not None:
                 raise PageBotError("First positional argument can only be None")
-            warnings.warn("openTypeFeatures(None) is deprecated, use openTypeFeatures(resetFeatures=True) instead.")
+            logger.warning("openTypeFeatures(None) is deprecated, use openTypeFeatures(resetFeatures=True) instead.")
             self._openTypeFeatures.clear()
         else:
             if features.pop("resetFeatures", False):
@@ -620,7 +597,7 @@ class FormattedString:
                 raise PageBotError("There can only be one positional argument")
             if args[0] is not None:
                 raise PageBotError("First positional argument can only be None")
-            warnings.warn("fontVariations(None) is deprecated, use fontVariations(resetVariations=True) instead.")
+            logger.warning("fontVariations(None) is deprecated, use fontVariations(resetVariations=True) instead.")
             self._fontVariations.clear()
         else:
             if axes.pop("resetVariations", False):
@@ -813,7 +790,7 @@ class FormattedString:
             url = CoreText.CTFontDescriptorCopyAttribute(font.fontDescriptor(), CoreText.kCTFontURLAttribute)
             if url:
                 return url.path()
-        warnings.warn("Cannot find the path to the font '%s'." % self._font)
+        logger.warning("Cannot find the path to the font '%s'." % self._font)
         return None
 
     def listFontGlyphNames(self):
@@ -867,7 +844,7 @@ class FormattedString:
                     pass
             fontToolsFont = TTFont(path, lazy=True, fontNumber=fontNumber, res_name_or_index=res_name_or_index)
         except TTLibError:
-            warnings.warn("Cannot read the font file for '%s' at the path '%s'" % (self._font, path))
+            logger.warning("Cannot read the font file for '%s' at the path '%s'" % (self._font, path))
             return []
         glyphNames = fontToolsFont.getGlyphOrder()
         fontToolsFont.close()
@@ -883,7 +860,7 @@ class FormattedString:
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
-            warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
+            logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
             font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
         return font.ascender()
 
@@ -894,7 +871,7 @@ class FormattedString:
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
-            warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
+            logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
             font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
         return font.descender()
 
@@ -905,7 +882,7 @@ class FormattedString:
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
-            warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
+            logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
             font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
         return font.xHeight()
 
@@ -916,7 +893,7 @@ class FormattedString:
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
-            warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
+            logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
             font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
         return font.capHeight()
 
@@ -927,7 +904,7 @@ class FormattedString:
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
-            warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
+            logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
             font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
         return font.leading()
 
@@ -941,7 +918,7 @@ class FormattedString:
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
-            warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
+            logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, ff))
             font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
         return font.defaultLineHeightForFont()
 
@@ -970,7 +947,7 @@ class FormattedString:
         if self._font:
             font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
-            warnings.warn("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, _FALLBACKFONT))
+            logger.warning("font: '%s' is not installed, back to the fallback font: '%s'" % (self._font, _FALLBACKFONT))
             font = AppKit.NSFont.fontWithName_size_(_FALLBACKFONT, self._fontSize)
 
         # disable calt features, as this seems to be on by default
@@ -992,7 +969,7 @@ class FormattedString:
                 glyphInfo = AppKit.NSGlyphInfo.glyphInfoWithGlyph_forFont_baseString_(glyph, font, baseString)
                 self._attributedString.addAttribute_value_range_(AppKit.NSGlyphInfoAttributeName, glyphInfo, (len(self) - 1, 1))
             else:
-                warnings.warn("font '%s' has no glyph with the name '%s'" % (font.fontName(), glyphName))
+                logger.warning("font '%s' has no glyph with the name '%s'" % (font.fontName(), glyphName))
         self.openTypeFeatures(**_openTypeFeatures)
         self._fallbackFont = fallbackFont
 
