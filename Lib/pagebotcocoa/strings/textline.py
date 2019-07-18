@@ -15,9 +15,9 @@
 #     textline.py
 #
 import re
+from pagebot.toolbox.units import pt, upt
 from pagebotcocoa.strings.textrun import TextRun
 from pagebotcocoa.strings.pattern import FoundPattern
-from pagebot.toolbox.units import pt, upt
 
 from CoreText import (CGPoint, CTLineGetGlyphRuns,
         CTLineGetStringIndexForPosition, CTLineGetOffsetForStringIndex,
@@ -25,6 +25,11 @@ from CoreText import (CGPoint, CTLineGetGlyphRuns,
         CTLineGetTrailingWhitespaceWidth)
 
 class TextLine:
+    """Wraps the CoreText CTLine class. See also:
+
+    https://developer.apple.com/documentation/coretext/ctline-61l
+    """
+
 
     def __init__(self, ctLine, x, y, lineIndex):
         self._ctLine = ctLine
@@ -159,15 +164,15 @@ class TextLine:
 
     def findPattern(self, pattern):
         founds = []
+
         if isinstance(pattern, str):
             pattern = re.compile(pattern)
             #pattern = re.compile('([a-ZA-Z0-9\.\-\_]*])
+
         for iStart, iEnd in [(m.start(0), m.end(0)) for m in re.finditer(pattern, self.string)]:
             xStart = self.getOffsetForStringIndex(iStart)
             xEnd = self.getOffsetForStringIndex(iEnd)
-            #print('xStart, xEnd', xStart, xEnd)
             run = self.getGlyphIndex2Run(xStart)
-            #print('iStart, xStart', iStart, xStart, iEnd, xEnd, run)
             founds.append(FoundPattern(self.string[iStart:iEnd], xStart, iStart, line=self, run=run))
         return founds
 
