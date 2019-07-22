@@ -51,7 +51,7 @@ class DrawBotContext(BaseContext):
 
     #   D O C U M E N T
 
-    def newDocument(self, w, h, doc=None):
+    def newDocument(self, w=None, h=None, doc=None):
         """Can be ignored for DrawBot; document opens automatically if first page
         is created. The @doc argument is the optional calling PageBot Document
         instance.
@@ -59,7 +59,10 @@ class DrawBotContext(BaseContext):
         >>> context = DrawBotContext()
         >>> context.newDocument(500, 700)
         """
-        #self.b.size(upt(w), upt(h))
+        if doc is not None:
+            w = w or doc.w
+            h = h or doc.h
+        self.b.size(upt(w), upt(h))
 
     def saveDocument(self, path, multiPage=None):
         """Select non-standard DrawBot export builders here. Save the current
@@ -349,9 +352,8 @@ class DrawBotContext(BaseContext):
 
         # Else both w and h are defined, scale disproportionally.
         xpt, ypt, = point2D(p)
-
         self.save()
-        self.translate(xpt, ypt)
+        self.translate(xpt/sx, ypt/sy)
         self.scale(sx, sy)
         self.b.image(path, (0, 0), alpha=alpha, pageNumber=pageNumber)
         self.restore()
