@@ -64,6 +64,9 @@ class DrawBotContext(BaseContext):
             h = h or doc.h
         self.b.size(upt(w), upt(h))
 
+    def newDrawing(self, doc=None):
+        self.b.newDrawing()
+
     def saveDocument(self, path, multiPage=None):
         """Select non-standard DrawBot export builders here. Save the current
         image as path, rendering depending on the extension of the path file.
@@ -328,7 +331,7 @@ class DrawBotContext(BaseContext):
             sy = sx
         self.b.scale(sx, sy)
 
-    def image(self, path, p=None, alpha=1, pageNumber=None, 
+    def image(self, path, p=None, alpha=1, pageNumber=None,
             w=None, h=None, scaleType=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
@@ -404,7 +407,7 @@ class DrawBotContext(BaseContext):
 
         if force or not os.path.exists(cachedFilePath):
             self.newDrawing() # Clean the drawing stack.
-            self.newPage(w, h)
+            self.newPage(w=w, h=h)
             self.image(path, (0, 0), w=w, h=h, pageNumber=index or 0)
             if showImageLoresMarker:
                 bs = self.newString('LO-RES',
