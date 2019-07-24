@@ -15,7 +15,7 @@ from pagebot.toolbox.transformer import path2Name, path2Dir
 
 import drawBot
 from vanilla import *
-from pagebotcocoa.contexts.drawbot.string import DrawBotString as stringClass
+from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
 drawBotBuilder = drawBot
 # Identifier to make builder hook name. Views will try to call e.build_html()
 drawBotBuilder.PB_ID = 'drawBot'
@@ -52,17 +52,19 @@ class DrawBotContext(BaseContext):
     #   D O C U M E N T
 
     def newDocument(self, w=None, h=None, doc=None):
-        """Can be ignored for DrawBot; document opens automatically if first page
-        is created. The @doc argument is the optional calling PageBot Document
-        instance.
+        """Can be ignored for DrawBot; document opens automatically if first
+        page is created. The @doc argument is the optional calling PageBot
+        Document instance.
 
         >>> context = DrawBotContext()
         >>> context.newDocument(500, 700)
         """
+        '''
         if doc is not None:
             w = w or doc.w
             h = h or doc.h
         self.b.size(upt(w), upt(h))
+        '''
 
     def newDrawing(self, doc=None):
         self.b.newDrawing()
