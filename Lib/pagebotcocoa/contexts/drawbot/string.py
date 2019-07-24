@@ -71,42 +71,29 @@ class DrawBotString(BabelString):
         >>> run.xHeight, run.capHeight
         (0.55em, 0.73em)
         """
-        self.context = context # Store context, in case we need more of its functions.
         # Store the DrawBot FormattedString, as property to make sure it is a
         # FormattedString, otherwise create it.
-
         self.s = s
-        # In case defined, store current status here as property and set the
-        # current FormattedString for future additions. Also the answered
-        # metrics will not be based on these values.
-        if style is None:
-            style = {}
-        self.style = style
 
-        # Filled in case w or h are defined and depending if the font is a
-        # variable font.
-        self.fittingFontSize = pt(0) # Set to fitting font size, in case the size iterates to find width.
-        self.fittingFont = None # In case we are sampling with a Variable Font.
-        self.fittingLocation = None
-        self.isFitting = False
-
-        self.language = DEFAULT_LANGUAGE
-        self.hyphenation = False
         super().__init__(self.s, context, style=style)
 
     def _get_s(self):
-        """Answers the embedded FormattedString by property, to enforce checking
-        type of the string."""
+        """Answers the embedded FormattedString using a property to force string
+        type checking."""
         return self._s
+
     def _set_s(self, s):
-        """ Check on the type of s. Three types are supported here: plain
-        strings, DrawBot FormattedString and the class of self."""
+        """ Check on the type of `s`. Three types are supported here: plain
+        strings, DrawBot FormattedString and the class self."""
         assert isinstance(s, (DrawBotString, str)) or s.__class__.__name__ == 'FormattedString'
+
         if isinstance(s, str):
             s = self.context.b.FormattedString(s)
         elif isinstance(s, DrawBotString):
             s = s.s
+
         self._s = s
+
     s = property(_get_s, _set_s)
 
     def columnStart(self, firstColumnIndent):
@@ -423,9 +410,9 @@ class DrawBotString(BabelString):
         assert w
         if not h:
             h = XXXL
+
         wpt, hpt = upt(w, h)
         textLines = []
-
         attrString = self.s.getNSObject()
         setter = CTFramesetterCreateWithAttributedString(attrString)
         path = CGPathCreateMutable()
@@ -438,6 +425,7 @@ class DrawBotString(BabelString):
             origin = origins[lIndex]
             textLine = TextLine(ctLine, pt(origin.x), pt(origin.y), lIndex)
             textLines.append(textLine)
+
         return textLines
 
     @classmethod
