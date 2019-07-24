@@ -12,10 +12,10 @@ pagebotcocoa.contexts.drawbot.context module
    :undoc-members:
    :show-inheritance:
 
-pagebotcocoa.contexts.drawbot.string module
--------------------------------------------
+pagebotcocoa.contexts.drawbot.drawbotstring module
+--------------------------------------------------
 
-.. automodule:: pagebotcocoa.contexts.drawbot.string
+.. automodule:: pagebotcocoa.contexts.drawbot.drawbotstring
    :members:
    :undoc-members:
    :show-inheritance:
