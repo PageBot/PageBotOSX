@@ -1,4 +1,6 @@
 libsass
+AppKit
+git+https://github.com/robotools/vanilla
 pagebot
 git+https://github.com/PageBot/PageBotCocoa
 fontTools
