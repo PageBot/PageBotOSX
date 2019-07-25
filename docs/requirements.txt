@@ -1,5 +1,6 @@
 libsass
 pagebot
+git+https://github.com/PageBot/PageBotCocoa
 fontTools
 markdown
 svgwrite
