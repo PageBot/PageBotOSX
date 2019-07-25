@@ -90,6 +90,15 @@ class DrawBotContext(BaseContext):
         """Returns a PDF document of the current state."""
         return self.b.pdfImage()
 
+    def newDrawing(self, doc=None):
+        """Clear output canvas, start new export file. DrawBot function.
+
+        >>> from pagebot.contexts import getContext
+        >>> context = getContext()
+        >>> context.newDrawing()
+        """
+        self.b.newDrawing()
+        
     #   V A R I A B L E
 
     def Variable(self, variables, workSpace):
