@@ -15,9 +15,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='drawBotContext',
+    name='pagebotcocoa',
     description='DrawBot context for PageBot.',
-    url="https://github.com/PageBot/DrawBotContext",
+    url="https://github.com/PageBot/PageBotCocoa",
     author = 'Petr van Blokland, Michiel Kauw-A-Tjoe',
     author_email = 'r@petr.com',
     version='0.1',
