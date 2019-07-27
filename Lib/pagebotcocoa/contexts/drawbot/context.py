@@ -48,6 +48,7 @@ class DrawBotContext(BaseContext):
         self.name = self.__class__.__name__
         # Holds the extension as soon as the export file path is defined.
         self.fileType = DEFAULT_FILETYPE
+        self._openDocument = False
 
     #   D O C U M E N T
 
@@ -63,11 +64,13 @@ class DrawBotContext(BaseContext):
         if doc is not None:
             w = w or doc.w
             h = h or doc.h
-        self.b.size(upt(w), upt(h))
-        '''
-
-    def newDrawing(self, doc=None):
-        self.b.newDrawing()
+        # FIX
+        # File "/Users/petr/Desktop/git/drawbot/drawBot/drawBotDrawingTools.py", line 265, in size
+        #    raise DrawBotError("Can't use 'size()' after drawing has begun. Try to move it to the top of your script.")
+        # drawBot.misc.DrawBotError: Can't use 'size()' after drawing has begun. Try to move it to the top of your script.
+        #if not self._openDocument:
+        #    self.b.size(upt(w), upt(h))
+        self._openDocument = True
 
     def saveDocument(self, path, multiPage=None):
         """Select non-standard DrawBot export builders here. Save the current
@@ -190,7 +193,6 @@ class DrawBotContext(BaseContext):
         in case we do recursive component drawing.
 
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> f = findFont('Roboto-Regular')
         >>> print(f)
@@ -376,8 +378,11 @@ class DrawBotContext(BaseContext):
         """Answers the path to the scaled image.
 
         >>> context = DrawBotContext()
-        >>> context.path2ScaledImagePath('/xxx/yyy/zzz/This.Is.An.Image.jpg', 110, 120)
-        ('/xxx/yyy/zzz/scaled/', 'This.Is.An.Image.110x120.0.jpg')
+        >>> path, fileName = context.path2ScaledImagePath('/xxx/yyy/zzz/This.Is.An.Image.jpg', 110, 120)
+        >>> path in ('/xxx/yyy/zzz/scaled/', '/xxx/yyy/zzz/_scaled/')
+        True
+        >>> fileName
+        'This.Is.An.Image.110x120.0.jpg'
         """
         cachePath = '%s/%s/' % (path2Dir(path), self.SCALED_PATH) # /scaled with upload on Git. /_scaled will be ignored.
         fileNameParts = path2Name(path).split('.')
