@@ -98,7 +98,7 @@ class DrawBotContext(BaseContext):
         >>> context.newDrawing()
         """
         self.b.newDrawing()
-        
+
     #   V A R I A B L E
 
     def Variable(self, variables, workSpace):
@@ -432,7 +432,6 @@ class DrawBotContext(BaseContext):
         return cachedFilePath
 
 
-    '''
     # TODO
     # Future experiment, making UI/Vanilla layout for apps by PageBot
     # Needs some additional conceptual thinking.
@@ -447,6 +446,8 @@ class DrawBotContext(BaseContext):
         >>> window = context.window('My Window', 50, 50, pt(200), mm(50))
         >>> window.open()
         """
+
+        '''
         if x is None:
             x = DEFAULT_WINX
         if y is None:
@@ -469,20 +470,24 @@ class DrawBotContext(BaseContext):
 
         return Window(posSize, title=title or 'Untitled',
             minSize=minSize, maxSize=maxSize, closable=closable)
+        '''
+        pass
 
     def group(self, x=None, y=None, w=None, h=None, **kwargs):
-        return Group((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0))
+        #return Group((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0))
+        pass
 
     def button(self, title=None, x=None, y=None, w=None, h=None, style=None,
             callback=None, **kwargs):
         """Create a Vanilla button"""
-        return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
+        #return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
+        pass
             title or 'Button', callback=callback)
 
     def canvas(self, x=None, y=None, w=None, h=None):
         """Answer an instance of the DrawBot drawing canvas."""
-        return drawBot.ui.drawView.DrawView((upt(x or 0), upt(y or 0), upt(w or 0), upt(h or 0)))
-    '''
+        #return drawBot.ui.drawView.DrawView((upt(x or 0), upt(y or 0), upt(w or 0), upt(h or 0)))
+        pass
 
 if __name__ == '__main__':
     import doctest
