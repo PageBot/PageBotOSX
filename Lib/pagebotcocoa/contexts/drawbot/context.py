@@ -485,8 +485,8 @@ class DrawBotContext(BaseContext):
             callback=None, **kwargs):
         """Create a Vanilla button"""
         #return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
+        #title or 'Button', callback=callback)
         pass
-            title or 'Button', callback=callback)
 
     def canvas(self, x=None, y=None, w=None, h=None):
         """Answer an instance of the DrawBot drawing canvas."""
