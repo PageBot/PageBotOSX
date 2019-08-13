@@ -60,7 +60,6 @@ class DrawBotContext(BaseContext):
         >>> context = DrawBotContext()
         >>> context.newDocument(500, 700)
         """
-        '''
         if doc is not None:
             w = w or doc.w
             h = h or doc.h
