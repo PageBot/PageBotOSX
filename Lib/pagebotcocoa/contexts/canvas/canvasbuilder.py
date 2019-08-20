@@ -389,7 +389,8 @@ class CanvasBuilder(BaseBuilder):
         self._state.shadow = Shadow(offset, blur, rgbColor)
         self._state.shadow.cmykColor = self.CMYKColor(*color)
 
-    def linearGradient(self, startPoint=None, endPoint=None, colors=None, locations=None):
+    def linearGradient(self, startPoint=None, endPoint=None, colors=None,
+            locations=None):
         if startPoint is None:
             self._state.gradient = None
             self.fill(0)
@@ -397,7 +398,8 @@ class CanvasBuilder(BaseBuilder):
         self._state.gradient = Gradient("linear", startPoint, endPoint, colors, locations)
         self.fill(None)
 
-    def cmykLinearGradient(self, startPoint=None, endPoint=None, colors=None, locations=None):
+    def cmykLinearGradient(self, startPoint=None, endPoint=None, colors=None,
+            locations=None):
         if startPoint is None:
             self._state.gradient = None
             self.fill(0)
@@ -407,7 +409,8 @@ class CanvasBuilder(BaseBuilder):
         self._state.gradient.cmykColors = [self.CMYKColor(*color) for color in colors]
         self.fill(None)
 
-    def radialGradient(self, startPoint=None, endPoint=None, colors=None, locations=None, startRadius=0, endRadius=100):
+    def radialGradient(self, startPoint=None, endPoint=None, colors=None,
+            locations=None, startRadius=0, endRadius=100):
         if startPoint is None:
             self._state.gradient = None
             self.fill(0)
@@ -415,7 +418,8 @@ class CanvasBuilder(BaseBuilder):
         self._state.gradient = Gradient("radial", startPoint, endPoint, colors, locations, startRadius, endRadius)
         self.fill(None)
 
-    def cmykRadialGradient(self, startPoint=None, endPoint=None, colors=None, locations=None, startRadius=0, endRadius=100):
+    def cmykRadialGradient(self, startPoint=None, endPoint=None, colors=None,
+            locations=None, startRadius=0, endRadius=100):
         if startPoint is None:
             self._state.gradient = None
             self.fill(0)

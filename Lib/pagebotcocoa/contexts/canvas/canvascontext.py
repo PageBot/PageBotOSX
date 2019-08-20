@@ -26,11 +26,15 @@ class CanvasContext(BaseContext):
         self.b = CanvasBuilder()
         self.name = self.__class__.__name__
 
+    #   D O C U M E N T
+
     def newPage(self, width, height):
         return self.b.newPage(width, height)
 
     def update(self):
         self.b.update()
+
+    #   P A T H
 
     def newPath(self):
         self.b.newPath()
@@ -69,4 +73,4 @@ class CanvasContext(BaseContext):
         pass
 
     def getGlyphPath(self, glyph, p=None, path=None):
-        pass
+        pas

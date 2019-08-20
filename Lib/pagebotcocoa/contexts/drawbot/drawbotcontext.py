@@ -51,6 +51,7 @@ class DrawBotContext(BaseContext):
         self.name = self.__class__.__name__
         # Holds the extension as soon as the export file path is defined.
         self.fileType = DEFAULT_FILETYPE
+        self._openDocument = False
 
     #   D O C U M E N T
 
@@ -62,15 +63,16 @@ class DrawBotContext(BaseContext):
         >>> context = DrawBotContext()
         >>> context.newDocument(500, 700)
         """
-        '''
         if doc is not None:
             w = w or doc.w
             h = h or doc.h
-        self.b.size(upt(w), upt(h))
-        '''
-
-    def newDrawing(self, doc=None):
-        self.b.newDrawing()
+        # FIX
+        # File "/Users/petr/Desktop/git/drawbot/drawBot/drawBotDrawingTools.py", line 265, in size
+        #    raise DrawBotError("Can't use 'size()' after drawing has begun. Try to move it to the top of your script.")
+        # drawBot.misc.DrawBotError: Can't use 'size()' after drawing has begun. Try to move it to the top of your script.
+        #if not self._openDocument:
+        #    self.b.size(upt(w), upt(h))
+        self._openDocument = True
 
     def saveDocument(self, path, multiPage=None):
         """Select non-standard DrawBot export builders here. Save the current
@@ -101,7 +103,7 @@ class DrawBotContext(BaseContext):
         >>> context.newDrawing()
         """
         self.b.newDrawing()
-        
+
     #   V A R I A B L E
 
     def Variable(self, variables, workSpace):
@@ -193,7 +195,6 @@ class DrawBotContext(BaseContext):
         in case we do recursive component drawing.
 
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
         >>> f = findFont('Roboto-Regular')
         >>> print(f)
@@ -345,8 +346,8 @@ class DrawBotContext(BaseContext):
             sy = sx
         self.b.scale(sx, sy)
 
-    def image(self, path, p=None, alpha=1, pageNumber=None,
-            w=None, h=None, scaleType=None):
+    def image(self, path, p=None, alpha=1, pageNumber=None, w=None, h=None,
+            scaleType=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
             p = ORIGIN
@@ -381,6 +382,12 @@ class DrawBotContext(BaseContext):
         >>> context = DrawBotContext()
         >>> context.path2ScaledImagePath('/xxx/yyy/zzz/This.Is.An.Image.jpg', 110, 120)
         ('/xxx/yyy/zzz/_scaled/', 'This.Is.An.Image.110x120.0.jpg')
+
+        >>> path, fileName = context.path2ScaledImagePath('/xxx/yyy/zzz/This.Is.An.Image.jpg', 110, 120)
+        >>> path in ('/xxx/yyy/zzz/scaled/', '/xxx/yyy/zzz/_scaled/')
+        True
+        >>> fileName
+        'This.Is.An.Image.110x120.0.jpg'
         """
         # /_scaled will be ignored with default .gitignore settings.
         # If docs/images/_scaled need to be committed into Git repo, 
@@ -438,7 +445,6 @@ class DrawBotContext(BaseContext):
         return cachedFilePath
 
 
-    '''
     # TODO
     # Future experiment, making UI/Vanilla layout for apps by PageBot
     # Needs some additional conceptual thinking.
@@ -453,6 +459,8 @@ class DrawBotContext(BaseContext):
         >>> window = context.window('My Window', 50, 50, pt(200), mm(50))
         >>> window.open()
         """
+
+        '''
         if x is None:
             x = DEFAULT_WINX
         if y is None:
@@ -475,20 +483,24 @@ class DrawBotContext(BaseContext):
 
         return Window(posSize, title=title or 'Untitled',
             minSize=minSize, maxSize=maxSize, closable=closable)
+        '''
+        pass
 
     def group(self, x=None, y=None, w=None, h=None, **kwargs):
-        return Group((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0))
+        #return Group((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0))
+        pass
 
     def button(self, title=None, x=None, y=None, w=None, h=None, style=None,
             callback=None, **kwargs):
         """Create a Vanilla button"""
-        return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
-            title or 'Button', callback=callback)
+        #return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
+        #title or 'Button', callback=callback)
+        pass
 
     def canvas(self, x=None, y=None, w=None, h=None):
         """Answer an instance of the DrawBot drawing canvas."""
-        return drawBot.ui.drawView.DrawView((upt(x or 0), upt(y or 0), upt(w or 0), upt(h or 0)))
-    '''
+        #return drawBot.ui.drawView.DrawView((upt(x or 0), upt(y or 0), upt(w or 0), upt(h or 0)))
+        pass
 
 if __name__ == '__main__':
     import doctest
