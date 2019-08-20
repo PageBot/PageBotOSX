@@ -27,7 +27,7 @@ from pagebot.document import Document
 from pagebot.toolbox.units import inch, pt
 from pagebot.toolbox.color import color
 from pagebotcocoa.apps.baseapp import BaseApp
-from pagebotcocoa.contexts.drawbot.context import DrawBotContext
+from pagebotcocoa.contexts.drawbot.drawbotcontext import DrawBotContext
 from drawBot.ui.drawView import DrawView
 
 ADD_MENU = True

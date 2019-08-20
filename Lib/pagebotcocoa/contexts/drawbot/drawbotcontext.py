@@ -343,8 +343,8 @@ class DrawBotContext(BaseContext):
             sy = sx
         self.b.scale(sx, sy)
 
-    def image(self, path, p=None, alpha=1, pageNumber=None,
-            w=None, h=None, scaleType=None):
+    def image(self, path, p=None, alpha=1, pageNumber=None, w=None, h=None,
+            scaleType=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
             p = ORIGIN
