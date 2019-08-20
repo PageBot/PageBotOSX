@@ -28,7 +28,10 @@ class DrawBotContext(BaseContext):
     EXPORT_TYPES = (FILETYPE_PDF, FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG,
             FILETYPE_GIF, FILETYPE_MOV)
 
-    SCALED_PATH = '_scaled' # /scaled with upload on Git. /_scaled will be ignored.
+    # /_scaled will be ignored with default .gitignore settings.
+    # If docs/images/_scaled need to be committed into Git repo, 
+    # then remove _scaled from .gitignore.
+    SCALED_PATH = 'scaled' # /scaled with upload on Git. /_scaled will be ignored.
 
     def __init__(self):
         """Constructor of DrawBotContext if drawBot import exists.
@@ -377,9 +380,12 @@ class DrawBotContext(BaseContext):
 
         >>> context = DrawBotContext()
         >>> context.path2ScaledImagePath('/xxx/yyy/zzz/This.Is.An.Image.jpg', 110, 120)
-        ('/xxx/yyy/zzz/scaled/', 'This.Is.An.Image.110x120.0.jpg')
+        ('/xxx/yyy/zzz/_scaled/', 'This.Is.An.Image.110x120.0.jpg')
         """
-        cachePath = '%s/%s/' % (path2Dir(path), self.SCALED_PATH) # /scaled with upload on Git. /_scaled will be ignored.
+        # /_scaled will be ignored with default .gitignore settings.
+        # If docs/images/_scaled need to be committed into Git repo, 
+        # then remove _scaled from .gitignore.
+        cachePath = '%s/%s/' % (path2Dir(path), self.SCALED_PATH) 
         fileNameParts = path2Name(path).split('.')
         if not exportExtension: # If undefined, take the original extension for exporting the cache.
             exportExtension = fileNameParts[-1].lower()
