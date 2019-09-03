@@ -8,7 +8,7 @@ import os
 import traceback
 
 from pagebot.constants import *
-from pagebot.contexts.base.context import BaseContext
+from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
@@ -201,6 +201,7 @@ class DrawBotContext(BaseContext):
         """
         if path is None:
             path = self.newPath()
+
         if p is None:
             px = py = 0
         else:
@@ -220,6 +221,7 @@ class DrawBotContext(BaseContext):
             elif command == 'component':
                 (x, y), componentGlyph = t
                 self.getGlyphPath(componentGlyph, (px+x, py+y), path)
+
         return path
 
     def bezierPathByFlatteningPath(self, path=None):
