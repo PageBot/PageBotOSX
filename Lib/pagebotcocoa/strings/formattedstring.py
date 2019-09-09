@@ -14,7 +14,7 @@
 #
 #     formattedstring.py
 #
-import sys, os
+import os
 import AppKit
 import CoreText
 
@@ -23,7 +23,6 @@ from drawBot.context.tools.variation import *
 
 from pagebot.color.color import *
 from pagebot.errors import PageBotError
-from pagebotcocoa.strings.tryinstallfont import _tryInstallFromFontName
 
 import logging
 logger = logging.getLogger(__name__)
