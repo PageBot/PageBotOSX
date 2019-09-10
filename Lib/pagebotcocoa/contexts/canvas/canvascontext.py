@@ -37,10 +37,23 @@ class CanvasContext(BaseContext):
     def setStyles(self, styles):
         pass
 
+    def fill(self, c):
+        pass
+
+    def stroke(self, c, w=None):
+        pass
+
+    def shadow(self, shadow):
+        pass
+
+    def linearGradient(self, gradient, origin, w, h, e=None):
+        pass
+
     cmykFill = fill
     cmykStroke = stroke
     cmykShadow = shadow
     cmykLinearGradient = linearGradient
+    radialGradient = linearGradient
     cmykRadialGradient = radialGradient
 
     #   P A T H
