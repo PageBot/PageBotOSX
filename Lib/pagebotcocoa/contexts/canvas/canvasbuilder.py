@@ -22,7 +22,7 @@ import traceback
 
 from pagebot.apps.canvas.canvas import Canvas
 from pagebot.bezierpaths.bezierpath import BezierPath
-from pagebot.color.color import *
+from pagebotcocoa.color import *
 from pagebot.contexts.base.basebuilder import BaseBuilder
 from pagebot.errors import PageBotError
 from pagebot.toolbox.color import noColor, cmyk2Rgb
