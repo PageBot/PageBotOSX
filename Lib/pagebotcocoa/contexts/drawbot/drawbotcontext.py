@@ -68,12 +68,7 @@ class DrawBotContext(BaseContext):
         if doc is not None:
             w = w or doc.w
             h = h or doc.h
-        # FIX
-        # File "/Users/petr/Desktop/git/drawbot/drawBot/drawBotDrawingTools.py", line 265, in size
-        #    raise DrawBotError("Can't use 'size()' after drawing has begun. Try to move it to the top of your script.")
-        # drawBot.misc.DrawBotError: Can't use 'size()' after drawing has begun. Try to move it to the top of your script.
-        #if not self._openDocument:
-        #    self.b.size(upt(w), upt(h))
+
         self._openDocument = True
 
     def saveDocument(self, path, multiPage=None):
@@ -96,12 +91,8 @@ class DrawBotContext(BaseContext):
     def setStyles(self, styles):
         pass
 
-    def shadow(self, shadow):
-        pass
-
-    def linearGradient(self, gradient, origin, w, h, e=None):
-        pass
-
+    cmykFill = fill
+    cmykStroke = stroke
     cmykShadow = shadow
     cmykLinearGradient = linearGradient
     radialGradient = linearGradient
