@@ -10,7 +10,7 @@
 #     canvas.py
 #
 from vanilla import Group, ScrollView
-from pagebot.apps.canvas.canvasview import *
+from pagebotcocoa.apps.canvas.canvasview import *
 from AppKit import NSSize
 from pagebot.toolbox.color import whiteColor
 

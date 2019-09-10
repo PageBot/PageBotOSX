@@ -6,6 +6,8 @@
 
 import os
 import traceback
+from AppKit import NSFont
+from CoreText import CTFontDescriptorCreateWithNameAndSize, CTFontDescriptorCopyAttribute, kCTFontURLAttribute
 
 from pagebot.constants import *
 from pagebot.contexts.base.basecontext import BaseContext
