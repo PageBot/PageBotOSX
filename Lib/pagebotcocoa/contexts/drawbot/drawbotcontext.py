@@ -93,6 +93,15 @@ class DrawBotContext(BaseContext):
 
     saveImage = saveDocument
 
+    def setStyles(self, styles):
+        pass
+
+    cmykFill = fill
+    cmykStroke = stroke
+    cmykShadow = shadow
+    cmykLinearGradient = linearGradient
+    cmykRadialGradient = radialGradient
+
     def getDocument(self):
         """Returns a PDF document of the current state."""
         return self.b.pdfImage()

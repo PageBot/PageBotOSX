@@ -34,6 +34,15 @@ class CanvasContext(BaseContext):
     def update(self):
         self.b.update()
 
+    def setStyles(self, styles):
+        pass
+
+    cmykFill = fill
+    cmykStroke = stroke
+    cmykShadow = shadow
+    cmykLinearGradient = linearGradient
+    cmykRadialGradient = radialGradient
+
     #   P A T H
 
     def newPath(self):
@@ -73,4 +82,4 @@ class CanvasContext(BaseContext):
         pass
 
     def getGlyphPath(self, glyph, p=None, path=None):
-        pas
+        pass
