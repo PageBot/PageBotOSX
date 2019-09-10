@@ -96,20 +96,12 @@ class DrawBotContext(BaseContext):
     def setStyles(self, styles):
         pass
 
-    def fill(self, c):
-        pass
-
-    def stroke(self, c, w=None):
-        pass
-
     def shadow(self, shadow):
         pass
 
     def linearGradient(self, gradient, origin, w, h, e=None):
         pass
 
-    cmykFill = fill
-    cmykStroke = stroke
     cmykShadow = shadow
     cmykLinearGradient = linearGradient
     radialGradient = linearGradient
@@ -354,24 +346,6 @@ class DrawBotContext(BaseContext):
 
     #   I M A G E
 
-    def imagePixelColor(self, path, p=None):
-        if p is None:
-            p = ORIGIN
-        ppt = point2D(upt(p))
-        return self.b.imagePixelColor(path, ppt)
-
-    def numberOfImages(self, path):
-        """Answers the number of images in the file referenced by path."""
-        return self.b.numberOfPages(path)
-
-    def translate(self, tx, ty):
-        self.b.translate(tx, ty)
-
-    def scale(self, sx, sy=None):
-        if sy is None:
-            sy = sx
-        self.b.scale(sx, sy)
-
     def image(self, path, p=None, alpha=1, pageNumber=None, w=None, h=None,
             scaleType=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
@@ -392,13 +366,13 @@ class DrawBotContext(BaseContext):
         elif scaleType == SCALE_TYPE_FITH:
             sx = sy = upt(h/ih)
         else: # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
-            sx = sy = min(upt(w/iw), upt(h/ih))
+            sx = sy = min(pt(w/iw), upt(h/ih))
 
         # Else both w and h are defined, scale disproportionally.
         xpt, ypt, = point2D(p)
         self.save()
-        self.translate(xpt/sx, ypt/sy)
         self.scale(sx, sy)
+        self.translate(xpt/sx, ypt/sy)
         self.b.image(path, (0, 0), alpha=alpha, pageNumber=pageNumber)
         self.restore()
 
@@ -469,6 +443,24 @@ class DrawBotContext(BaseContext):
             self.saveImage(cachedFilePath)
             self.newDrawing() # Clean the drawing stack.
         return cachedFilePath
+
+    def imagePixelColor(self, path, p=None):
+        if p is None:
+            p = ORIGIN
+        ppt = point2D(upt(p))
+        return self.b.imagePixelColor(path, ppt)
+
+    def numberOfImages(self, path):
+        """Answers the number of images in the file referenced by path."""
+        return self.b.numberOfPages(path)
+
+    def translate(self, tx, ty):
+        self.b.translate(tx, ty)
+
+    def scale(self, sx, sy=None):
+        if sy is None:
+            sy = sx
+        self.b.scale(sx, sy)
 
 
     # TODO
