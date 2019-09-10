@@ -15,7 +15,7 @@
 #     graphic.py
 #
 
-from pagebot.color.color import *
+from pagebotcocoa.color import *
 from pagebot.bezierpaths.bezierpath import BezierPath
 from pagebotcocoa.strings.formattedstring import FormattedString
 
