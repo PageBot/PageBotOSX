@@ -33,11 +33,14 @@ def pixelBounds(fs):
         return pt(0, 0, 0, 0)
     p = drawBotBuilder.BezierPath()
     p.text(fs, (0, 0))
-    # OS X answers bw and bh as difference with bx and by. That is not really
-    # intuitive, as the the total (width, height) then always needs to be
-    # calculated by the caller. So, instead, the width and height answered is
-    # the complete bounding box, and the (x, y) is the position of the bounding
-    # box, compared to the (0, 0) of the string origin.
+
+    '''
+    OS X answers `bw` and `bh` as difference with `bx` and `by`§. That is not
+    really intuitive, as the the total (width, height) then always needs to be
+    calculated by the caller. So, instead, the width and height answered is the
+    complete bounding box, and (x, y) is the position of the bounding box,
+    compared to (0, 0) of the string origin.
+    '''
     bx, by, bw, bh = p.bounds()
     return pt(bx, by, bw - bx, bh - by)
 
@@ -83,7 +86,7 @@ class DrawBotString(BabelString):
         return self._s
 
     def _set_s(self, s):
-        """ Check on the type of `s`. Three types are supported here: plain
+        """ Checks the type of `s`. Three types are supported here: plain
         strings, DrawBot FormattedString and the class self."""
         assert isinstance(s, (DrawBotString, str)) or s.__class__.__name__ == 'FormattedString'
 
@@ -146,7 +149,8 @@ class DrawBotString(BabelString):
     fontSize = property(_get_fontSize, _set_fontSize)
 
     def getStyleAtIndex(self, index):
-        """Answer the style dictionary with values at position index of the string.
+        """Answers the style dictionary with values at position index of the
+        string.
 
         >>> from drawBotContext.context import DrawBotContext
         >>> context = DrawBotContext()
@@ -259,8 +263,8 @@ class DrawBotString(BabelString):
         return pixelBounds(self.s)
 
     def fontContainsCharacters(self, characters):
-        """Return a boolean if the current font contains the provided
-        characters.  Characters is a string containing one or more
+        """Return a Boolean if the current font contains the provided
+        characters. Characters is a string containing one or more
         characters."""
         return self.s.fontContainsCharacters(characters)
 
@@ -337,9 +341,7 @@ class DrawBotString(BabelString):
         string at the end of a textBox. That is another reason to keep the
         length of the arguments short. And not to use any spaces, etc. inside
         the markerId. Possible slicing through line-endings is not a problem,
-        as the raw string ignores them.
-
-        """
+        as the raw string ignores them."""
         marker = self.MARKER_PATTERN % (markerId, arg or '')
         fs = self.context.b.FormattedString(marker, fill=noColor, stroke=noColor, fontSize=0.0000000000001)
         self.append(fs)
@@ -351,8 +353,8 @@ class DrawBotString(BabelString):
         return reCompiled.findall(u'%s' % self.s)
 
     def textOverflow(self, w, h, align=LEFT):
-        """Answers the overflowing of from the box (0, 0, w, h)
-        as new DrawBotString in the current context."""
+        """Answers the overflowing of from the box (0, 0, w, h) as a new
+        DrawBotString in the current context."""
         b = self.context.b
         wpt, hpt = upt(w, h)
         # Set the hyphenation flag from style, as in DrawBot this is set by a global function,
@@ -371,7 +373,7 @@ class DrawBotString(BabelString):
 
     def getBaselines(self, w, h=None):
         """Answers the dictionary of vertical baseline positions for the self.s
-        FormattedString and for the given width and height. Value is the
+        FormattedString and for the given width and height. The value is the
         TextLine instance at that position.
 
         """
@@ -512,19 +514,24 @@ class DrawBotString(BabelString):
 
         # Decide which axis to use for width adjustments and get the axis
         # values.
-        if not useXTRA or not 'XTRA' in font.axes: # Try to force usage of [XTRA] if it exists, otherwise use[wdth]
+        if not useXTRA or not 'XTRA' in font.axes:
+            # Try to force usage of [XTRA] if it exists, otherwise use[wdth]
             axisTag = 'wdth'
         else:
             axisTag = 'XTRA'
         minValue, defaultValue, maxValue = font.axes[axisTag]
 
-        if h is not None: # Fitting in heigt, calculate/iterate for the fitting font size.
+        if h is not None:
+            # Fitting in heigt, calculate/iterate for the fitting font size.
             bs = cls.newString(t, context, e=e, style=style, h=h, pixelFit=pixelFit)
             style['fontSize'] = bs.fittingFontSize
-        else: # Assuming there is a fontSize set, we'll use that as vertical requirement
+        else:
+            # Assuming there is a fontSize set, we'll use that as vertical
+            # requirement.
             bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
 
-        # Now we have a formatted string with a given fontSize, guess to fit on the width.
+        # Now we have a formatted string with a given fontSize, guess to fit on
+        # the width.
         tx, _, tw, _ = bs.bounds() # Get pixel bounds of the string
         tw = tw - tx # Pixel width of the current string.
         prevW = None # Testing if something changed, for extreme of axes.

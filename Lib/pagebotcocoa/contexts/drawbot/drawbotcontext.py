@@ -7,32 +7,35 @@
 import os
 import traceback
 from AppKit import NSFont
-from CoreText import CTFontDescriptorCreateWithNameAndSize, CTFontDescriptorCopyAttribute, kCTFontURLAttribute
+from CoreText import (CTFontDescriptorCreateWithNameAndSize,
+        CTFontDescriptorCopyAttribute, kCTFontURLAttribute)
+from vanilla import *
+
+import drawBot
+drawBotBuilder = drawBot
 
 from pagebot.constants import *
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
-
-import drawBot
-from vanilla import *
 from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
-drawBotBuilder = drawBot
+
 # Identifier to make builder hook name. Views will try to call e.build_html()
 drawBotBuilder.PB_ID = 'drawBot'
 
 class DrawBotContext(BaseContext):
-    """The DrawBotContext implements the DrawBot functionality within the
-    PageBot framework."""
+    """DrawBotContext adapts DrawBot functionality to PageBot."""
 
     STRING_CLASS = stringClass
     EXPORT_TYPES = (FILETYPE_PDF, FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG,
             FILETYPE_GIF, FILETYPE_MOV)
 
-    # /_scaled will be ignored with default .gitignore settings.
-    # If docs/images/_scaled need to be committed into Git repo, 
-    # then remove _scaled from .gitignore.
+    '''
+    /_scaled will be ignored with default .gitignore settings.  If the
+    docs/images/_scaled folder need to be committed to a Git repository, remove
+    _scaled from .gitignore.
+    '''
     SCALED_PATH = 'scaled' # /scaled with upload on Git. /_scaled will be ignored.
 
     def __init__(self):
@@ -81,6 +84,7 @@ class DrawBotContext(BaseContext):
 
         """
         self.checkExportPath(path)
+
         if path.lower().endswith('.mov'):
             self.b.saveImage(path)
         else:
@@ -107,24 +111,20 @@ class DrawBotContext(BaseContext):
     #   V A R I A B L E
 
     def Variable(self, variables, workSpace):
-        """Offers interactive global value manipulation in DrawBot. Probably to
-        be ignored in other contexts."""
-        # Variable is a DrawBot context global, used to make simple UI with
-        # controls on input parameters.
-        try:
-            from drawBot import Variable
-            Variable(variables, workSpace)
-        except self.b.misc.DrawBotError:
-            # Ignore if there is a DrawBot context, but not running inside
-            # DrawBot.
-            print(traceback.format_exc())
+        """Offers interactive global value manipulation in DrawBot. Should be
+        ignored in other contexts.
+
+        Variable is a DrawBot context global, used to make simple UI with
+        controls on input parameters."""
+        from drawBot import Variable
+        Variable(variables, workSpace)
 
     #   D R A W I N G
 
     def bluntCornerRect(self, x, y, w, h, offset=5):
-        """Draw a rectangle in the canvas. This method is using the core BezierPath
-        as path to draw on. For a more rich environment use PageBotPath(context)
-        instead.
+        """Draw a rectangle in the canvas. This method is using the core
+        BezierPath as path to draw on. For a more rich environment use
+        PageBotPath(context) instead.
 
         TODO: move to elements.
 
@@ -233,9 +233,11 @@ class DrawBotContext(BaseContext):
         """
         if path is None:
             path = self.path
-        if hasattr(path, 'path'): # In case it is a PageBotPath
+
+        if hasattr(path, 'path'):
+            # In case it is a PageBotPath
             path = path.path
-        #return path._path.getNSBezierPath().bezierPathByFlatteningPath()
+
         return path._path.bezierPathByFlatteningPath()
 
     def getFlattenedPath(self, path=None):
@@ -349,7 +351,8 @@ class DrawBotContext(BaseContext):
             sx = sy = upt(w/iw)
         elif scaleType == SCALE_TYPE_FITH:
             sx = sy = upt(h/ih)
-        else: # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
+        else:
+            # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
             sx = sy = min(pt(w/iw), upt(h/ih))
 
         # Else both w and h are defined, scale disproportionally.
