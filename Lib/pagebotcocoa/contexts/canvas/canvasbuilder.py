@@ -21,13 +21,13 @@ import Quartz
 import traceback
 
 from pagebot.apps.canvas.canvas import Canvas
-from pagebot.bezierpaths.bezierpath import BezierPath
-from pagebotcocoa.color import *
 from pagebot.contexts.base.basebuilder import BaseBuilder
 from pagebot.errors import PageBotError
 from pagebot.toolbox.color import noColor, cmyk2Rgb
-from pagebotCocoa.graphics.graphic import Graphic
-from pagebotCocoa.strings.formattedstring import FormattedString
+from pagebotcocoa.bezierpaths.bezierpath import BezierPath
+from pagebotcocoa.color import *
+from pagebotcocoa.graphics.graphic import Graphic
+from pagebotcocoa.strings.formattedstring import FormattedString
 
 # FIXME: using drawBot for now.
 def _tryInstallFontFromFontName(fontName):
