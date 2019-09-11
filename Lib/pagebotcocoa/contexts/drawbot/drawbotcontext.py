@@ -36,7 +36,7 @@ class DrawBotContext(BaseContext):
     docs/images/_scaled folder need to be committed to a Git repository, remove
     _scaled from .gitignore.
     '''
-    SCALED_PATH = 'scaled' # /scaled with upload on Git. /_scaled will be ignored.
+    SCALED_PATH = '_scaled' # /scaled with upload on Git. /_scaled will be ignored.
 
     def __init__(self):
         """Constructor of DrawBotContext if drawBot import exists.
@@ -458,7 +458,9 @@ class DrawBotContext(BaseContext):
     def window(self, title=None, x=None, y=None, w=None, h=None, style=None,
         minW=None, maxW=None, minH=None, maxH=None, closable=None, **kwargs):
         """Create and opening a window, using Vanilla.
-
+        """
+        """
+        FIXME
         >>> context = DrawBotContext()
         >>> from pagebot.toolbox.units import pt, mm
         >>> window = context.window('My Window', 50, 50, pt(200), mm(50))
