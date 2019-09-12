@@ -20,9 +20,9 @@ import Quartz
 import CoreText
 from fontTools.pens.basePen import BasePen
 
-from pagebot.bezierpaths.beziercontour import BezierContour
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.errors import PageBotError
+from pagebotcocoa.bezierpaths.beziercontour import BezierContour
 
 _FALLBACKFONT = "LucidaGrande"
 

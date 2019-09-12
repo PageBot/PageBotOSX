@@ -20,10 +20,10 @@ import CoreText
 import Quartz
 import traceback
 
-from pagebot.apps.canvas.canvas import Canvas
 from pagebot.contexts.base.basebuilder import BaseBuilder
 from pagebot.errors import PageBotError
 from pagebot.toolbox.color import noColor, cmyk2Rgb
+from pagebotcocoa.apps.canvas.canvas import Canvas
 from pagebotcocoa.bezierpaths.bezierpath import BezierPath
 from pagebotcocoa.color import *
 from pagebotcocoa.graphics.graphic import Graphic

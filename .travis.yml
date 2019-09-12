@@ -72,6 +72,7 @@ script:
 - $PYLINT Lib/pagebotcocoa/
 - python3 Lib/pagebotcocoa/contexts/drawbot/drawbotcontext.py
 - python3 Lib/pagebotcocoa/contexts/drawbot/drawbotstring.py
-
+- python3 Lib/pagebotcocoa/contexts/canvas/canvascontext.py
+- python3 Lib/pagebotcocoa/contexts/canvas/canvasbuilder.py
 after_sucess:
 - CODECLIMATE_REPO_TOKEN=b686cb85d6a2fc7c7917307a36fd14fe95d1826 codeclimate-test-reporter

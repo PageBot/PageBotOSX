@@ -15,9 +15,9 @@
 #     canvascontext.py
 #
 
-from drawBotContext.canvasbuilder import CanvasBuilder
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.toolbox.units import upt, point2D
+from pagebotcocoa.contexts.canvas.canvasbuilder import CanvasBuilder
 
 class CanvasContext(BaseContext):
 
