@@ -14,6 +14,7 @@
 #
 #     formattedstring.py
 #
+
 import os
 import AppKit
 import CoreText
@@ -32,11 +33,9 @@ _FALLBACKFONT = "LucidaGrande"
 class FormattedString:
     """Based on drawBot.context.baseContext.FormattedString.
 
-    FormattedString is a reusable object, if you want to draw the same over
-    and over again. FormattedString objects can be drawn with the `text(txt,
-    (x, y))` and `textBox(txt, (x, y, w, h))` methods.
-
-    """
+    FormattedString is a reusable object, if you want to draw the same string
+    multiple times. FormattedString objects can be drawn with the `text(txt,
+    (x, y))` and `textBox(txt, (x, y, w, h))` methods."""
 
     _colorClass = Color
     _cmykColorClass = CMYKColor
@@ -169,10 +168,11 @@ class FormattedString:
         self._openTypeFeatures = None
 
     def append(self, txt, **kwargs):
-        """
-        Add `txt` to the formatted string with some additional text formatting attributes:
+        """Adds `txt` to the formatted string with some additional text
+        formatting attributes:
 
-        * `font`: the font to be used for the given text, if a font path is given the font will be installed and used directly.
+        * `font`: the font to be used for the given text, if a font path is
+          given the font will be installed and used directly.
         * `fallbackFont`: the fallback font
         * `fontSize`: the font size to be used for the given text
         * `fill`: the fill color to be used for the given text
@@ -194,10 +194,12 @@ class FormattedString:
         * `paragraphBottomSpacing`: the spacing at the bottom of a paragraph
         * `language`: the language of the text
 
-        All formatting attributes follow the same notation as other similar DrawBot methods.
-        A color is a tuple of `(r, g, b, alpha)`, and a cmykColor is a tuple of `(c, m, y, k, alpha)`.
+        All formatting attributes follow the same notation as other similar
+        DrawBot methods.  A color is a tuple of `(r, g, b, alpha)`, and a
+        cmykColor is a tuple of `(c, m, y, k, alpha)`.
 
-        Text can also be added with `formattedString += "hello"`. It will append the text with the current settings of the formatted string.
+        Text can also be added with `formattedString += "hello"`. It will
+        append the text with the current settings of the formatted string.
         """
         attributes = self._validateAttributes(kwargs, addDefaults=False)
 
@@ -410,18 +412,15 @@ class FormattedString:
         return self._attributedString.string()
 
     def font(self, font, fontSize=None):
-        """
-        Set a font with the name of the font.
-        If a font path is given the font will be installed and used directly.
-        Optionally a `fontSize` can be set directly.
-        The default font, also used as fallback font, is 'LucidaGrande'.
-        The default `fontSize` is 10pt.
+        """Sets a font with the name of the font. If a font path is given the
+        font will be installed and used directly. Optionally a `fontSize` can
+        be set directly. The default font, also used as fallback font, is
+        'LucidaGrande'. The default `fontSize` is 10pt.
 
         The name of the font relates to the font's postscript name.
 
         The font name is returned, which is handy when the font was loaded
-        from a path.
-        """
+        from a path."""
         font = _tryInstallFontFromFontName(font)
         font = str(font)
         self._font = font
@@ -430,10 +429,9 @@ class FormattedString:
         return font
 
     def fallbackFont(self, font):
-        """
-        Set a fallback font, used whenever a glyph is not available in the normal font.
-        If a font path is given the font will be installed and used directly.
-        """
+        """Sets a fallback font, used whenever a glyph is not available in the
+        normal font. If a font path is given the font will be installed and
+        used directly."""
         if font:
             font = _tryInstallFontFromFontName(font)
             font = str(font)
@@ -444,97 +442,78 @@ class FormattedString:
         return font
 
     def fontSize(self, fontSize):
-        """
-        Set the font size in points.
-        The default `fontSize` is 10pt.
-        """
+        """Set the font size in points. The default `fontSize` is 10pt."""
         self._fontSize = fontSize
 
     def fill(self, *fill):
-        """
-        Sets the fill color with a `red`, `green`, `blue` and `alpha` value.
-        Each argument must a value float between 0 and 1.
-        """
+        """Sets the fill color with a `red`, `green`, `blue` and `alpha` value.
+        Each argument must a value float between 0 and 1."""
         if fill and fill[0] is None:
             fill = None
         self._fill = fill
         self._cmykFill = None
 
     def stroke(self, *stroke):
-        """
-        Sets the stroke color with a `red`, `green`, `blue` and `alpha` value.
-        Each argument must a value float between 0 and 1.
-        """
+        """Sets the stroke color with a `red`, `green`, `blue` and `alpha`
+        value. Each argument must a value float between 0 and 1."""
         if stroke and stroke[0] is None:
             stroke = None
         self._stroke = stroke
         self._cmykStroke = None
 
     def cmykFill(self, *cmykFill):
-        """
-        Set a fill using a CMYK color before drawing a shape. This is handy if the file is intended for print.
+        """Sets a fill using a CMYK color before drawing a shape. This is handy
+        if the file is intended for print.
 
-        Sets the CMYK fill color. Each value must be a float between 0.0 and 1.0.
-        """
+        Sets the CMYK fill color. Each value must be a float between 0.0 and
+        1.0."""
         if cmykFill and cmykFill[0] is None:
             cmykFill = None
         self._cmykFill = cmykFill
         self._fill = None
 
     def cmykStroke(self, *cmykStroke):
-        """
-        Set a stroke using a CMYK color before drawing a shape. This is handy if the file is intended for print.
+        """Set a stroke using a CMYK color before drawing a shape. This is
+        handy if the file is intended for print.
 
-        Sets the CMYK stroke color. Each value must be a float between 0.0 and 1.0.
-        """
+        Sets the CMYK stroke color. Each value must be a float between 0.0 and
+        1.0."""
         if cmykStroke and cmykStroke[0] is None:
             cmykStroke = None
         self._cmykStroke = cmykStroke
         self._stroke = None
 
     def strokeWidth(self, strokeWidth):
-        """
-        Sets stroke width.
-        """
+        """Sets stroke width."""
         self._strokeWidth = strokeWidth
 
     def align(self, align):
-        """
-        Sets the text alignment.
-        Possible `align` values are: `left`, `center` and `right`.
-        """
+        """Sets the text alignment. Possible `align` values are: `left`,
+        `center` and `right`."""
         self._align = align
 
     def lineHeight(self, lineHeight):
-        """
-        Set the line height.
-        """
+        """Sets the line height."""
         self._lineHeight = lineHeight
 
     def tracking(self, tracking):
-        """
-        Set the tracking between characters.
-        """
+        """Sets the tracking between characters."""
         self._tracking = tracking
 
     def baselineShift(self, baselineShift):
-        """
-        Set the shift of the baseline.
-        """
+        """Sets the shift of the baseline."""
         self._baselineShift = baselineShift
 
     def underline(self, underline):
-        """
-        Set the underline value.
-        Underline must be `single` or `None`.
-        """
+        """Set the underline value. Underline must be `single` or `None`."""
         self._underline = underline
 
     def openTypeFeatures(self, *args, **features):
-        """
-        Enable OpenType features and return the current openType features settings.
+        """Enables OpenType features and return the current openType features
+        settings.
 
-        If no arguments are given `openTypeFeatures()` will just return the current openType features settings.
+        If no arguments are given `openTypeFeatures()` will just return the
+        current openType features settings.
 
         .. downloadcode:: openTypeFeaturesFormattedString.py
 
@@ -572,11 +551,10 @@ class FormattedString:
         return currentFeatures
 
     def listOpenTypeFeatures(self, fontName=None):
-        """
-        List all OpenType feature tags for the current font.
+        """Lists all OpenType feature tags for the current font.
 
-        Optionally a `fontName` can be given. If a font path is given the font will be installed and used directly.
-        """
+        Optionally a `fontName` can be given. If a font path is given the font
+        will be installed and used directly."""
         if fontName:
             fontName = _tryInstallFontFromFontName(fontName)
         else:
@@ -584,13 +562,14 @@ class FormattedString:
         return getFeatureTagsForFontName(fontName)
 
     def fontVariations(self, *args, **axes):
-        """
-        Pick a variation by axes values and return the current font variations settings.
+        """Picks a variation by axes values and return the current font
+        variations settings.
 
-        If no arguments are given `fontVariations()` will just return the current font variations settings.
-        """
+        If no arguments are given `fontVariations()` will just return the
+        current font variations settings."""
         if args and axes:
             raise PageBotError("Can't combine positional arguments and keyword arguments")
+
         if args:
             if len(args) != 1:
                 raise PageBotError("There can only be one positional argument")
@@ -602,17 +581,17 @@ class FormattedString:
             if axes.pop("resetVariations", False):
                 self._fontVariations.clear()
             self._fontVariations.update(axes)
+
         defaultVariations = self.listFontVariations()
         currentVariation = {axis: data["defaultValue"] for axis, data in defaultVariations.items()}
         currentVariation.update(self._fontVariations)
         return currentVariation
 
     def listFontVariations(self, fontName=None):
-        """
-        List all variation axes for the current font.
+        """Lists all variation axes for the current font.
 
-        Optionally a `fontName` can be given. If a font path is given the font will be installed and used directly.
-        """
+        Optionally a `fontName` can be given. If a font path is given the font
+        will be installed and used directly."""
         if fontName:
             fontName = _tryInstallFontFromFontName(fontName)
         else:
@@ -620,10 +599,10 @@ class FormattedString:
         return getVariationAxesForFontName(fontName)
 
     def tabs(self, *tabs):
-        """
-        Set tabs,tuples of (`float`, `alignment`)
-        Aligment can be `"left"`, `"center"`, `"right"` or any other character.
-        If a character is provided the alignment will be `right` and centered on the specified character.
+        """Sets tabs, tuples of (`float`, `alignment`).  Aligment can be
+        `"left"`, `"center"`, `"right"` or any other character. If a character
+        is provided the alignment will be `right` and centered on the specified
+        character.
 
         .. downloadcode:: tabsFormattedString.py
 
@@ -643,7 +622,7 @@ class FormattedString:
 
     def indent(self, indent):
         """
-        Set indent of text left of the paragraph.
+        Sets indent of text left of the paragraph.
 
         .. downloadcode:: indent.py
 
@@ -715,58 +694,44 @@ class FormattedString:
         self._indent = indent
 
     def tailIndent(self, indent):
-        """
-        Set indent of text right of the paragraph.
-        """
+        """Sets indent of text right of the paragraph."""
         self._tailIndent = indent
 
     def firstLineIndent(self, indent):
-        """
-        Set indent of the text only for the first line.
-        """
+        """Sets indent of the text only for the first line."""
         self._firstLineIndent = indent
 
     def paragraphTopSpacing(self, value):
-        """
-        set paragraph spacing at the top.
-        """
+        """Sets paragraph spacing at the top."""
         self._paragraphTopSpacing = value
 
     def paragraphBottomSpacing(self, value):
-        """
-        set paragraph spacing at the bottom.
-        """
+        """Sets paragraph spacing at the bottom."""
         self._paragraphBottomSpacing = value
 
     def language(self, language):
-        """
-        Set the preferred language as language tag or None to use the default language.
-        """
+        """Sets the preferred language as language tag or None to use the
+        default language."""
         self._language = language
 
     def size(self):
-        """
-        Return the size of the text.
-        """
+        """Returns the size of the text."""
         return self._attributedString.size()
 
     def getNSObject(self):
         return self._attributedString
 
     def copy(self):
-        """
-        Copy the formatted string.
-        """
+        """Copies the formatted string."""
         attributes = {key: getattr(self, "_%s" % key) for key in self._formattedAttributes}
         new = self.__class__(**attributes)
         new._attributedString = self._attributedString.mutableCopy()
         return new
 
     def fontContainsCharacters(self, characters):
-        """
-        Return a bool if the current font contains the provided `characters`.
-        Characters is a string containing one or more characters.
-        """
+        """Returns a Boolean if the current font contains the provided
+        `characters`. Characters is a string containing one or more
+        characters."""
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             return False
@@ -781,9 +746,7 @@ class FormattedString:
         return bool(glyph)
 
     def fontFilePath(self):
-        """
-        Return the path to the file of the current font.
-        """
+        """Returns the path to the file of the current font."""
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is not None:
             url = CoreText.CTFontDescriptorCopyAttribute(font.fontDescriptor(), CoreText.kCTFontURLAttribute)
@@ -793,9 +756,7 @@ class FormattedString:
         return None
 
     def listFontGlyphNames(self):
-        """
-        Return a list of glyph names supported by the current font.
-        """
+        """Returns a list of glyph names supported by the current font."""
         from fontTools.ttLib import TTFont, TTLibError
         from fontTools.misc.macRes import ResourceReader, ResourceError
 
@@ -853,9 +814,8 @@ class FormattedString:
         return glyphNames
 
     def fontAscender(self):
-        """
-        Returns the current font ascender, based on the current `font` and `fontSize`.
-        """
+        """Returns the current font ascender, based on the current `font` and
+        `fontSize`."""
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
@@ -864,9 +824,8 @@ class FormattedString:
         return font.ascender()
 
     def fontDescender(self):
-        """
-        Returns the current font descender, based on the current `font` and `fontSize`.
-        """
+        """Returns the current font descender, based on the current `font` and
+        `fontSize`."""
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
@@ -875,10 +834,10 @@ class FormattedString:
         return font.descender()
 
     def fontXHeight(self):
-        """
-        Returns the current font x-height, based on the current `font` and `fontSize`.
-        """
+        """Returns the current font x-height, based on the current `font` and
+        `fontSize`."""
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
+
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
             logger.warning("font: '%s' is not installed, back to the fallback font: '%s'", self._font, ff)
@@ -886,10 +845,10 @@ class FormattedString:
         return font.xHeight()
 
     def fontCapHeight(self):
-        """
-        Returns the current font cap height, based on the current `font` and `fontSize`.
-        """
+        """Returns the current font cap height, based on the current `font` and
+        `fontSize`. """
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
+
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
             logger.warning("font: '%s' is not installed, back to the fallback font: '%s'", self._font, ff)
@@ -897,10 +856,10 @@ class FormattedString:
         return font.capHeight()
 
     def fontLeading(self):
-        """
-        Returns the current font leading, based on the current `font` and `fontSize`.
-        """
+        """Returns the current font leading, based on the current `font` and
+        `fontSize`."""
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
+
         if font is None:
             ff = self._fallbackFont or _FALLBACKFONT
             logger.warning("font: '%s' is not installed, back to the fallback font: '%s'", self._font, ff)
@@ -908,10 +867,8 @@ class FormattedString:
         return font.leading()
 
     def fontLineHeight(self):
-        """
-        Returns the current line height, based on the current `font` and `fontSize`.
-        If a `lineHeight` is set, this value will be returned.
-        """
+        """Returns the current line height, based on the current `font` and
+        `fontSize`. If a `lineHeight` is set, this value will be returned."""
         if self._lineHeight is not None:
             return self._lineHeight
         font = AppKit.NSFont.fontWithName_size_(self._font, self._fontSize)
@@ -922,8 +879,7 @@ class FormattedString:
         return font.defaultLineHeightForFont()
 
     def appendGlyph(self, *glyphNames):
-        """
-        Append a glyph by his glyph name using the current `font`.
+        """Appends a glyph by his glyph name using the current `font`.
         Multiple glyph names are possible.
 
         .. downloadcode:: appendGlyphFormattedString.py
@@ -971,4 +927,3 @@ class FormattedString:
                 logger.warning("font '%s' has no glyph with the name '%s'", font.fontName(), glyphName)
         self.openTypeFeatures(**_openTypeFeatures)
         self._fallbackFont = fallbackFont
-

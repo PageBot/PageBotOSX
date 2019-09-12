@@ -74,5 +74,12 @@ script:
 - python3 Lib/pagebotcocoa/contexts/drawbot/drawbotstring.py
 - python3 Lib/pagebotcocoa/contexts/canvas/canvascontext.py
 - python3 Lib/pagebotcocoa/contexts/canvas/canvasbuilder.py
+- python3 Lib/pagebotcocoa/bezierpaths/bezierpath.py
+- python3 Lib/pagebotcocoa/bezierpaths/beziercontour.py
+- python3 Lib/pagebotcocoa/strings/formattedstring.py
+- python3 Lib/pagebotcocoa/strings/pattern.py
+- python3 Lib/pagebotcocoa/strings/textline.py
+- python3 Lib/pagebotcocoa/strings/textrun.py
+- python3 Lib/pagebotcocoa/strings/tryinstallfont.py
 after_sucess:
 - CODECLIMATE_REPO_TOKEN=b686cb85d6a2fc7c7917307a36fd14fe95d1826 codeclimate-test-reporter
