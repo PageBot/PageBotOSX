@@ -23,36 +23,9 @@ from fontTools.pens.basePen import BasePen
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.errors import PageBotError
 from pagebotcocoa.bezierpaths.beziercontour import BezierContour
+from pagebotcocoa.mathematics.transform import *
 
 _FALLBACKFONT = "LucidaGrande"
-
-from fontTools.misc.transform import Transform
-
-def transformationAtCenter(matrix, centerPoint):
-    """Helper function for rotate(), scale() and skew() to apply a
-    transformation with a specified center point.
-
-        >>> transformationAtCenter((2, 0, 0, 2, 0, 0), (0, 0))
-        (2, 0, 0, 2, 0, 0)
-        >>> transformationAtCenter((2, 0, 0, 2, 0, 0), (100, 200))
-        (2, 0, 0, 2, -100, -200)
-        >>> transformationAtCenter((-2, 0, 0, 2, 0, 0), (100, 200))
-        (-2, 0, 0, 2, 300, -200)
-        >>> t = Transform(*transformationAtCenter((0, 1, 1, 0, 0, 0), (100, 200)))
-        >>> t.transformPoint((100, 200))
-        (100, 200)
-        >>> t.transformPoint((0, 0))
-        (-100, 100)
-    """
-    if centerPoint == (0, 0):
-        return matrix
-
-    t = Transform()
-    cx, cy = centerPoint
-    t = t.translate(cx, cy)
-    t = t.transform(matrix)
-    t = t.translate(-cx, -cy)
-    return tuple(t)
 
 class BezierPath(BasePen):
     """A Bézier path object, if you want to draw the same over and over
@@ -411,10 +384,10 @@ class BezierPath(BasePen):
         self.transform((1, math.tan(angle2), math.tan(angle1), 1, 0, 0), center)
 
     def transform(self, transformMatrix, center=(0, 0)):
-        """Transforms a path with a transform matrix (xy, xx, yy, yx, x, y).
-        """
+        """Transforms a path with a transform matrix (xy, xx, yy, yx, x, y)."""
         if center != (0, 0):
             transformMatrix = transformationAtCenter(transformMatrix, center)
+
         aT = AppKit.NSAffineTransform.alloc().init()
         aT.setTransformStruct_(transformMatrix[:])
         self._path.transformUsingAffineTransform_(aT)
