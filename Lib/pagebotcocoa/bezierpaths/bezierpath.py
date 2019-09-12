@@ -85,52 +85,18 @@ class BezierPath(BasePen):
 
     # pen support.
 
-    '''
-    def moveTo(self, point):
-        """
-        Move to a point `x`, `y`.
-        """
-        super(BezierPath, self).moveTo(point)
-    '''
-
     def _moveTo(self, pt):
         self._path.moveToPoint_(pt)
 
-    '''
-    def lineTo(self, point):
-        """
-        Line to a point `x`, `y`.
-        """
-        super(BezierPath, self).lineTo(point)
-    '''
-
     def _lineTo(self, pt):
         self._path.lineToPoint_(pt)
-
-    '''
-    def curveTo(self, *points):
-        """
-        Draw a cubic Bézier with an arbitrary number of control points.
-
-        The last point specified is on-curve, all others are off-curve
-        (control) points.
-        """
-        super(BezierPath, self).curveTo(*points)
-
-    def qCurveTo(self, *points):
-        """
-        Draw a whole string of quadratic curve segments.
-
-        The last point specified is on-curve, all others are off-curve
-        (control) points.
-        """
-        super(BezierPath, self).qCurveTo(*points)
-    '''
 
     def _curveToOne(self, pt1, pt2, pt3):
         """Curve to a point `x3`, `y3`. With given Bézier handles `x1`, `y1`
         and `x2`, `y2`."""
         self._path.curveToPoint_controlPoint1_controlPoint2_(pt3, pt1, pt2)
+
+    # TODO: QCurve?
 
     def closePath(self):
         """Close the path."""
@@ -179,18 +145,6 @@ class BezierPath(BasePen):
             # with NSBezierPath, nothing special needs to be done for an open subpath.
             pass
 
-    '''
-    def addComponent(self, glyphName, transformation):
-        """
-        Add a sub glyph. The 'transformation' argument must be a 6-tuple
-        containing an affine transformation, or a Transform object from the
-        fontTools.misc.transform module. More precisely: it should be a
-        sequence containing 6 numbers.
-
-        A `glyphSet` is required during initialization of the BezierPath object.
-        """
-        super(BezierPath, self).addComponent(glyphName, transformation)
-    '''
     def drawToPen(self, pen):
         """
         Draw the Bézier path into a pen
@@ -352,6 +306,7 @@ class BezierPath(BasePen):
                 )
             elif instruction == AppKit.NSClosePathBezierPathElement:
                 Quartz.CGPathCloseSubpath(path)
+
         # hacking to get a proper close path at the end of the path
         x, y, _, _ = self.bounds()
         Quartz.CGPathMoveToPoint(path, None, x, y)
@@ -362,31 +317,24 @@ class BezierPath(BasePen):
         return path
 
     def setNSBezierPath(self, path):
-        """
-        Set a nsBezierPath.
-        """
+        """Sets a nsBezierPath."""
         self._path = path
 
     def pointInside(self, xy):
-        """
-        Check if a point `x`, `y` is inside a path.
-        """
+        """Checks if a point `x`, `y` is inside a path."""
         x, y = xy
         return self._path.containsPoint_((x, y))
 
     def bounds(self):
-        """
-        Return the bounding box of the path.
-        """
+        """Returns the bounding box of the path."""
         if self._path.isEmpty():
             return None
         (x, y), (w, h) = self._path.bounds()
         return x, y, x + w, y + h
 
     def controlPointBounds(self):
-        """
-        Return the bounding box of the path including the offcurve points.
-        """
+        """Returns the bounding box of the path including the offcurve
+        points."""
         (x, y), (w, h) = self._path.controlPointBounds()
         return x, y, x + w, y + h
 
@@ -408,23 +356,17 @@ class BezierPath(BasePen):
             self._path = optimizedPath
 
     def copy(self):
-        """
-        Copy the Bézier path.
-        """
+        """Copies the Bézier path."""
         new = self.__class__()
         new._path = self._path.copy()
         return new
 
     def reverse(self):
-        """
-        Reverse the path direction
-        """
+        """Reverses the path direction."""
         self._path = self._path.bezierPathByReversingPath()
 
     def appendPath(self, otherPath):
-        """
-        Append a path.
-        """
+        """Appends a path."""
         self._path.appendBezierPath_(otherPath.getNSBezierPath())
 
     def __add__(self, otherPath):
@@ -439,47 +381,37 @@ class BezierPath(BasePen):
     # transformations
 
     def translate(self, x=0, y=0):
-        """
-        Translate the path with a given offset.
-        """
+        """Translates the path with a given offset."""
         self.transform((1, 0, 0, 1, x, y))
 
     def rotate(self, angle, center=(0, 0)):
-        """
-        Rotate the path around the `center` point (which is the origin by default) with a given angle in degrees.
-        """
+        """Rotates the path around the `center` point (which is the origin by
+        default) with a given angle in degrees."""
         angle = math.radians(angle)
         c = math.cos(angle)
         s = math.sin(angle)
         self.transform((c, s, -s, c, 0, 0), center)
 
     def scale(self, x=1, y=None, center=(0, 0)):
-        """
-        Scale the path with a given `x` (horizontal scale) and `y` (vertical scale).
-
-        If only 1 argument is provided a proportional scale is applied.
-
-        The center of scaling can optionally be set via the `center` keyword argument. By default this is the origin.
-        """
+        """Scales the path with a given `x` (horizontal scale) and `y` (vertical
+        scale). If only 1 argument is provided a proportional scale is
+        applied. The center of scaling can optionally be set via the `center`
+        keyword argument. By default this is the origin."""
         if y is None:
             y = x
         self.transform((x, 0, 0, y, 0, 0), center)
 
     def skew(self, angle1, angle2=0, center=(0, 0)):
-        """
-        Skew the path with given `angle1` and `angle2`.
-
-        If only one argument is provided a proportional skew is applied.
-
-        The center of skewing can optionally be set via the `center` keyword argument. By default this is the origin.
-        """
+        """Skews the path with given `angle1` and `angle2`. If only one
+        argument is provided a proportional skew is applied. The center of
+        skewing can optionally be set via the `center` keyword argument. By
+        default this is the origin."""
         angle1 = math.radians(angle1)
         angle2 = math.radians(angle2)
         self.transform((1, math.tan(angle2), math.tan(angle1), 1, 0, 0), center)
 
     def transform(self, transformMatrix, center=(0, 0)):
-        """
-        Transform a path with a transform matrix (xy, xx, yy, yx, x, y).
+        """Transforms a path with a transform matrix (xy, xx, yy, yx, x, y).
         """
         if center != (0, 0):
             transformMatrix = transformationAtCenter(transformMatrix, center)
@@ -500,9 +432,7 @@ class BezierPath(BasePen):
         return contours
 
     def union(self, other):
-        """
-        Return the union between two Bézier paths.
-        """
+        """Returns the union between two Bézier paths."""
         assert isinstance(other, self.__class__)
         import booleanOperations
         contours = self._contoursForBooleanOperations() + other._contoursForBooleanOperations()
@@ -511,9 +441,7 @@ class BezierPath(BasePen):
         return result
 
     def removeOverlap(self):
-        """
-        Remove all overlaps in a Bézier path.
-        """
+        """Removes all overlaps in a Bézier path."""
         import booleanOperations
         contours = self._contoursForBooleanOperations()
         result = self.__class__()
@@ -522,7 +450,7 @@ class BezierPath(BasePen):
         return self
 
     def difference(self, other):
-        """Return the difference between two Bézier paths."""
+        """Returns the difference between two Bézier paths."""
         assert isinstance(other, self.__class__)
         import booleanOperations
         subjectContours = self._contoursForBooleanOperations()
@@ -532,7 +460,7 @@ class BezierPath(BasePen):
         return result
 
     def intersection(self, other):
-        """Return the intersection between two Bézier paths."""
+        """Returns the intersection between two Bézier paths."""
         assert isinstance(other, self.__class__)
         import booleanOperations
         subjectContours = self._contoursForBooleanOperations()
@@ -542,9 +470,7 @@ class BezierPath(BasePen):
         return result
 
     def xor(self, other):
-        """
-        Return the xor between two Bézier paths.
-        """
+        """Returns the xor between two Bézier paths."""
         assert isinstance(other, self.__class__)
         import booleanOperations
         subjectContours = self._contoursForBooleanOperations()
@@ -554,11 +480,8 @@ class BezierPath(BasePen):
         return result
 
     def intersectionPoints(self, other=None):
-        """
-        Return a list of intersection points as `x`, `y` tuples.
-
-        Optionaly provide an other path object to find intersection points.
-        """
+        """Returns a list of intersection points as `x`, `y` tuples. Optionaly
+        provides an other path object to find intersection points."""
         import booleanOperations
         contours = self._contoursForBooleanOperations()
         if other is not None:
@@ -664,5 +587,3 @@ class BezierPath(BasePen):
             contour = contours[index]
             yield contour
             index += 1
-
-
