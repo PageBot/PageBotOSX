@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
@@ -513,6 +514,5 @@ def newApp():
     app = PageBotApp(publication, title='Magazine App', padding=12, context=context)
     app.build()
     app.make()
+
 newApp()
-
-
