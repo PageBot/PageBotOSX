@@ -5,7 +5,6 @@
 #
 
 import os
-import traceback
 from AppKit import NSFont
 from CoreText import (CTFontDescriptorCreateWithNameAndSize,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute)
