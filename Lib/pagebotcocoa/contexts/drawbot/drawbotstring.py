@@ -9,7 +9,7 @@ from copy import copy
 from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
         DEFAULT_FALLBACK_FONT_PATH, XXXL)
 from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
-from pagebot.strings.babelstring import BabelString
+from pagebot.contexts.base.babelstring import BabelString
 from pagebot.style import css
 from pagebot.toolbox.color import color, Color, noColor, inheritColor, blackColor
 from pagebot.toolbox.units import pt, upt, isUnit, units, em
