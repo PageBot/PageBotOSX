@@ -443,7 +443,7 @@ class DrawBotContext(BaseContext):
     def translate(self, tx, ty):
         self.b.translate(tx, ty)
 
-    def scale(self, sx, sy=None, center=(0, 0)):
+    def scale(self, sx=1, sy=None, center=(0, 0)):
         if sy is None:
             sy = sx
         self.b.scale(sx, sy, center=center)
