@@ -8,6 +8,7 @@ import re
 from copy import copy
 from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
         DEFAULT_FALLBACK_FONT_PATH, XXXL)
+from pagebot.paths import DEFAULT_FONT_PATH
 from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.style import css
@@ -588,6 +589,8 @@ class DrawBotString(BabelString):
             if hasattr(sFont, 'path'):
                 sFont = sFont.path
             fsAttrs['font'] = sFont
+        else:
+            fsAttrs['font'] = DEFAULT_FONT_PATH
 
         sFallbackFont = css('fallbackFont', e, style)
 
@@ -787,7 +790,8 @@ class DrawBotString(BabelString):
         elif not isinstance(t, str):
             t = str(t)
 
-        fsAttrs = cls.getFSAttrs(t, context, e=e, style=style, w=w, h=h, pixelFit=pixelFit)
+        fsAttrs = cls.getFSAttrs(t, context, e=e, style=style, w=w, h=h,
+                pixelFit=pixelFit)
 
         if css('uppercase', e, style):
             t = t.upper()
