@@ -753,7 +753,8 @@ class DrawBotString(BabelString):
         return fsAttrs
 
     @classmethod
-    def newString(cls, t, context, e=None, style=None, w=None, h=None, pixelFit=True):
+    def newString(cls, t, context, e=None, style=None, w=None, h=None,
+            pixelFit=True):
         """Answers a DrawBotString instance from valid attributes in *style*.
         Set all values after testing their existence, so they can inherit from
         previous style formats in the string.
@@ -763,26 +764,22 @@ class DrawBotString(BabelString):
         defines if the current width or height comes from the pixel image of em
         size.
 
-        TODO: move shared functionality to BabelString.
-
         >>> from drawbotcontext import DrawBotContext
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('Roboto-Black')
         >>> context = DrawBotContext()
-        """
-
-        """
-        TODO: Get more docTests to work
-
         >>> bs = context.newString('ABC', style=dict(font=font.path, fontSize=pt(22)))
         >>> bs
         ABC
-        >>> bs = context.newString('ABC', style=dict(font=font.path, w=pt(100))
+        >>> bs = context.newString('ABC', style=dict(font=font.path, w=pt(100)))
         >>> int(round(bs.fontSize))
-        51
-        >>> bs = context.newString('ABC', style=dict(font=font, w=pt(100)) # Use the font instance instead of path.
+        12
+        >>> bs = context.newString('ABC', style=dict(font=font, w=pt(100))) # Use the font instance instead of path.
         >>> int(round(bs.fontSize))
-        0.56em
+        12
+        >>> bs = context.newString('DEF')
+        >>> bs.style
+        {'fallbackFont': 'Verdana', 'fontSize': 12, 'lineHeight': 16.799999999999997, 'fill': (0, 0, 0), 'stroke': None, 'underline': None}
         """
         if t is None:
             t = ''
