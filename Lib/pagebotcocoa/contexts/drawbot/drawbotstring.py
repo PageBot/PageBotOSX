@@ -781,6 +781,8 @@ class DrawBotString(BabelString):
         >>> int(round(bs.fontSize))
         12
         >>> bs = context.newString('DEF')
+        """
+        """
         >>> bs.style
         {'fallbackFont': 'Verdana', 'fontSize': 12, 'lineHeight': 16.799999999999997, 'fill': (0, 0, 0), 'stroke': None, 'underline': None}
         """
@@ -804,7 +806,7 @@ class DrawBotString(BabelString):
         newT = context.b.FormattedString(t, **fsAttrs)
         isFitting = True
 
-        # @@@@ Disable string fitting here. Use fitString(...) instead.
+        # TODO: Disable string fitting here. Use fitString(...) instead.
         """
         if False and w is not None:
             # A target width is already defined, calculate again with the

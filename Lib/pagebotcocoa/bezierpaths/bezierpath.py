@@ -19,6 +19,7 @@ import AppKit
 import Quartz
 import CoreText
 from fontTools.pens.basePen import BasePen
+import booleanOperations
 
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.errors import PageBotError
@@ -407,7 +408,6 @@ class BezierPath(BasePen):
     def union(self, other):
         """Returns the union between two Bézier paths."""
         assert isinstance(other, self.__class__)
-        import booleanOperations
         contours = self._contoursForBooleanOperations() + other._contoursForBooleanOperations()
         result = self.__class__()
         booleanOperations.union(contours, result)
@@ -415,7 +415,6 @@ class BezierPath(BasePen):
 
     def removeOverlap(self):
         """Removes all overlaps in a Bézier path."""
-        import booleanOperations
         contours = self._contoursForBooleanOperations()
         result = self.__class__()
         booleanOperations.union(contours, result)
@@ -425,7 +424,6 @@ class BezierPath(BasePen):
     def difference(self, other):
         """Returns the difference between two Bézier paths."""
         assert isinstance(other, self.__class__)
-        import booleanOperations
         subjectContours = self._contoursForBooleanOperations()
         clipContours = other._contoursForBooleanOperations()
         result = self.__class__()
@@ -435,7 +433,6 @@ class BezierPath(BasePen):
     def intersection(self, other):
         """Returns the intersection between two Bézier paths."""
         assert isinstance(other, self.__class__)
-        import booleanOperations
         subjectContours = self._contoursForBooleanOperations()
         clipContours = other._contoursForBooleanOperations()
         result = self.__class__()
@@ -445,7 +442,6 @@ class BezierPath(BasePen):
     def xor(self, other):
         """Returns the xor between two Bézier paths."""
         assert isinstance(other, self.__class__)
-        import booleanOperations
         subjectContours = self._contoursForBooleanOperations()
         clipContours = other._contoursForBooleanOperations()
         result = self.__class__()
@@ -455,7 +451,6 @@ class BezierPath(BasePen):
     def intersectionPoints(self, other=None):
         """Returns a list of intersection points as `x`, `y` tuples. Optionaly
         provides an other path object to find intersection points."""
-        import booleanOperations
         contours = self._contoursForBooleanOperations()
         if other is not None:
             assert isinstance(other, self.__class__)
