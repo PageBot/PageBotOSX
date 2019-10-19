@@ -5,7 +5,15 @@ formatted strings (OS X only).
 
 # Installation
 
+To install the stable release:
+
     pip install pagebotcocoa
+
+To setup the development environment and install the version from this git repo:
+
+    virtualenv venv -ppython3
+    . venv/bin/activate
+    pip install -r requirements.txt
 
 # Usage
 
