@@ -5,7 +5,7 @@ formatted strings (OS X only).
 
 # Installation
 
-    pip install pagebot pagebotcocoa
+    pip install pagebotcocoa
 
 # Usage
 
