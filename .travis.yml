@@ -8,11 +8,11 @@ branches:
 before_install:
 - pip3 install --upgrade pip
 install:
-- ./scripts/install.sh
+- pip3 install -r requirements.txt
+- pip3 install pylint
 script:
-# TODO: move to pytest script.
-- ./scripts/pylint.sh
-- $PYLINT Lib/pagebotcocoa/
+# TODO:
+# - pylint Lib/pagebotcocoa/
 - python3 Lib/pagebotcocoa/apps/baseapp.py
 - python3 Lib/pagebotcocoa/apps/canvasapp.py
 - python3 Lib/pagebotcocoa/apps/canvas/canvas.py
