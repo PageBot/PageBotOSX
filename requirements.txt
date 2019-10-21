@@ -1,12 +1,9 @@
 --index-url https://pypi.python.org/simple/
-pylint
-pyobjc==5.2
-booleanOperations==0.8.2
-flat==0.3
-fontTools==4.0.2
-libsass==0.19.3
-markdown==3.1.1
-SimpleIDML==1.0.6
-svgwrite==1.3.1
-tornado==6.0.3
-pagebot
+pagebot==0.8
+
+# Dependencies that are not yet available on PyPI:
+git+https://github.com/robotools/vanilla@9e8cb5f6b0aca2542647157fa68ca71078507586
+git+https://github.com/robotools/compositor@226e6baf83c052dd35f9c3d5942a41d9879b00bc
+git+https://github.com/robotools/defconAppKit@79d8dc089cb3723b6359aefc95877d66c66669f9
+git+https://github.com/typemytype/drawbot@90b97f314f2a9ffdb6bfa8f3bf416f1774348445
+-e .
