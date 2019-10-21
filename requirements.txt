@@ -1,10 +1,8 @@
---index-url https://pypi.python.org/simple/
 pyobjc==5.2
 pagebot==0.8
 
 # Dependencies that are not yet available on PyPI:
-git+https://github.com/robotools/vanilla.git#egg=vanilla
-git+https://github.com/robotools/compositor.git#egg=compositor
-git+https://github.com/robotools/defconAppKit.git#egg=defconAppKit
-git+https://github.com/typemytype/drawbot.git#egg=drawbot
--e .
+-e git+https://github.com/robotools/compositor.git#egg=compositor
+-e git+https://github.com/robotools/defconAppKit.git#egg=defconAppKit
+-e git+https://github.com/typemytype/drawbot.git#egg=drawbot
+-e git+https://github.com/robotools/vanilla.git#egg=vanilla

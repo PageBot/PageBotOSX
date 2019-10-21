@@ -53,11 +53,11 @@ setup(
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Fonts'],
     install_requires=[
+        'pyobjc',
         'pagebot',
-        # Dependencies that are not yet available on PyPI:
-        'compositor @ https://github.com/robotools/compositor',
-        'defconAppKit @ https://github.com/robotools/defconAppKit',
-        'drawbot @ https://github.com/typemytype/drawbot',
-        'vanilla @ https://github.com/robotools/vanilla',
+        'compositor',
+        'defconAppKit',
+        'drawbot',
+        'vanilla',
         ]
 )
