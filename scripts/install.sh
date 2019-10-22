@@ -1,4 +1,6 @@
 #!/bin/bash
+# DEPRECATED
+# pip3 install -r requirements.txt
 pip3 install pylint
 pip3 install -r requirements.txt
 wget https://github.com/typesupply/vanilla/archive/master.zip

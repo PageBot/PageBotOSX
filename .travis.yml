@@ -12,26 +12,7 @@ install:
 - pip3 install pylint
 script:
 # TODO:
-# - pylint Lib/pagebotcocoa/
-- python3 Lib/pagebotcocoa/apps/baseapp.py
-- python3 Lib/pagebotcocoa/apps/canvasapp.py
-- python3 Lib/pagebotcocoa/apps/canvas/canvas.py
-- python3 Lib/pagebotcocoa/apps/canvas/canvasview.py
-  #- python3 Lib/pagebotcocoa/apps/pagebotdemoapp.py
-- python3 Lib/pagebotcocoa/bezierpaths/bezierpath.py
-- python3 Lib/pagebotcocoa/bezierpaths/beziercontour.py
-- python3 Lib/pagebotcocoa/contexts/drawbot/drawbotcontext.py
-- python3 Lib/pagebotcocoa/contexts/drawbot/drawbotstring.py
-- python3 Lib/pagebotcocoa/contexts/canvas/canvascontext.py
-- python3 Lib/pagebotcocoa/contexts/canvas/canvasbuilder.py
-- python3 Lib/pagebotcocoa/graphics/graphic.py
-- python3 Lib/pagebotcocoa/elements/variablefonts/variableeditor.py
-- python3 Lib/pagebotcocoa/elements/variablefonts/opszglassbanner.py
-- python3 Lib/pagebotcocoa/fonttoolbox/svg2drawbot.py
-- python3 Lib/pagebotcocoa/strings/formattedstring.py
-- python3 Lib/pagebotcocoa/strings/pattern.py
-- python3 Lib/pagebotcocoa/strings/textline.py
-- python3 Lib/pagebotcocoa/strings/textrun.py
-- python3 Lib/pagebotcocoa/strings/tryinstallfont.py
+#- ./scripts/pylint.sh
+- ./scripts/doctests.sh
 after_sucess:
 - CODECLIMATE_REPO_TOKEN=b686cb85d6a2fc7c7917307a36fd14fe95d1826 codeclimate-test-reporter
