@@ -19,7 +19,9 @@ import os
 import AppKit
 import CoreText
 
-from drawBot.context.tools.openType import getFeatureTagsForFontName, featureMap
+# FIXME: featureMap deprecated, use CTFeatureOpenTypeTag?
+# https://github.com/typemytype/drawbot/pull/307
+from drawBot.context.tools.openType import getFeatureTagsForFontName#, featureMap
 from drawBot.context.tools.variation import *
 from pagebot.errors import PageBotError
 from pagebotcocoa.color import *
@@ -233,6 +235,9 @@ class FormattedString:
                     coreTextFeatureTag = featureTag
                     if not value:
                         coreTextFeatureTag = "%s_off" % featureTag
+
+
+                    '''
                     if coreTextFeatureTag in featureMap:
                         if value and featureTag not in existingOpenTypeFeatures:
                             # only warn when the feature is on and not existing for the current font
@@ -241,7 +246,10 @@ class FormattedString:
                         coreTextfeatures.append(feature)
                     else:
                         logger.warning("OpenType feature '%s' not available", featureTag)
+                    '''
+
             coreTextFontVariations = dict()
+
             if self._fontVariations:
                 existingAxes = getVariationAxesForFontName(self._font)
                 for axis, value in self._fontVariations.items():
@@ -908,7 +916,7 @@ class FormattedString:
         # disable calt features, as this seems to be on by default
         # for both the font stored in the nsGlyphInfo as in the replacement character
         fontAttributes = {}
-        fontAttributes[CoreText.NSFontFeatureSettingsAttribute] = [featureMap["calt_off"]]
+        #fontAttributes[CoreText.NSFontFeatureSettingsAttribute] = [featureMap["calt_off"]]
         fontDescriptor = font.fontDescriptor()
         fontDescriptor = fontDescriptor.fontDescriptorByAddingAttributes_(fontAttributes)
         font = AppKit.NSFont.fontWithDescriptor_size_(fontDescriptor, self._fontSize)
