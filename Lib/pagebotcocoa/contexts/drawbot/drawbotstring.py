@@ -55,8 +55,8 @@ class DrawBotString(BabelString):
         FormattedString. Optionally store the (latest) style that was used to
         produce the formatted string.
 
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> style = dict(font='Verdana', fontSize=pt(80))
         >>> bs = context.newString('Example Text', style=style)
         >>> bs.font, bs.fontSize, round(upt(bs.xHeight)), bs.xHeight, bs.capHeight, bs.ascender, bs.descender
@@ -65,6 +65,11 @@ class DrawBotString(BabelString):
         True
         >>> style = dict(font='Verdana', fontSize=pt(100), leading=em(1.4))
         >>> bs = context.newString('Example Text', style=style)
+        >>> from pagebot.contexts.base.babelstring import BabelString
+        >>> isinstance(bs, BabelString)
+        True
+        >>> bs[2:]
+        ample Text
         >>> lines = bs.getTextLines(w=100)
         >>> len(lines)
         9
@@ -74,6 +79,17 @@ class DrawBotString(BabelString):
         >>> run = line.textRuns[0]
         >>> run.xHeight, run.capHeight
         (0.55em, 0.73em)
+        >>> fs = context.newString('blablabla')
+        >>> fs[2:]
+        ablabla
+        >>> fs
+        blablabla
+        >>> fs[:5]
+        blabl
+        >>> fs[0]
+        b
+        >>> fs[5]
+        a
         """
         # Store the DrawBot FormattedString, as property to make sure it is a
         # FormattedString, otherwise create it.
