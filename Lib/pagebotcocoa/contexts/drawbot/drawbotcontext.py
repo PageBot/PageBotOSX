@@ -362,6 +362,21 @@ class DrawBotContext(BaseContext):
         self.b.image(path, (0, 0), alpha=alpha, pageNumber=pageNumber)
         self.restore()
 
+    def ImageObject(self, path=None):
+        """Answers an ImageObject that knows about filters. For names
+        and parameters of filters see:
+
+        * http://www.drawbot.com/content/image/imageObject.html
+
+        >>> from pagebot import getResourcesPath
+        >>> from pagebot import getContext
+        >>> context = getContext()
+        >>> path = getResourcesPath() + '/images/peppertom_lowres_398x530.png'
+        >>> imo = context.getImageObject(path)
+
+        """
+        return self.b.ImageObject(path=path)
+
     def path2ScaledImagePath(self, path, w, h, index=None, exportExtension=None):
         """Answers the path to the scaled image.
 
