@@ -16,7 +16,7 @@
 #
 import sys
 from pagebot import getContext
-context = getContext()
+context = getContext('DrawBot')
 
 '''
 if 1 or not context.isDrawBot:

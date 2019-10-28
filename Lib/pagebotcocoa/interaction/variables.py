@@ -17,7 +17,7 @@
 #
 from pagebot import getContext
 
-context = getContext()
+context = getContext('DrawBot')
 
 if __name__ == '__main__':
     context.Variable([
