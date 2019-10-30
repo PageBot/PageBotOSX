@@ -44,7 +44,8 @@ class DrawBotContext(BaseContext):
         True
         >>> drawBotBuilder is not None and drawBotBuilder.PB_ID == 'drawBot'
         True
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> context.name
         'DrawBotContext'
         """
@@ -64,7 +65,8 @@ class DrawBotContext(BaseContext):
         page is created. The @doc argument is the optional calling PageBot
         Document instance.
 
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> context.newDocument(500, 700)
         """
         if doc is not None:
@@ -78,7 +80,8 @@ class DrawBotContext(BaseContext):
         image as path, rendering depending on the extension of the path file.
         In case the path starts with "_export", create its directories.
 
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> context.saveImage('_export/MyFile.pdf')
 
         """
@@ -127,7 +130,8 @@ class DrawBotContext(BaseContext):
 
         TODO: move to elements.
 
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> context.bluntCornerRect(pt(0), pt(0), pt(100), pt(100))
         >>> context.bluntCornerRect(0, 0, 100, 100)
         """
@@ -152,7 +156,8 @@ class DrawBotContext(BaseContext):
 
         TODO: move to elements.
 
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> context.roundedRect(pt(0), pt(0), pt(100), pt(100))
         >>> context.roundedRect(0, 0, 100, 100)
         """
@@ -194,7 +199,8 @@ class DrawBotContext(BaseContext):
         in case we do recursive component drawing.
 
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> f = findFont('Roboto-Regular')
         >>> print(f)
         <Font Roboto-Regular>
@@ -227,8 +233,8 @@ class DrawBotContext(BaseContext):
         return path
 
     def bezierPathByFlatteningPath(self, path=None):
-        """Use the NSBezier flatten path. Answers None if the flattened path
-        could not be made.
+        """Use the NSBezierPath flatten function. Answers None if the flattened
+        path could not be made.
         """
         if path is None:
             path = self.path
@@ -240,7 +246,7 @@ class DrawBotContext(BaseContext):
         return path._path.bezierPathByFlatteningPath()
 
     def getFlattenedPath(self, path=None):
-        pass
+        return self.bezierPathByFlatteningPath(path=path)
 
     def getFlattenedContours(self, path=None):
         """Answers the flattened Bézier path as  a contour list [contour,
@@ -275,7 +281,8 @@ class DrawBotContext(BaseContext):
 
         >>> import os
         >>> from pagebot.fonttoolbox.fontpaths import TEST_FONTS_PATH
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> context.fontPath2FontName('Aaa.ttf') is None # Does not exist
         True
         >>> path = TEST_FONTS_PATH + '/fontbureau/Amstelvar-Roman-VF.ttf'
@@ -380,7 +387,8 @@ class DrawBotContext(BaseContext):
     def path2ScaledImagePath(self, path, w, h, index=None, exportExtension=None):
         """Answers the path to the scaled image.
 
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> context.path2ScaledImagePath('/xxx/yyy/zzz/This.Is.An.Image.jpg', 110, 120)
         ('/xxx/yyy/zzz/_scaled/', 'This.Is.An.Image.110x120.0.jpg')
 
@@ -415,7 +423,8 @@ class DrawBotContext(BaseContext):
         non-PDF files).
 
         >>> from pagebot import getResourcesPath
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> path = getResourcesPath() + '/images/peppertom_lowres_398x530.png'
         >>> scaledImagePath = context.scaleImage(path, 300, 400)
         >>> os.path.exists(scaledImagePath)
@@ -475,7 +484,8 @@ class DrawBotContext(BaseContext):
         """
         """
         FIXME
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> from pagebot.toolbox.units import pt, mm
         >>> window = context.window('My Window', 50, 50, pt(200), mm(50))
         >>> window.open()

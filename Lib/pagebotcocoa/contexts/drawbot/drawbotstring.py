@@ -8,7 +8,7 @@ import re
 from copy import copy
 from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
         DEFAULT_FALLBACK_FONT_PATH, XXXL)
-from pagebot.paths import DEFAULT_FONT_PATH
+from pagebot.filepaths import DEFAULT_FONT_PATH
 from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.style import css
