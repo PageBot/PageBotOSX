@@ -186,7 +186,7 @@ class DrawBotContext(BaseContext):
 
     #   P A T H
     #
-    #   Function that work on the current running path stored in self._path
+    #   Function that work on the current running path stored in self._bezierpath
     #
 
     def drawGlyphPath(self, glyph):
@@ -237,7 +237,7 @@ class DrawBotContext(BaseContext):
         path could not be made.
         """
         if path is None:
-            path = self.path
+            path = self.bezierpath
 
         if hasattr(path, 'path'):
             # In case it is a PageBotPath
@@ -255,7 +255,7 @@ class DrawBotContext(BaseContext):
         """
         contour = []
         flattenedContours = [contour]
-        flatPath = self.bezierPathByFlatteningPath(path) # Use/create self._path if path is None
+        flatPath = self.bezierPathByFlatteningPath(path) # Use/create self._bezierpath if path is None
 
         if flatPath is not None:
             for index in range(flatPath.elementCount()):
