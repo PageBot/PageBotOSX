@@ -15,6 +15,8 @@
 #     beziercontour.py
 #
 
+from fontTools.pens.areaPen import AreaPen
+
 class BezierContour(list):
     """A Bézier contour object."""
 
@@ -26,7 +28,6 @@ class BezierContour(list):
         return "<BezierContour>"
 
     def _get_clockwise(self):
-        from fontTools.pens.areaPen import AreaPen
         pen = AreaPen()
         pen.endPath = pen.closePath
         self.drawToPen(pen)

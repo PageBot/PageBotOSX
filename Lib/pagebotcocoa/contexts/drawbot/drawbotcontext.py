@@ -19,6 +19,7 @@ import os
 from CoreText import (CTFontDescriptorCreateWithNameAndSize,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute)
 from AppKit import NSFont
+from drawBot import Variable
 from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
 from pagebot.constants import *
 from pagebot.contexts.base.basecontext import BaseContext
@@ -127,7 +128,6 @@ class DrawBotContext(BaseContext):
 
         Variable is a DrawBot context global, used to make simple UI with
         controls on input parameters."""
-        from drawBot import Variable
         Variable(variables, workSpace)
 
     #   D R A W I N G

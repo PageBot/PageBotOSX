@@ -20,8 +20,9 @@ import AppKit
 import Quartz
 import CoreText
 import booleanOperations
-from drawbot.context.tools import traceImage
 from fontTools.pens.basePen import BasePen
+from fontTools.pens.pointPen import PointToSegmentPen
+from drawbot.context.tools import traceImage
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebotcocoa.errors import PageBotCocoaError
 from pagebotcocoa.bezierpaths.beziercontour import BezierContour
@@ -80,7 +81,6 @@ class BezierPath(BasePen):
     def beginPath(self, identifier=None):
         """Begin using the path as a so called point pen and start a new
         subpath."""
-        from fontTools.pens.pointPen import PointToSegmentPen
         self._pointToSegmentPen = PointToSegmentPen(self)
         self._pointToSegmentPen.beginPath()
 

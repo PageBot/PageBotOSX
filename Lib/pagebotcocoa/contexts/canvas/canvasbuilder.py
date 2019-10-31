@@ -19,7 +19,8 @@ import traceback
 import AppKit
 import CoreText
 import Quartz
-
+from fontTools.ttLib import TTFont, TTLibError
+from drawBot.drawBotDrawingTools import _drawBotDrawingTool
 from pagebot.contexts.base.basebuilder import BaseBuilder
 from pagebot.toolbox.color import noColor, cmyk2Rgb
 from pagebotcocoa.errors import PageBotCocoaError
@@ -31,7 +32,6 @@ from pagebotcocoa.cocoacolor import CocoaColor, CocoaCMYKColor, CocoaShadow, Coc
 
 # FIXME: using drawBot for now.
 def _tryInstallFontFromFontName(fontName):
-    from drawBot.drawBotDrawingTools import _drawBotDrawingTool
     return _drawBotDrawingTool._tryInstallFontFromFontName(fontName)
 
 class CanvasBuilder(BaseBuilder):
@@ -671,7 +671,6 @@ class CanvasBuilder(BaseBuilder):
         return success, error
 
     def _fontNameForPath(self, path):
-        from fontTools.ttLib import TTFont, TTLibError
         try:
             font = TTFont(path, fontNumber=0)  # in case of .ttc, use the first font
             psName = font["name"].getName(6, 1, 0)

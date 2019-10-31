@@ -20,6 +20,9 @@ import logging
 import AppKit
 import CoreText
 
+from fontTools.ttLib import TTFont, TTLibError
+from fontTools.misc.macRes import ResourceReader, ResourceError
+
 # FIXME: featureMap deprecated, use CTFeatureOpenTypeTag?
 # https://github.com/typemytype/drawbot/pull/307
 from drawBot.context.tools.openType import getFeatureTagsForFontName#, featureMap
@@ -765,9 +768,6 @@ class FormattedString:
 
     def listFontGlyphNames(self):
         """Returns a list of glyph names supported by the current font."""
-        from fontTools.ttLib import TTFont, TTLibError
-        from fontTools.misc.macRes import ResourceReader, ResourceError
-
         path = self.fontFilePath()
         if path is None:
             return []

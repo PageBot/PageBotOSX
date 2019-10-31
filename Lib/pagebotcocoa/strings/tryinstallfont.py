@@ -16,12 +16,13 @@
 #
 
 import logging
+from drawBot.drawBotDrawingTools import _drawBotDrawingTool
+
 logger = logging.getLogger(__name__)
 
 def _tryInstallFontFromFontName(fontName):
     # TODO: too much drawBot, need to port.
     try:
-        from drawBot.drawBotDrawingTools import _drawBotDrawingTool
         return _drawBotDrawingTool._tryInstallFontFromFontName(fontName)
     except Exception as e:
         logger.error('_tryInstallFontFromFontName: %s', e)
