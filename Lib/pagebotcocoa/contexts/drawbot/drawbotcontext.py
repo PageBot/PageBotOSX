@@ -19,15 +19,15 @@ import os
 from CoreText import (CTFontDescriptorCreateWithNameAndSize,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute)
 from AppKit import NSFont
+import drawBot
 from drawBot import Variable
-from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
 from pagebot.constants import *
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
+from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
 from vanilla import *
-import drawBot
 drawBotBuilder = drawBot
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
