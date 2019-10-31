@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
-#     Copyright (c) 2014+ Type Network
 #
-#     T N  B I T S
-#     No distribution without permission.
+#     P A G E B O T
 #
+#     Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
+#     www.pagebot.io
+#     Licensed under MIT conditions
+#
+#     Supporting DrawBot, www.drawbot.com
+#     Supporting Flat, xxyxyz.org/flat
 # -----------------------------------------------------------------------------
 #
 #     canvasview.py
 #
 
-from AppKit import NSView, NSMakeRect, NSClipView, NSTrackingArea, \
-    NSTrackingMouseEnteredAndExited , NSTrackingActiveWhenFirstResponder, \
-    NSTrackingMouseMoved, NSTrackingInVisibleRect, NSTrackingActiveAlways
+from AppKit import (NSView, NSMakeRect, NSClipView, NSTrackingArea,
+        NSTrackingMouseEnteredAndExited , NSTrackingActiveWhenFirstResponder,
+        NSTrackingMouseMoved, NSTrackingInVisibleRect, NSTrackingActiveAlways)
 import objc
 
 class CanvasView(NSView):
@@ -58,11 +62,8 @@ class CanvasView(NSView):
         self.addTrackingArea_(trackingArea)
 
     def isFlipped(self):
-        if self.flipped:
-            # flip coordinates to draw from top to bottom
-            return True
-        else:
-            return False
+        # flip coordinates to draw from top to bottom
+        return bool(self.flipped)
 
     def setDelegate_(self, delegate):
         self._delegate = delegate
@@ -185,12 +186,10 @@ class CanvasView(NSView):
     def mouseEntered_(self, event):
         self.sendDelegateAction_event_("mouseEntered", event)
         #NSCursor.resizeUpDownCursor().push()
-        pass
 
     def mouseExited_(self, event):
         self.sendDelegateAction_event_("mouseExited", event)
         #NSCursor.arrowCursor().set()
-        pass
 
     '''
     def scrollWheel_(self, event):

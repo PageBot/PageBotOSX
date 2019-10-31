@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
-#     Copyright (c) 2014+ Type Network
 #
-#     T N  B I T S
-#     No distribution without permission.
+#     P A G E B O T
 #
+#     Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
+#     www.pagebot.io
+#     Licensed under MIT conditions
+#
+#     Supporting DrawBot, www.drawbot.com
+#     Supporting Flat, xxyxyz.org/flat
 # -----------------------------------------------------------------------------
 #
 #     canvas.py
 #
+
+from AppKit import NSSize
 from vanilla import Group, ScrollView
 from pagebotcocoa.apps.canvas.canvasview import *
-from AppKit import NSSize
 from pagebot.toolbox.color import whiteColor
 
 class Canvas(Group):

@@ -14,14 +14,14 @@
 #
 #     textrun.py
 #
-from pagebot.toolbox.units import em, pt
-from pagebot.toolbox.color import color
-from pagebot.fonttoolbox.objects.font import findFont
 
 from CoreText import (CTRunGetGlyphCount, CTRunGetStringRange,
         CTRunGetStringIndicesPtr, CTRunGetAdvances, CTRunGetStatus,
         CTRunGetPositions, CTRunGetGlyphs, CTRunGetAttributes,
         CTRunGetTextMatrix, CFRange)
+from pagebot.toolbox.units import em, pt
+from pagebot.toolbox.color import color
+from pagebot.fonttoolbox.objects.font import findFont
 
 class TextRun:
     """A TextRun object contains the chunk of text that combines a single

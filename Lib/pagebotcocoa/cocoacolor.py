@@ -42,6 +42,7 @@ class CocoaColor:
             self._color = AppKit.NSColor.colorWithCalibratedRed_green_blue_alpha_(r, g, b, a)
 
         self._color = self._color.colorUsingColorSpace_(self.colorSpace())
+        super().__init__()
 
     def set(self):
         self._color.set()
@@ -88,8 +89,9 @@ class CocoaCMYKColor(CocoaColor):
             self._color = AppKit.NSColor.colorWithDeviceCyan_magenta_yellow_black_alpha_(c, m, y, k, a)
         self._color = self._color.colorUsingColorSpace_(self.colorSpace())
         self._cmyka = c, m, y, k, a
+        super().__init__()
 
-class Shadow:
+class CocoaShadow:
 
     _colorClass = CocoaColor
 
@@ -111,7 +113,7 @@ class Shadow:
             new.cmykColor = self.cmykColor.copy()
         return new
 
-class Gradient:
+class CocoaGradient:
 
     _colorClass = CocoaColor
 

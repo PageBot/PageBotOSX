@@ -6,6 +6,11 @@
 
 import re
 from copy import copy
+from AppKit import NSAttributeDictionary, NSRange
+from CoreText import (CTFramesetterCreateWithAttributedString,
+        CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
+from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
+import drawBot as drawBotBuilder
 from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
         DEFAULT_FALLBACK_FONT_PATH, XXXL)
 from pagebot.filepaths import DEFAULT_FONT_PATH
@@ -16,11 +21,6 @@ from pagebot.toolbox.color import color, Color, noColor, inheritColor, blackColo
 from pagebot.toolbox.units import pt, upt, isUnit, units, em
 from pagebotcocoa.strings.textline import TextLine
 
-import drawBot as drawBotBuilder
-from AppKit import NSAttributeDictionary, NSRange
-from CoreText import (CTFramesetterCreateWithAttributedString,
-        CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
-from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 
 def pixelBounds(fs):
     """Answers the pixel-bounds rectangle of the text.

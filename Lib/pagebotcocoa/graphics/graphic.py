@@ -23,7 +23,7 @@ class Graphic:
     """A graphical object to be drawn."""
 
     def __init__(self):
-        self.colorSpace = Color.colorSpace
+        self.colorSpace = CocoaColor.colorSpace
         self.blendMode = None
         self.fillColor = CocoaColor(0)
         self.strokeColor = None
@@ -88,4 +88,4 @@ class Graphic:
         self.updateColorSpace(None)
 
     def updateColorSpace(self, context):
-        Color.colorSpace = self.colorSpace
+        CocoaColor.colorSpace = self.colorSpace

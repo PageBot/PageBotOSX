@@ -15,19 +15,12 @@
 #         variableeditor.py
 #
 import sys
-from pagebot import getContext
-context = getContext('DrawBot')
-
-'''
-if 1 or not context.isDrawBot:
-    print ('Example only runs on DrawBot.')
-    sys.exit()
-'''
-
 import AppKit
 import CoreText
 from vanilla import Window, Slider, TextEditor #, Button
+from pagebot import getContext
 
+context = getContext('DrawBot')
 
 def tagToInt(tag):
     assert len(tag) == 4
@@ -46,7 +39,8 @@ def intToTag(i):
 
 def getFont(familyName, size=200, location=None):
     attributes = {CoreText.kCTFontFamilyNameAttribute: familyName}
-    descriptor = CoreText.CTFontDescriptorCreateWithAttributes(attributes);
+    descriptor = CoreText.CTFontDescriptorCreateWithAttributes(attributes)
+
     if location:
         for tag, value in location.items():
             descriptor = CoreText.CTFontDescriptorCreateCopyWithVariable(descriptor, tagToInt(tag), value)
@@ -107,5 +101,4 @@ class VarFontTextEditor:
 
 if __name__ == '__main__':
     import doctest
-    import sys
     sys.exit(doctest.testmod()[0])

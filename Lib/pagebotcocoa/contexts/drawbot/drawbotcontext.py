@@ -1,24 +1,33 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
 #
-#     context.py
+#     P A G E B O T
+#
+#     Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
+#     www.pagebot.io
+#     Licensed under MIT conditions
+#
+#     Supporting DrawBot, www.drawbot.com
+#     Supporting Flat, xxyxyz.org/flat
+# -----------------------------------------------------------------------------
+#
+#     drawbotcontext.py
 #
 
 import os
-from AppKit import NSFont
 from CoreText import (CTFontDescriptorCreateWithNameAndSize,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute)
-from vanilla import *
-
-import drawBot
-drawBotBuilder = drawBot
-
+from AppKit import NSFont
+from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
 from pagebot.constants import *
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
-from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
+from vanilla import *
+import drawBot
+drawBotBuilder = drawBot
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
 drawBotBuilder.PB_ID = 'drawBot'
@@ -515,7 +524,6 @@ class DrawBotContext(BaseContext):
         return Window(posSize, title=title or 'Untitled',
             minSize=minSize, maxSize=maxSize, closable=closable)
         '''
-        pass
 
     def group(self, x=None, y=None, w=None, h=None, **kwargs):
         #return Group((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0))
@@ -526,12 +534,10 @@ class DrawBotContext(BaseContext):
         """Create a Vanilla button"""
         #return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
         #title or 'Button', callback=callback)
-        pass
 
     def canvas(self, x=None, y=None, w=None, h=None):
         """Answer an instance of the DrawBot drawing canvas."""
         #return drawBot.ui.drawView.DrawView((upt(x or 0), upt(y or 0), upt(w or 0), upt(h or 0)))
-        pass
 
 if __name__ == '__main__':
     import doctest

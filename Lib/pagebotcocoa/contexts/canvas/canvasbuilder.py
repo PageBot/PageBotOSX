@@ -15,10 +15,10 @@
 #     canvasbuilder.py
 #
 
+import traceback
 import AppKit
 import CoreText
 import Quartz
-import traceback
 
 from pagebot.contexts.base.basebuilder import BaseBuilder
 from pagebot.toolbox.color import noColor, cmyk2Rgb
@@ -27,7 +27,7 @@ from pagebotcocoa.apps.canvas.canvas import Canvas
 from pagebotcocoa.graphics.graphic import Graphic
 from pagebotcocoa.strings.formattedstring import FormattedString
 #from pagebotcocoa.bezierpaths.bezierpath import BezierPath
-#from pagebotcocoa.cocoacolor import CocoaColor, CocoaCMYKColor
+from pagebotcocoa.cocoacolor import CocoaColor, CocoaCMYKColor, CocoaShadow, CocoaGradient
 
 # FIXME: using drawBot for now.
 def _tryInstallFontFromFontName(fontName):
@@ -98,6 +98,7 @@ class CanvasBuilder(BaseBuilder):
     _softHypen = 0x00AD
 
     def __init__(self):
+        super().__init__()
         self.width = None
         self.height = None
         self.hasPage = False
@@ -378,14 +379,14 @@ class CanvasBuilder(BaseBuilder):
         if offset is None:
             self._shadow = None
             return
-        self._shadow = Shadow(offset, blur, color)
+        self._shadow = CocoaShadow(offset, blur, color)
 
     def cmykShadow(self, offset, blur, color):
         if offset is None:
             self._state.shadow = None
             return
         rgbColor = cmyk2Rgb(color[0], color[1], color[2], color[3])
-        self._state.shadow = Shadow(offset, blur, rgbColor)
+        self._state.shadow = CocoaShadow(offset, blur, rgbColor)
         self._state.shadow.cmykColor = self.CMYKColor(*color)
 
     def linearGradient(self, startPoint=None, endPoint=None, colors=None,
@@ -394,7 +395,7 @@ class CanvasBuilder(BaseBuilder):
             self._state.gradient = None
             self.fill(0)
             return
-        self._state.gradient = Gradient("linear", startPoint, endPoint, colors, locations)
+        self._state.gradient = CocoaGradient("linear", startPoint, endPoint, colors, locations)
         self.fill(None)
 
     def cmykLinearGradient(self, startPoint=None, endPoint=None, colors=None,
@@ -404,7 +405,7 @@ class CanvasBuilder(BaseBuilder):
             self.fill(0)
             return
         rgbColors = [cmyk2Rgb(color[0], color[1], color[2], color[3]) for color in colors]
-        self._state.gradient = Gradient("linear", startPoint, endPoint, rgbColors, locations)
+        self._state.gradient = CocoaGradient("linear", startPoint, endPoint, rgbColors, locations)
         self._state.gradient.cmykColors = [self.CMYKColor(*color) for color in colors]
         self.fill(None)
 
@@ -414,7 +415,7 @@ class CanvasBuilder(BaseBuilder):
             self._state.gradient = None
             self.fill(0)
             return
-        self._state.gradient = Gradient("radial", startPoint, endPoint, colors, locations, startRadius, endRadius)
+        self._state.gradient = CocoaGradient("radial", startPoint, endPoint, colors, locations, startRadius, endRadius)
         self.fill(None)
 
     def cmykRadialGradient(self, startPoint=None, endPoint=None, colors=None,
@@ -424,7 +425,7 @@ class CanvasBuilder(BaseBuilder):
             self.fill(0)
             return
         rgbColors = [cmyk2Rgb(color[0], color[1], color[2], color[3]) for color in colors]
-        self._state.gradient = Gradient("radial", startPoint, endPoint, rgbColors, locations, startRadius, endRadius)
+        self._state.gradient = CocoaGradient("radial", startPoint, endPoint, rgbColors, locations, startRadius, endRadius)
         self._state.gradient.cmykColors = [self.CMYKColor(*color) for color in colors]
         self.fill(None)
 

@@ -16,6 +16,7 @@
 #
 
 import os
+import logging
 import AppKit
 import CoreText
 
@@ -27,7 +28,6 @@ from pagebotcocoa.errors import PageBotCocoaError
 from pagebotcocoa.cocoacolor import CocoaColor, CocoaCMYKColor
 from pagebotcocoa.strings.tryinstallfont import _tryInstallFontFromFontName
 
-import logging
 logger = logging.getLogger(__name__)
 
 _FALLBACKFONT = "LucidaGrande"

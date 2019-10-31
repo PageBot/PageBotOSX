@@ -14,13 +14,14 @@
 #
 #     bezierpath.py
 #
+
 import math
 import AppKit
 import Quartz
 import CoreText
-from fontTools.pens.basePen import BasePen
 import booleanOperations
-
+from drawbot.context.tools import traceImage
+from fontTools.pens.basePen import BasePen
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebotcocoa.errors import PageBotCocoaError
 from pagebotcocoa.bezierpaths.beziercontour import BezierContour
@@ -253,7 +254,6 @@ class BezierPath(BasePen):
         * `tolerance`: the precision tolerance of the vector outline
         * `offset`: add the traced vector outline with an offset to the BezierPath
         """
-        from .tools import traceImage
         traceImage.TraceImage(path, self, threshold, blur, invert, turd, tolerance, offset)
 
     def getNSBezierPath(self):

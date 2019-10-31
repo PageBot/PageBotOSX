@@ -16,8 +16,8 @@
 #
 #     Converts SVG paths to drawbot Bézier paths.
 #
-from pagebotcocoa.bezierpaths.bezierpath import BezierPath
 from xml.dom import minidom
+from pagebotcocoa.bezierpaths.bezierpath import BezierPath
 
 def getSvgPaths(fileName):
     """Extracts path strings from XML."""

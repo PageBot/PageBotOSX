@@ -15,14 +15,13 @@
 #     textline.py
 #
 import re
-from pagebot.toolbox.units import pt, upt
-from pagebotcocoa.strings.textrun import TextRun
-from pagebotcocoa.strings.pattern import FoundPattern
-
 from CoreText import (CGPoint, CTLineGetGlyphRuns,
         CTLineGetStringIndexForPosition, CTLineGetOffsetForStringIndex,
         CTLineGetStringRange, CTLineGetImageBounds, CTLineGetTypographicBounds,
         CTLineGetTrailingWhitespaceWidth)
+from pagebot.toolbox.units import pt, upt
+from pagebotcocoa.strings.textrun import TextRun
+from pagebotcocoa.strings.pattern import FoundPattern
 
 class TextLine:
     """Wraps the CoreText CTLine class. See also:
