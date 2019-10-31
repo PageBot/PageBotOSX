@@ -15,8 +15,8 @@
 #     graphic.py
 #
 
-from pagebotcocoa.color import *
-from pagebotcocoa.bezierpaths.bezierpath import BezierPath
+from pagebotcocoa.cocoacolor import CocoaColor
+#from pagebotcocoa.bezierpaths.bezierpath import BezierPath
 from pagebotcocoa.strings.formattedstring import FormattedString
 
 class Graphic:
@@ -25,7 +25,7 @@ class Graphic:
     def __init__(self):
         self.colorSpace = Color.colorSpace
         self.blendMode = None
-        self.fillColor = Color(0)
+        self.fillColor = CocoaColor(0)
         self.strokeColor = None
         self.cmykFillColor = None
         self.cmykStrokeColor = None
@@ -41,7 +41,8 @@ class Graphic:
         self.path = None
 
     def newPath(self):
-        self.path = BezierPath()
+        #self.path = BezierPath()
+        pass
 
     def setPath(self, path):
         self.path = path

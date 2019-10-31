@@ -22,7 +22,7 @@ from fontTools.pens.basePen import BasePen
 import booleanOperations
 
 from pagebot.contexts.base.basecontext import BaseContext
-from pagebot.errors import PageBotError
+from pagebotcocoa.errors import PageBotCocoaError
 from pagebotcocoa.bezierpaths.beziercontour import BezierContour
 from pagebotcocoa.mathematics.transform import *
 
@@ -89,7 +89,7 @@ class BezierPath(BasePen):
         `beginPath` must have been called prior to adding points with
         `addPoint` calls."""
         if not hasattr(self, "_pointToSegmentPen"):
-            raise PageBotError("path.beginPath() must be called before the path can be used as a point pen")
+            raise PageBotCocoaError("path.beginPath() must be called before the path can be used as a point pen")
         self._pointToSegmentPen.addPoint(
             point,
             segmentType=segmentType,
@@ -169,7 +169,7 @@ class BezierPath(BasePen):
         context = BaseContext()
 
         if align and align not in self._textAlignMap.keys():
-            raise PageBotError("align must be %s" % (", ".join(self._textAlignMap.keys())))
+            raise PageBotCocoaError("align must be %s" % (", ".join(self._textAlignMap.keys())))
 
         context.font(font, fontSize)
         attributedString = context.attributedString(txt, align)
@@ -211,7 +211,7 @@ class BezierPath(BasePen):
         - Optionally `box` can be a `BezierPath`.
         """
         if align and align not in self._textAlignMap.keys():
-            raise PageBotError("align must be %s" % (", ".join(self._textAlignMap.keys())))
+            raise PageBotCocoaError("align must be %s" % (", ".join(self._textAlignMap.keys())))
 
         context = BaseContext()
         context.font(font, fontSize)
@@ -402,7 +402,7 @@ class BezierPath(BasePen):
         for contour in contours:
             contour.drawPoints = contour.drawToPointPen
             if contour.open:
-                raise PageBotError("open contours are not supported during boolean operations")
+                raise PageBotCocoaError("open contours are not supported during boolean operations")
         return contours
 
     def union(self, other):

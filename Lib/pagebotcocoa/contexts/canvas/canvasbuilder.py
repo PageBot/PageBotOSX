@@ -21,13 +21,13 @@ import Quartz
 import traceback
 
 from pagebot.contexts.base.basebuilder import BaseBuilder
-from pagebot.errors import PageBotError
 from pagebot.toolbox.color import noColor, cmyk2Rgb
+from pagebotcocoa.errors import PageBotCocoaError
 from pagebotcocoa.apps.canvas.canvas import Canvas
-from pagebotcocoa.bezierpaths.bezierpath import BezierPath
-from pagebotcocoa.color import *
 from pagebotcocoa.graphics.graphic import Graphic
 from pagebotcocoa.strings.formattedstring import FormattedString
+#from pagebotcocoa.bezierpaths.bezierpath import BezierPath
+#from pagebotcocoa.cocoacolor import CocoaColor, CocoaCMYKColor
 
 # FIXME: using drawBot for now.
 def _tryInstallFontFromFontName(fontName):
@@ -161,7 +161,7 @@ class CanvasBuilder(BaseBuilder):
         self._stack = []
         self._state = []
         self._graphic = Graphic()
-        Color.colorSpace = self._colorSpaceMap['genericRGB']
+        CocoaColor.colorSpace = self._colorSpaceMap['genericRGB']
         self._reset()
 
     def size(self, width=None, height=None):
@@ -173,12 +173,12 @@ class CanvasBuilder(BaseBuilder):
     def newPage(self, width=None, height=None):
         if self.width is None:
             if width is None:
-                raise PageBotError("A page must have a width")
+                raise PageBotCocoaError("A page must have a width")
             self.width = width
 
         if self.height is None:
             if height is None:
-                raise PageBotError("A page must have a height")
+                raise PageBotCocoaError("A page must have a height")
             self.height = height
 
         self.hasPage = True
@@ -211,7 +211,7 @@ class CanvasBuilder(BaseBuilder):
 
     def saveImage(self, path, options):
         if not self.hasPage:
-            raise PageBotError("can't save image when no page is set")
+            raise PageBotCocoaError("can't save image when no page is set")
         self._saveImage(path, options)
 
     def printImage(self, pdf=None):
@@ -235,24 +235,24 @@ class CanvasBuilder(BaseBuilder):
 
     def restore(self):
         if not self._stack:
-            raise PageBotError("can't restore graphics state: no matching save()")
+            raise PageBotCocoaError("can't restore graphics state: no matching save()")
         self._state = self._stack.pop()
         #self._state.update(self)
         self._restore()
 
     def rect(self, x, y, w, h):
         graphic = Graphic()
-        path = BezierPath()
-        path.rect(x, y, w, h)
-        graphic.setPath(path)
+        #path = BezierPath()
+        #path.rect(x, y, w, h)
+        #graphic.setPath(path)
         self.setColor(graphic)
         self._state.append(graphic)
 
     def oval(self, x, y, w, h):
         graphic = Graphic()
-        path = BezierPath()
-        path.oval(x, y, w, h)
-        graphic.setPath(path)
+        #path = BezierPath()
+        #path.oval(x, y, w, h)
+        #graphic.setPath(path)
         self.setColor(graphic)
         self._state.append(graphic)
 
@@ -269,7 +269,7 @@ class CanvasBuilder(BaseBuilder):
         graphic = self.getGraphic()
 
         if graphic.path is None:
-            raise PageBotError("Create a new path first")
+            raise PageBotCocoaError("Create a new path first")
 
         return graphic.path
 
@@ -314,7 +314,7 @@ class CanvasBuilder(BaseBuilder):
         if colorSpace is None:
             colorSpace = 'genericRGB'
         if colorSpace not in self._colorSpaceMap:
-            raise PageBotError("'%s' is not a valid colorSpace, argument must be '%s'" % (colorSpace, "', '".join(self._colorSpaceMap.keys())))
+            raise PageBotCocoaError("'%s' is not a valid colorSpace, argument must be '%s'" % (colorSpace, "', '".join(self._colorSpaceMap.keys())))
         colorSpace = self._colorSpaceMap[colorSpace]
         self._state.setColorSpace(colorSpace)
 
@@ -325,11 +325,10 @@ class CanvasBuilder(BaseBuilder):
     def fill(self, r, g=None, b=None, alpha=1):
         if r is None or r is noColor:
             self.fillColor = None
-            print('nonoe')
             return
 
         self.cmykFillColor = None
-        self.fillColor = Color(r, g, b, alpha)
+        self.fillColor = CocoaColor(r, g, b, alpha)
         self.gradient = None
 
     def setColor(self, graphic):
@@ -352,9 +351,9 @@ class CanvasBuilder(BaseBuilder):
         if c is None:
             self.fill(None)
         else:
-            self.cmykFillColor = CMYKColor(c, m, y, k, a)
+            self.cmykFillColor = CocoaCMYKColor(c, m, y, k, a)
             r, g, b = cmyk2Rgb(c, m, y, k)
-            self.fillColor = Color(r, g, b, a)
+            self.fillColor = CocoaColor(r, g, b, a)
             self.gradient = None
 
     def stroke(self, r, g=None, b=None, a=1):
@@ -364,16 +363,16 @@ class CanvasBuilder(BaseBuilder):
             self.strokeColor = None
             return
 
-        self.strokeColor = Color(r, g, b, a)
+        self.strokeColor = CocoaColor(r, g, b, a)
 
     def cmykStroke(self, c, m, y, k, a=1):
 
         if c is None:
             self.stroke(None)
         else:
-            self.cmykStrokeColor = CMYKColor(c, m, y, k, a)
+            self.cmykStrokeColor = CocoaCMYKColor(c, m, y, k, a)
             r, g, b = cmyk2Rgb(c, m, y, k)
-            self.strokeColor = Color(r, g, b, a)
+            self.strokeColor = CocoaColor(r, g, b, a)
 
     def shadow(self, offset, blur, color):
         if offset is None:
@@ -439,14 +438,14 @@ class CanvasBuilder(BaseBuilder):
         if join is None:
             self._state.lineJoin = None
         if join not in self._lineJoinStylesMap:
-            raise PageBotError("lineJoin() argument must be 'bevel', 'miter' or 'round'")
+            raise PageBotCocoaError("lineJoin() argument must be 'bevel', 'miter' or 'round'")
         self._state.lineJoin = self._lineJoinStylesMap[join]
 
     def lineCap(self, cap):
         if cap is None:
             self._state.lineCap = None
         if cap not in self._lineCapStylesMap:
-            raise PageBotError("lineCap() argument must be 'butt', 'square' or 'round'")
+            raise PageBotCocoaError("lineCap() argument must be 'butt', 'square' or 'round'")
         self._state.lineCap = self._lineCapStylesMap[cap]
 
     def lineDash(self, dash):
@@ -622,13 +621,13 @@ class CanvasBuilder(BaseBuilder):
         return CoreText.CTFrameGetLines(frame)
 
     def _getPathForFrameSetter(self, box):
-        if isinstance(box, BezierPath):
-            path = box._getCGPath()
-            (x, y), (w, h) = CoreText.CGPathGetPathBoundingBox(path)
-        else:
-            x, y, w, h = box
-            path = CoreText.CGPathCreateMutable()
-            CoreText.CGPathAddRect(path, None, CoreText.CGRectMake(x, y, w, h))
+        #if isinstance(box, BezierPath):
+        #    path = box._getCGPath()
+        #    (x, y), (w, h) = CoreText.CGPathGetPathBoundingBox(path)
+        #else:
+        x, y, w, h = box
+        path = CoreText.CGPathCreateMutable()
+        CoreText.CGPathAddRect(path, None, CoreText.CGRectMake(x, y, w, h))
         return path, (x, y)
 
     def textSize(self, txt, align, width, height):
@@ -679,9 +678,9 @@ class CanvasBuilder(BaseBuilder):
                 psName = font["name"].getName(6, 3, 1)
             font.close()
         except IOError:
-            raise PageBotError("Font '%s' does not exist." % path)
+            raise PageBotCocoaError("Font '%s' does not exist." % path)
         except TTLibError:
-            raise PageBotError("Font '%s' is not a valid font." % path)
+            raise PageBotCocoaError("Font '%s' is not a valid font." % path)
         if psName is not None:
             psName = psName.toUnicode()
         return psName
