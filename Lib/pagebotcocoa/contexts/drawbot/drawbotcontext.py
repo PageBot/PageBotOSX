@@ -27,10 +27,11 @@ from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
+from pagebotcocoa.bezierpaths.cocoabezierpath import CocoaBezierPath
 from vanilla import *
-drawBotBuilder = drawBot
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
+drawBotBuilder = drawBot
 drawBotBuilder.PB_ID = 'drawBot'
 
 class DrawBotContext(BaseContext):
@@ -197,6 +198,12 @@ class DrawBotContext(BaseContext):
     #
     #   Function that work on the current running path stored in self._bezierpath
     #
+
+    def newPath(self):
+        #self._bezierpath = CocoaBezierPath(self.b)
+        # Using DrawBot's BezierPath class for now.
+        self._bezierpath = self.b.BezierPath()
+        return self.bezierpath
 
     def drawGlyphPath(self, glyph):
         """Converts the cubic commands to a drawable path."""

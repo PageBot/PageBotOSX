@@ -12,7 +12,7 @@
 #     Supporting Flat, xxyxyz.org/flat
 # -----------------------------------------------------------------------------
 #
-#     bezierpath.py
+#     cocoabezierpath.py
 #
 
 import math
@@ -24,13 +24,14 @@ from fontTools.pens.basePen import BasePen
 from fontTools.pens.pointPen import PointToSegmentPen
 from drawBot.context.tools import traceImage
 from pagebot.contexts.base.basecontext import BaseContext
+from pagebot.contexts.base.basepoint import BasePoint
 from pagebotcocoa.errors import PageBotCocoaError
 from pagebotcocoa.bezierpaths.beziercontour import BezierContour
 from pagebotcocoa.mathematics.transform import *
 
 _FALLBACKFONT = "LucidaGrande"
 
-class BezierPath(BasePen):
+class CocoaBezierPath(BasePen):
     """A Bézier path object, if you want to draw the same over and over
     again."""
 
@@ -57,7 +58,7 @@ class BezierPath(BasePen):
         BasePen.__init__(self, glyphSet)
 
     def __repr__(self):
-        return "<BezierPath>"
+        return "<CocoaBezierPath>"
 
     # pen support.
 
@@ -499,15 +500,17 @@ class BezierPath(BasePen):
 
     def _points(self, onCurve=True, offCurve=True):
         points = []
+
         if not onCurve and not offCurve:
             return points
+
         for index in range(self._path.elementCount()):
             instruction, pts = self._path.elementAtIndex_associatedPoints_(index)
             if not onCurve:
                 pts = pts[:-1]
             elif not offCurve:
                 pts = pts[-1:]
-            points.extend([(p.x, p.y) for p in pts])
+            points.extend([BasePoint(p.x, p.y, onCurve=onCuve) for p in pts])
         return points
 
     def _get_points(self):

@@ -12,7 +12,7 @@ python3 $PWD/apps/canvas/canvas.py
 python3 $PWD/apps/canvas/canvasview.py
 #- python3 $PWD/apps/pagebotdemoapp.py
 python3 $PWD/bezierpaths/__init__.py
-python3 $PWD/bezierpaths/bezierpath.py
+python3 $PWD/bezierpaths/cocoabezierpath.py
 python3 $PWD/bezierpaths/beziercontour.py
 python3 $PWD/contexts/__init__.py
 python3 $PWD/contexts/drawbot/__init__.py
