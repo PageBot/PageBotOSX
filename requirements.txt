@@ -6,4 +6,5 @@ pyobjc==5.2
 -e git+https://github.com/robotools/defconAppKit.git#egg=defconAppKit
 -e git+https://github.com/typemytype/drawbot.git#egg=drawbot
 -e git+https://github.com/robotools/vanilla.git#egg=vanilla
+-e git+https://github.com/xxyxyz/flat.git#egg=flat
 -e .

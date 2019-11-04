@@ -510,7 +510,7 @@ class CocoaBezierPath(BasePen):
                 pts = pts[:-1]
             elif not offCurve:
                 pts = pts[-1:]
-            points.extend([BasePoint(p.x, p.y, onCurve=onCuve) for p in pts])
+            points.extend([BasePoint(p.x, p.y, onCurve=onCurve) for p in pts])
         return points
 
     def _get_points(self):
