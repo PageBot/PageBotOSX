@@ -27,7 +27,7 @@ from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
-from pagebotcocoa.bezierpaths.cocoabezierpath import CocoaBezierPath
+#from pagebotcocoa.bezierpaths.cocoabezierpath import CocoaBezierPath
 from vanilla import *
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
