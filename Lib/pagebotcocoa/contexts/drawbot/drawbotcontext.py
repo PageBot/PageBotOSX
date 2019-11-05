@@ -489,6 +489,32 @@ class DrawBotContext(BaseContext):
         self.b.scale(sx, sy, center=center)
 
 
+    def installedFonts(self, patterns=None):
+        """Answers the list of all fonts (name or path) that are installed on
+        the OS.
+
+        >>> from pagebot import getContext
+        >>> context = getContext()
+        >>> installed = context.installedFonts()
+        >>> len(installed) > 0
+        True
+        """
+        if isinstance(patterns, str): # In case it is a string, convert to a list
+            patterns = [patterns]
+
+        fontNames = []
+
+        for fontName in self.b.installedFonts():
+            if not patterns:
+                fontNames.append(fontName) # If no pattern then answer all.
+            else:
+                for pattern in patterns:
+                    if pattern in fontName:
+                        fontNames.append(fontName)
+                        break
+        return fontNames
+
+
     # TODO
     # Future experiment, making UI/Vanilla layout for apps by PageBot
     # Needs some additional conceptual thinking.
