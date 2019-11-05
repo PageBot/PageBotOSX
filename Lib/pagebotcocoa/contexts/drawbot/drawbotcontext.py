@@ -569,6 +569,55 @@ class DrawBotContext(BaseContext):
     def fontLineHeight(self):
         return self.b.fontLineHeight()
 
+    # Features.
+
+    def openTypeFeatures(self, features):
+        """Enables OpenType features and returns the current openType features
+        settings. If no arguments are given `openTypeFeatures()` will just
+        return the current openType features settings.
+
+        In DrawBot:
+
+            size(1000, 200)
+            # create an empty formatted string object
+            t = FormattedString()
+            # set a font
+            t.font("ACaslonPro-Regular")
+            # set a font size
+            t.fontSize(60)
+            # add some text
+            t += "0123456789 Hello"
+            # enable some open type features
+            t.openTypeFeatures(smcp=True, lnum=True)
+            # add some text
+            t += " 0123456789 Hello"
+            # draw the formatted string
+            text(t, (10, 80))
+
+
+        NOTE: signature differs from DrawBot:
+
+        ``def openTypeFeatures(self, *args, **features):``
+
+        >>> from pagebot import getContext
+        >>> context = getContext()
+        >>> context.newDrawing()
+        >>> context.newPage(420, 420)
+        >>> context.openTypeFeatures(dict(smcp=True, zero=True))
+        """
+        self.b.openTypeFeatures(**features)
+
+    def listOpenTypeFeatures(self, fontName=None):
+        """Answers the list of opentype features available in the named
+        font."""
+        return self.b.listOpenTypeFeatures(fontName)
+
+    def fontVariations(self, *args, **axes):
+        return self.b.fontVariations(*args, **axes)
+
+    def listFontVariations(self, fontName=None):
+        return self.b.listFontVariations(fontName=fontName)
+
     # TODO
     # Future experiment, making UI/Vanilla layout for apps by PageBot
     # Needs some additional conceptual thinking.
