@@ -488,6 +488,7 @@ class DrawBotContext(BaseContext):
             sy = sx
         self.b.scale(sx, sy, center=center)
 
+    # System fonts listing, installation, font properties.
 
     def installedFonts(self, patterns=None):
         """Answers the list of all fonts (name or path) that are installed on
@@ -514,6 +515,59 @@ class DrawBotContext(BaseContext):
                         break
         return fontNames
 
+    def installFont(self, fontOrName):
+        """Install the font in the context. fontOrName can be a Font instance
+        (in which case the path is used) or a full font path.
+
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> from pagebot import getContext
+        >>> context = getContext()
+        >>> installed = context.installedFonts()
+        >>> len(installed) > 0
+        True
+        >>> font = findFont('Roboto-Regular')
+        >>> context.installFont(font)
+        'Roboto-Regular'
+        """
+        if hasattr(fontOrName, 'path'):
+            fontOrName.info.installedName = self.b.installFont(fontOrName.path)
+            return fontOrName.info.installedName
+        return self.b.installFont(fontOrName)
+
+    def uninstallFont(self, fontOrName):
+        if hasattr(fontOrName, 'path'):
+            fontOrName = fontOrName.path
+        return self.b.uninstallFont(fontOrName)
+
+    def fontContainsCharacters(self, characters):
+        return self.b.fontContainsCharacters(characters)
+
+    def fontContainsGlyph(self, glyphName):
+        return self.b.fontContainsGlyph(glyphName)
+
+    def fontFilePath(self):
+        return self.b.fontFilePath()
+
+    def listFontGlyphNames(self):
+        return self.b.listFontGlyphNames()
+
+    def fontAscender(self):
+        return self.b.fontAscender()
+
+    def fontDescender(self):
+        return self.b.fontDescender()
+
+    def fontXHeight(self):
+        return self.b.fontXHeight()
+
+    def fontCapHeight(self):
+        return self.b.fontCapHeight()
+
+    def fontLeading(self):
+        return self.b.fontLeading()
+
+    def fontLineHeight(self):
+        return self.b.fontLineHeight()
 
     # TODO
     # Future experiment, making UI/Vanilla layout for apps by PageBot
