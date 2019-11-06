@@ -675,6 +675,20 @@ class DrawBotContext(BaseContext):
         """Answer an instance of the DrawBot drawing canvas."""
         #return drawBot.ui.drawView.DrawView((upt(x or 0), upt(y or 0), upt(w or 0), upt(h or 0)))
 
+    #   S C R E E N
+
+    def screenSize(self):
+        """Answers the current screen size in DrawBot. Otherwise default is to
+        do nothing. PageBot function.
+
+        >>> from pagebot import getContext
+        >>> context = getContext()
+        >>> size = context.screenSize()
+        >>> size[0] > 100 and size[1] > 100
+        True
+        """
+        return pt(self.b.sizes().get('screen', None))
+
 if __name__ == '__main__':
     import doctest
     import sys
