@@ -288,6 +288,42 @@ class DrawBotContext(BaseContext):
 
         return flattenedContours
 
+    # Path drawing behavior.
+
+    def strokeWidth(self, w):
+        """Set the current stroke width.
+
+        >>> from pagebot.toolbox.units import pt, mm
+        >>> from pagebot import getContext
+        >>> context = getContext()
+        >>> context.newDrawing()
+        >>> context.newPage(420, 420)
+        >>> context.setStrokeWidth(pt(0.5))
+        >>> context.setStrokeWidth(mm(0.5))
+        """
+        wpt = upt(w)
+        self.b.strokeWidth(wpt)
+
+    setStrokeWidth = strokeWidth
+
+    def miterLimit(self, value):
+        self.b.miterLimit(value)
+
+    def lineJoin(self, value):
+        self.b.lineJoin(value)
+
+    def lineCap(self, value):
+        """Possible values are butt, square and round."""
+        assert value in ('butt', 'square', 'round')
+        self.b.lineCap(value)
+
+    def lineDash(self, value):
+        """LineDash is None or a list of dash lengths."""
+        if value is None:
+            self.b.lineDash(None)
+        else:
+            self.b.lineDash(*value)
+
     #   F O N T S
 
     def fontPath2FontName(self, fontPath):
