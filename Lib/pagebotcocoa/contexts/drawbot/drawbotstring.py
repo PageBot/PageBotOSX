@@ -432,9 +432,11 @@ class DrawBotString(BabelString):
         13.8pt
         >>> lines = bs.getTextLines(w=200, h=200)
         >>> lines
+        [<TextLine #0 y:186.20 Runs:1>, <TextLine #1 y:169.40 Runs:1>, <TextLine #2 y:152.60 Runs:1>, <TextLine #3 y:135.80 Runs:1>, <TextLine #4 y:119.00 Runs:1>]
         """
         assert w
-        if not h:
+
+        if h is None:
             h = XXXL
 
         wpt, hpt = upt(w, h)
@@ -450,7 +452,7 @@ class DrawBotString(BabelString):
         for lIndex, ctLine in enumerate(ctLines):
             origin = origins[lIndex]
 
-            if not h:
+            if h is None:
                 # FIXME: indices should be reversed, subtract doc height?
                 origin_y = XXXL - origin.y
             else:
