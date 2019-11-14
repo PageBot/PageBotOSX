@@ -5,15 +5,9 @@ os: osx
 branches:
   only:
   - master
-rvm:
-- use 2.6.0
 before_install:
-- rvm install 2.6.0
-- ruby --version
 - pip3 install --upgrade pip
 install:
-- brew update
-- brew install fontconfig
 - pip3 install -r requirements.txt
 - pip3 install pylint
 script:
