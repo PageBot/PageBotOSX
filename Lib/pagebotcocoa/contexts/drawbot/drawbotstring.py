@@ -452,7 +452,7 @@ class DrawBotString(BabelString):
         for lIndex, ctLine in enumerate(ctLines):
             origin = origins[lIndex]
 
-            if h is None:
+            if h == XXXL:
                 # FIXME: indices should be reversed, subtract doc height?
                 origin_y = XXXL - origin.y
             else:
