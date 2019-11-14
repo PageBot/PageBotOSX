@@ -359,7 +359,8 @@ class DrawBotString(BabelString):
         the markerId. Possible slicing through line-endings is not a problem,
         as the raw string ignores them."""
         marker = self.MARKER_PATTERN % (markerId, arg or '')
-        fs = self.context.b.FormattedString(marker, fill=noColor, stroke=noColor, fontSize=0.0000000000001)
+        fs = self.context.b.FormattedString(marker, fill=noColor,
+                stroke=noColor, fontSize=0.0000000000001)
         self.append(fs)
 
     def findMarkers(self, reCompiled=None):
@@ -373,14 +374,16 @@ class DrawBotString(BabelString):
         DrawBotString in the current context."""
         b = self.context.b
         wpt, hpt = upt(w, h)
-        # Set the hyphenation flag from style, as in DrawBot this is set by a global function,
-        # not as FormattedString attribute.
+
+        # Sets the hyphenation flag from style, as in DrawBot this is set by a
+        # global function, not as FormattedString attribute.
         # TODO: Attributes don't seem to maintain in the string or overfill copy.
         language = self.language or 'en'
         hyphenation = self.hyphenation or True
         b.language(language)
         b.hyphenation(hyphenation)
         overflow = self.__class__(b.textOverflow(self.s, (0, 0, wpt, hpt), align), self.context)
+
         # Pass on these parameters to the new constructed DrawBotString.
         overflow.language = language
         overflow.hyphenation = hyphenation
@@ -392,20 +395,20 @@ class DrawBotString(BabelString):
         FormattedString and for the given width and height. The value is the
         TextLine instance at that position.
 
-        """
-        """
-        FIX
+        FIXME
+
         >>> from pagebot.toolbox.units import mm, uRound
         >>> from drawbotcontext import DrawBotContext
         >>> context = DrawBotContext()
         >>> style = dict(font='Verdana', fontSize=pt(12))
         >>> bs = context.newString('Example Text ' * 10, style=style)
         >>> baselines = bs.getBaselines(w=200)
-        >>> baselines
+        >>> #baselines # FIXME: y-values too large
         """
         baselines = {}
         for textLine in self.getTextLines(w, h):
-            baselines[textLine.y] = textLine
+            baselines[textLine.y.pt] = textLine
+
         return baselines
 
     def getTextLines(self, w, h=None, align=LEFT):
@@ -423,7 +426,12 @@ class DrawBotString(BabelString):
         >>> line = lines[0]
         >>> line.maximumLineHeight
         1.4em
-        >>>
+        >>> lines
+        [<TextLine #0 y:13.80 Runs:1>, <TextLine #1 y:30.60 Runs:1>, <TextLine #2 y:47.40 Runs:1>, <TextLine #3 y:64.20 Runs:1>, <TextLine #4 y:81.00 Runs:1>]
+        >>> line.y
+        13.8pt
+        >>> lines = bs.getTextLines(w=200, h=200)
+        >>> lines
         """
         assert w
         if not h:
@@ -441,7 +449,14 @@ class DrawBotString(BabelString):
 
         for lIndex, ctLine in enumerate(ctLines):
             origin = origins[lIndex]
-            textLine = TextLine(ctLine, pt(origin.x), pt(origin.y), lIndex)
+
+            if not h:
+                # FIXME: indices should be reversed, subtract doc height?
+                origin_y = XXXL - origin.y
+            else:
+                origin_y = origin.y
+
+            textLine = TextLine(ctLine, pt(origin.x), pt(origin_y), lIndex)
             textLines.append(textLine)
 
         return textLines
