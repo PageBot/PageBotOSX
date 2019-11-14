@@ -1,11 +1,11 @@
 language:
-  - python3.6
   - python3.7
 os: osx
 branches:
   only:
   - master
 before_install:
+- python3 --version
 - pip3 install --upgrade pip
 install:
 - pip3 install -r requirements.txt
