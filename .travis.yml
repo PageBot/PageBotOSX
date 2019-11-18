@@ -1,15 +1,17 @@
-language: python3
-python: 3.7
-os: osx
+matrix: 
+  include:
+    - os: osx
+      language: python3
+      python: 3.7
+      before_install:
+        - python3 --version
+        - pip3 install --upgrade pip
+      install:
+        - pip3 install -r requirements.txt
+        - pip3 install pylint
+      script:
+        - ./scripts/pylint.sh
+        - ./scripts/doctests.sh
 branches:
   only:
-  - master
-before_install:
-- python3 --version
-- pip3 install --upgrade pip
-install:
-- pip3 install -r requirements.txt
-- pip3 install pylint
-script:
-- ./scripts/pylint.sh
-- ./scripts/doctests.sh
+    - master
