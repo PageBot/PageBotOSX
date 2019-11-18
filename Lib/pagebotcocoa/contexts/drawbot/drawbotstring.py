@@ -426,7 +426,7 @@ class DrawBotString(BabelString):
         >>> line = lines[0]
         >>> line.maximumLineHeight
         1.4em
-        >>> len(lines)
+        >>> lines
         [<TextLine #0 y:13.80 Runs:1>, <TextLine #1 y:30.60 Runs:1>, <TextLine #2 y:47.40 Runs:1>, <TextLine #3 y:64.20 Runs:1>, <TextLine #4 y:81.00 Runs:1>]
         >>> line.y
         13.8pt

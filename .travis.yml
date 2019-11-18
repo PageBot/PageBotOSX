@@ -1,5 +1,5 @@
-language:
-  - python3.7
+language: python3
+python: 3.7
 os: osx
 branches:
   only:
@@ -13,5 +13,3 @@ install:
 script:
 - ./scripts/pylint.sh
 - ./scripts/doctests.sh
-after_sucess:
-- CODECLIMATE_REPO_TOKEN=b686cb85d6a2fc7c7917307a36fd14fe95d1826 codeclimate-test-reporter
