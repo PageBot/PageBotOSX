@@ -71,7 +71,7 @@ class DrawBotString(BabelString):
         ample Text
         >>> lines = bs.getTextLines(w=100)
         >>> len(lines)
-        9
+        2
         >>> line = lines[0]
         >>> line.xHeight, line.capHeight # Max metrics of all runs in line as Em
         (0.55em, 0.73em)
@@ -140,8 +140,8 @@ class DrawBotString(BabelString):
         """Answers the current state of the fontSize.
 
         >>> from pagebot.toolbox.units import mm
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> style = dict(font='Verdana', fontSize=pt(85), leading=em(1.4))
         >>> bs = context.newString('Example Text', style=style)
         >>> bs.fontSize
@@ -168,8 +168,8 @@ class DrawBotString(BabelString):
         """Answers the style dictionary with values at position index of the
         string.
 
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> c1 = color(0.2, 0.3, 0.4)
         >>> c2 = color(1, 0, 0.22)
         >>> style = style=dict(font='Verdana', fontSize=17, leading=21, textFill=c1, textStroke=c2, textStrokeWidth=pt(3))
@@ -230,8 +230,8 @@ class DrawBotString(BabelString):
     def asText(self):
         """Answers the text string.
 
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> bs = context.newString('Example Text')
         >>> bs.asText()
         'Example Text'
@@ -244,14 +244,16 @@ class DrawBotString(BabelString):
         descender+) and the string width (including margins).
 
         >>> from pagebot.toolbox.units import mm, uRound
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
-        >>> style = dict(font='Verdana', fontSize=pt(12))
+        >>> from pagebot import getContext
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> context = getContext('DrawBot')
+        >>> font = findFont('Bungee-Regular')
+        >>> style = dict(font=font, fontSize=pt(12))
         >>> bs = context.newString('Example Text ' * 20, style=style)
         >>> len(bs.getTextLines(w=100))
-        20
+        16
         >>> uRound(bs.textSize(w=300))
-        [251pt, 118pt]
+        [290pt, 130pt]
         """
         b = self.context.b
         if w is not None:
@@ -398,8 +400,8 @@ class DrawBotString(BabelString):
         FIXME
 
         >>> from pagebot.toolbox.units import mm, uRound
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> style = dict(font='Verdana', fontSize=pt(12))
         >>> bs = context.newString('Example Text ' * 10, style=style)
         >>> baselines = bs.getBaselines(w=200)
@@ -416,28 +418,31 @@ class DrawBotString(BabelString):
         the line.
 
         >>> from pagebot.toolbox.units import mm, uRound
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
-        >>> style = dict(font='Verdana', fontSize=pt(12))
+        >>> from pagebot import getContext
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> context = getContext('DrawBot')
+        >>> font = findFont('Bungee-Regular')
+        >>> style = dict(font=font, fontSize=pt(12))
         >>> bs = context.newString('Example Text ' * 10, style=style)
-        >>> lines = bs.getTextLines(w=200)
+        >>> lines = bs.getTextLines(w=200, h=200)
         >>> len(lines)
         5
+        >>> lines
+        [<TextLine #0 y:185.20 Runs:1>, <TextLine #1 y:166.40 Runs:1>, <TextLine #2 y:147.60 Runs:1>, <TextLine #3 y:128.80 Runs:1>, <TextLine #4 y:110.00 Runs:1>]
         >>> line = lines[0]
         >>> line.maximumLineHeight
         1.4em
-        >>> lines
-        [<TextLine #0 y:13.80 Runs:1>, <TextLine #1 y:30.60 Runs:1>, <TextLine #2 y:47.40 Runs:1>, <TextLine #3 y:64.20 Runs:1>, <TextLine #4 y:81.00 Runs:1>]
         >>> line.y
-        13.8pt
+        185.2pt
         >>> lines = bs.getTextLines(w=200, h=200)
         >>> lines
-        [<TextLine #0 y:186.20 Runs:1>, <TextLine #1 y:169.40 Runs:1>, <TextLine #2 y:152.60 Runs:1>, <TextLine #3 y:135.80 Runs:1>, <TextLine #4 y:119.00 Runs:1>]
+        [<TextLine #0 y:185.20 Runs:1>, <TextLine #1 y:166.40 Runs:1>, <TextLine #2 y:147.60 Runs:1>, <TextLine #3 y:128.80 Runs:1>, <TextLine #4 y:110.00 Runs:1>]
         """
         assert w
 
         if h is None:
-            h = XXXL
+            #h = XXXL
+            h = 3 * w
 
         wpt, hpt = upt(w, h)
         textLines = []
@@ -451,13 +456,7 @@ class DrawBotString(BabelString):
 
         for lIndex, ctLine in enumerate(ctLines):
             origin = origins[lIndex]
-
-            if h == XXXL:
-                # FIXME: indices should be reversed, subtract doc height?
-                origin_y = XXXL - origin.y
-            else:
-                origin_y = origin.y
-
+            origin_y = origin.y
             textLine = TextLine(ctLine, pt(origin.x), pt(origin_y), lIndex)
             textLines.append(textLine)
 
@@ -504,8 +503,8 @@ class DrawBotString(BabelString):
         to get a Font instance for that path, as we need to test it for
         existing axes as Variable Font.
 
-        >>> from drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('RobotoDelta-VF')
         >>> #font = findFont('Fit-Variable_1') # DJR-Fit needs to be installed.
@@ -799,10 +798,10 @@ class DrawBotString(BabelString):
         defines if the current width or height comes from the pixel image of em
         size.
 
-        >>> from drawbotcontext import DrawBotContext
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('Roboto-Black')
-        >>> context = DrawBotContext()
         >>> bs = context.newString('ABC', style=dict(font=font.path, fontSize=pt(22)))
         >>> bs
         ABC
