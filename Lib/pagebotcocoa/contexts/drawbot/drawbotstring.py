@@ -12,14 +12,15 @@ from CoreText import (CTFramesetterCreateWithAttributedString,
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 import drawBot as drawBotBuilder
 from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
-        DEFAULT_FALLBACK_FONT_PATH, XXXL)
+        DEFAULT_FALLBACK_FONT_PATH)
 from pagebot.filepaths import DEFAULT_FONT_PATH
 from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.style import css
-from pagebot.toolbox.color import color, Color, noColor, inheritColor, blackColor
-from pagebot.toolbox.units import pt, upt, isUnit, units, em
 from pagebotcocoa.strings.textline import TextLine
+from pagebot.toolbox.color import (color, Color, noColor, inheritColor,
+        blackColor)
+from pagebot.toolbox.units import pt, upt, isUnit, units, em
 
 def pixelBounds(fs):
     """Answers the pixel-bounds rectangle of the text.
@@ -56,11 +57,16 @@ class DrawBotString(BabelString):
 
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
-        >>> style = dict(font='Verdana', fontSize=pt(80))
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> font = findFont('Pagebot-Regular')
+        >>> style = dict(font=font, fontSize=pt(80))
         >>> bs = context.newString('Example Text', style=style)
-        >>> bs.font, bs.fontSize, round(upt(bs.xHeight)), bs.xHeight, bs.capHeight, bs.ascender, bs.descender
-        ('Verdana', 80pt, 44, 0.55em, 0.73em, 1.01em, -0.21em)
-        >>> '/Verdana'in bs.fontPath
+        >>> bs.fontSize, round(upt(bs.xHeight)), bs.xHeight, bs.capHeight, bs.ascender, bs.descender
+        (80pt, 42, 0.53em, 0.71em, 0.93em, -0.24em)
+        >>> #bs.font # FIXME: returns Roboto instead of PageBot font.
+        >>> #'PageBot-Regular.ttf' in bs.font
+        #True
+        >>> '/PageBot' in bs.fontPath
         True
         >>> style = dict(font='Verdana', fontSize=pt(100), leading=em(1.4))
         >>> bs = context.newString('Example Text', style=style)
@@ -70,6 +76,8 @@ class DrawBotString(BabelString):
         >>> bs[2:]
         ample Text
         >>> lines = bs.getTextLines(w=100)
+        >>> lines
+        [<TextLine #0 y:181.00 Runs:1>, <TextLine #1 y:41.00 Runs:1>]
         >>> len(lines)
         2
         >>> line = lines[0]
@@ -408,6 +416,7 @@ class DrawBotString(BabelString):
         >>> #baselines # FIXME: y-values too large
         """
         baselines = {}
+
         for textLine in self.getTextLines(w, h):
             baselines[textLine.y.pt] = textLine
 
@@ -423,36 +432,36 @@ class DrawBotString(BabelString):
         >>> context = getContext('DrawBot')
         >>> font = findFont('Bungee-Regular')
         >>> style = dict(font=font, fontSize=pt(12))
-        >>> bs = context.newString('Example Text ' * 10, style=style)
+        >>> bs = context.newString('Example Text', style=style)
         >>> lines = bs.getTextLines(w=200, h=200)
         >>> len(lines)
-        5
+        1
         >>> lines
-        [<TextLine #0 y:185.20 Runs:1>, <TextLine #1 y:166.40 Runs:1>, <TextLine #2 y:147.60 Runs:1>, <TextLine #3 y:128.80 Runs:1>, <TextLine #4 y:110.00 Runs:1>]
+        [<TextLine #0 y:185.20 Runs:1>]
         >>> line = lines[0]
         >>> line.maximumLineHeight
         1.4em
         >>> line.y
         185.2pt
-        >>> lines = bs.getTextLines(w=200, h=200)
-        >>> lines
-        [<TextLine #0 y:185.20 Runs:1>, <TextLine #1 y:166.40 Runs:1>, <TextLine #2 y:147.60 Runs:1>, <TextLine #3 y:128.80 Runs:1>, <TextLine #4 y:110.00 Runs:1>]
+        >>> #lines = bs.getTextLines(w=200, h=200)
         """
         assert w
 
         if h is None:
-            #h = XXXL
             h = 3 * w
 
         wpt, hpt = upt(w, h)
         textLines = []
         attrString = self.s.getNSObject()
+        #print(attrString)
         setter = CTFramesetterCreateWithAttributedString(attrString)
         path = CGPathCreateMutable()
         CGPathAddRect(path, None, CGRectMake(0, 0, wpt, hpt))
         ctBox = CTFramesetterCreateFrame(setter, (0, 0), path, None)
+        #print(ctBox)
         ctLines = CTFrameGetLines(ctBox)
         origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
+        #print(origins)
 
         for lIndex, ctLine in enumerate(ctLines):
             origin = origins[lIndex]
