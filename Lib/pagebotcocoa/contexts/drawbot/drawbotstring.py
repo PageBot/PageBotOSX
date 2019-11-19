@@ -452,7 +452,14 @@ class DrawBotString(BabelString):
         >>> ctLines = CTFrameGetLines(ctBox)
         >>> from CoreText import CTLineGetGlyphRuns, CTRunGetAttributes
         >>> runs = CTLineGetGlyphRuns(ctLines[0])
-        >>> CTRunGetAttributes(runs[0])
+        >>> attrs = CTRunGetAttributes(runs[0])
+        >>> origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
+        >>> lineHeight = 16.8
+        >>> oy = origins[0].y
+        >>> oy
+        585.2
+        >>> 600 - lineHeight
+        583.2
         """
         assert w
 
@@ -471,7 +478,6 @@ class DrawBotString(BabelString):
         #print(ctBox)
         ctLines = CTFrameGetLines(ctBox)
         origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
-        #print(origins)
 
         for lIndex, ctLine in enumerate(ctLines):
             origin = origins[lIndex]
