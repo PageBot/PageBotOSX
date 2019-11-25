@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
+#
+#     P A G E B O T
+#
+#     Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
+#     www.pagebot.io
+#     Licensed under MIT conditions
+#
+#     Supporting DrawBot, www.drawbot.com
+#     Supporting Flat, xxyxyz.org/flat
+# -----------------------------------------------------------------------------
 #
 #     string.py
 #
@@ -36,11 +47,11 @@ def pixelBounds(fs):
     p.text(fs, (0, 0))
 
     '''
-    OS X answers `bw` and `bh` as difference with `bx` and `by`§. That is not
-    really intuitive, as the the total (width, height) then always needs to be
-    calculated by the caller. So, instead, the width and height answered is the
-    complete bounding box, and (x, y) is the position of the bounding box,
-    compared to (0, 0) of the string origin.
+    OS X answers `bw` and `bh` as difference with `bx` and `by`. This is not
+    very intuitive; in this situation the the total (width, height) always
+    needs to be calculated by the caller. Instead, the width and height
+    answered is the complete bounding box, and (x, y) is the position of the
+    bounding box, compared to (0, 0) of the string origin.
     '''
     bx, by, bw, bh = p.bounds()
     return pt(bx, by, bw - bx, bh - by)
@@ -52,7 +63,7 @@ class DrawBotString(BabelString):
 
     def __init__(self, s, context, style=None):
         """Constructor of the DrawBotString, wrapper around DrawBot
-        FormattedString. Optionally store the (latest) style that was used to
+        FormattedString. Optionally stores the (latest) style that was used to
         produce the formatted string.
 
         >>> from pagebot import getContext
@@ -101,7 +112,6 @@ class DrawBotString(BabelString):
         # Store the DrawBot FormattedString, as property to make sure it is a
         # FormattedString, otherwise create it.
         self.s = s
-
         super().__init__(self.s, context, style=style)
 
     def _get_s(self):
@@ -264,12 +274,14 @@ class DrawBotString(BabelString):
         [290pt, 130pt]
         """
         b = self.context.b
+
         if w is not None:
             wpt = upt(w)
             return b.textSize(self.s, width=wpt)
         if h is not None:
             hpt = upt(h)
             return b.textSize(self.s, height=hpt)
+
         return b.textSize(self.s)
 
     def bounds(self):
@@ -282,7 +294,7 @@ class DrawBotString(BabelString):
         For the total height of the pixel-map, calculate @ph - @py.
         For the total width of the pixel-map, calculate @pw - @px."""
 
-        # Set the hyphenation flag and language from self, as in DrawBot this
+        # Sets the hyphenation flag and language from self; in DrawBot this
         # is set by a global function, not as FormattedString attribute.
         self.context.language(self.language)
         self.context.hyphenation(self.hyphenation)
@@ -297,6 +309,7 @@ class DrawBotString(BabelString):
     def _get_fontFilePath(self):
         """Return the path to the file of the current font."""
         return self.s.fontFilePath()
+
     fontPath = property(_get_fontFilePath)
 
     def listFontGlyphNames(self):
@@ -309,41 +322,52 @@ class DrawBotString(BabelString):
         fontSize = upt(self.fontSize)
         return em(self.s.fontAscender() / fontSize, base=fontSize)
 
-    fontAscender = ascender = property(_get_ascender) # Compatibility with DrawBot API
+    # Compatibility with DrawBot API.
+    fontAscender = ascender = property(_get_ascender) 
 
     def _get_descender(self):
         """Returns the current font descender as Em, based on the current font
         and fontSize."""
         fontSize = upt(self.fontSize)
         return em(self.s.fontDescender()/fontSize, base=fontSize)
-    fontDescender = descender = property(_get_descender) # Compatibility with DrawBot API
+
+    # Compatibility with DrawBot API.
+    fontDescender = descender = property(_get_descender) 
 
     def _get_xHeight(self):
         """Returns the current font x-height as Em, based on the current font
         and fontSize."""
         fontSize = upt(self.fontSize)
         return em(self.s.fontXHeight()/fontSize, base=fontSize)
-    fontXHeight = xHeight = property(_get_xHeight) # Compatibility with DrawBot API
+
+    # Compatibility with DrawBot API.
+    fontXHeight = xHeight = property(_get_xHeight) 
 
     def _get_capHeight(self):
         """Returns the current font cap height as Em, based on the current font
         and fontSize."""
         fontSize = upt(self.fontSize)
         return em(self.s.fontCapHeight()/fontSize, base=fontSize)
-    fontCapHeight = capHeight = property(_get_capHeight) # Compatibility with DrawBot API
+
+    # Compatibility with DrawBot API.
+    fontCapHeight = capHeight = property(_get_capHeight) 
 
     def _get_leading(self):
         """Returns the current font leading, based on the current font and fontSize."""
         fontSize = upt(self.fontSize)
         return em(self.s.fontLeading()/fontSize, base=fontSize)
-    fontLeading = leading = property(_get_leading) # Compatibility with DrawBot API
+
+    # Compatibility with DrawBot API.
+    fontLeading = leading = property(_get_leading) 
 
     def _get_lineHeight(self):
         """Returns the current line height, based on the current font and fontSize.
         If a lineHeight is set, this value will be returned."""
         fontSize = upt(self.fontSize)
-        return em(self.s.fontLineHeight()/fontSize, base=fontSize)
-    fontLineHeight = lineHeight = property(_get_lineHeight) # Compatibility with DrawBot API
+        return em(self.s.fontLineHeight() / fontSize, base=fontSize)
+
+    # Compatibility with DrawBot API.
+    fontLineHeight = lineHeight = property(_get_lineHeight) 
 
     def appendGlyph(self, *glyphNames):
         """Append a glyph by his glyph name using the current font. Multiple

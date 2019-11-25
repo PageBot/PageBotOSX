@@ -188,6 +188,127 @@ class DrawBotContext(BaseContext):
     #   T E X T
     #
 
+    def text(self, sOrBs, p):
+        """Draws the sOrBs text string at position p.
+
+        `SOrBs` Can be a str, BabelString, or DrawBot FormattedString.
+
+        NOTE: signature differs from DrawBot.
+        """
+        if isinstance(sOrBs, BabelString):
+            # BabelString with a FormattedString inside.
+            s = sOrBs.s 
+            position = point2D(upt(p))
+        else:
+            # Regular string, use global font and size.
+            s = sOrBs
+            position = point2D(upt(p))
+            self.b.fontSize(self._fontSize)
+            self.font(self._font)
+        
+        # Render point units to value tuple
+        self.b.text(s, position) 
+
+    def textBox(self, sOrBs, r=None, clipPath=None, align=None):
+        """Draws the sOrBs text string in rectangle r.
+
+        `SOrBs` Can be a str, BabelString, or DrawBot FormattedString.
+
+        NOTE: signature differs from DrawBot.
+
+        >>> from pagebot.toolbox.units import pt
+        >>> from pagebot import getContext
+        >>> context = getContext('Flat')
+        >>> context.newDrawing()
+        >>> context.newPage(420, 420)
+        >>> txt = '''The 25-storey Jumeirah Beach Hotel, with its distinctive\
+design in the shape of a wave, has become one of the most successful\
+hotels in the world. Located on Jumeirah Beach, this well-known hotel\
+offers a wonderful holiday experience and a variety of pleasurable\
+activities. The many restaurants, bars and cafés, daily live\
+entertainment and sports facilities will keep you entertained, whilst\
+children will have a great time at the Sinbad’s Kids’ Club or Wild Wadi\
+WaterparkTM which is freely accessible through a private gate.'''
+        >>> bs = context.newString(txt)
+        >>> context.fontSize(14)
+        >>> tb = context.textBox(txt, r=(100, 450, 200, 300))
+        >>> tb = context.textBox(bs, r=(100, 450, 200, 300))
+        >>> #len(tb)
+        #112
+        >>> #tb
+        #'great time at the Sinbad’s Kids’ Club or Wild WadiWaterparkTM which is freely accessible through a private gate.'
+        """
+        tb = None 
+
+        if hasattr(sOrBs, 's'):
+            # Assumes it's a BabelString with a FormattedString inside.
+            sOrBs = sOrBs.s 
+        else:
+            if not isinstance(sOrBs, str):
+                # Otherwise converts to string if it is not already.
+                sOrBs = str(sOrBs) 
+
+        if clipPath is not None:
+            box = clipPath.bp
+            tb = self.b.textBox(sOrBs, clipPath.bp) 
+        elif isinstance(r, (tuple, list)):
+            # Renders rectangle units to value tuple.
+            xpt, ypt, wpt, hpt = upt(r)
+            #ypt = ypt - hpt
+            box = (xpt, ypt, wpt, hpt)
+            tb = self.b.textBox(sOrBs, box, align=None)
+        else:
+            msg = '%s.textBox has no box or clipPath defined' % self.__class__.__name__
+            raise ValueError(msg)
+
+        return tb
+
+    def textOverflow(self, sOrBs, box, align=None):
+        """Answers the overflow text if flowing it in the box. In case a plain
+        string is given then the current font / fontSize / ... settings of the
+        builder are used.
+
+        `SOrBs` Can be a str, BabelString, or DrawBot FormattedString.
+
+        >>> from pagebot import getContext
+        >>> context = getContext('Flat')
+        >>> context.newDrawing()
+        >>> context.newPage(420, 420)
+        >>> context.font('Verdana')
+        >>> context.fontSize(12)
+        >>> box = 0, 0, 100, 10
+        >>> s = 'AAA ' * 200
+        >>> len(s)
+        800
+        >>> of = context.textOverflow(s, box)
+        >>> of
+        ''
+        >>> len(of) # Should be 728.
+        0
+        >>> style = dict(font='Verdana', fontSize=12)
+        >>> bs = context.newString('AAA ' * 200, style=style)
+        >>> of = context.textOverflow(bs, box)
+        >>> of
+        ''
+        >>> #len(of) # Should be 740.
+        """
+        if isinstance(sOrBs, str):
+            return self.b.textOverflow(sOrBs, box, align=align) # Plain string
+
+        # Assume here it's a BabelString with a FormattedString inside
+        overflow = self.b.textOverflow(sOrBs.s, box, align=align)
+        bs = self.newString('')
+        bs.s = overflow
+        return bs
+
+    def textBoxBaselines(self, txt, box, align=None):
+        return self.b.textBoxBaselines(txt, box, align=align)
+
+    def textSize(self, bs, w=None, h=None, align=None):
+        """Answers the width and height of the formatted string with an
+        optional given w or h."""
+        return self.b.textSize(bs.s, width=w, height=h, align=align)
+
     def hyphenation(self, onOff):
         self.b.hyphenation(onOff)
 
@@ -256,7 +377,7 @@ class DrawBotContext(BaseContext):
             path = self.bezierpath
 
         if hasattr(path, 'path'):
-            # In case it is a PageBotPath
+            # In case it is a PageBotPath.
             path = path.path
 
         return path._path.bezierPathByFlatteningPath()
@@ -271,7 +392,9 @@ class DrawBotContext(BaseContext):
         """
         contour = []
         flattenedContours = [contour]
-        flatPath = self.bezierPathByFlatteningPath(path) # Use/create self._bezierpath if path is None
+
+        # Use / create self._bezierpath if path is None.
+        flatPath = self.bezierPathByFlatteningPath(path) 
 
         if flatPath is not None:
             for index in range(flatPath.elementCount()):
@@ -335,7 +458,8 @@ class DrawBotContext(BaseContext):
         >>> from pagebot.fonttoolbox.fontpaths import TEST_FONTS_PATH
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
-        >>> context.fontPath2FontName('Aaa.ttf') is None # Does not exist
+        >>> # Does not exist.
+        >>> context.fontPath2FontName('Aaa.ttf') is None 
         True
         >>> path = TEST_FONTS_PATH + '/fontbureau/Amstelvar-Roman-VF.ttf'
         >>> os.path.exists(path)
@@ -353,10 +477,12 @@ class DrawBotContext(BaseContext):
         be found."""
         # If the font cannot be found by name, then test if the file exists as
         # path and answer it.
-        if os.path.exists(fontName): #
+        if os.path.exists(fontName):
             return fontName
+
         # Otherwise try OSX for the conversion.
         nsFont = NSFont.fontWithName_size_(fontName, 25)
+
         if nsFont is not None:
             fontRef = CTFontDescriptorCreateWithNameAndSize(nsFont.fontName(), nsFont.pointSize())
             url = CTFontDescriptorCopyAttribute(fontRef, kCTFontURLAttribute)
@@ -455,7 +581,9 @@ class DrawBotContext(BaseContext):
         # then remove _scaled from .gitignore.
         cachePath = '%s/%s/' % (path2Dir(path), self.SCALED_PATH) 
         fileNameParts = path2Name(path).split('.')
-        if not exportExtension: # If undefined, take the original extension for exporting the cache.
+
+        # If undefined, take the original extension for exporting the cache.
+        if not exportExtension: 
             exportExtension = fileNameParts[-1].lower()
         cachedFileName = '%s.%dx%d.%d.%s' % ('.'.join(fileNameParts[:-1]), w, h, index or 0, exportExtension)
         return cachePath, cachedFileName
@@ -492,7 +620,8 @@ class DrawBotContext(BaseContext):
         cachedFilePath = cachePath + fileName
 
         if force or not os.path.exists(cachedFilePath):
-            self.newDrawing() # Clean the drawing stack.
+            # Clean the drawing stack.
+            self.newDrawing() 
             self.newPage(w=w, h=h)
             self.image(path, (0, 0), w=w, h=h, pageNumber=index or 0)
             if showImageLoresMarker:
@@ -503,7 +632,9 @@ class DrawBotContext(BaseContext):
                 tw, th = bs.size
                 self.text(bs, (w/2-tw/2, h/2-th/4))
             self.saveImage(cachedFilePath)
-            self.newDrawing() # Clean the drawing stack.
+
+            # Clean the drawing stack again.
+            self.newDrawing() 
         return cachedFilePath
 
     def imagePixelColor(self, path, p=None):
@@ -536,14 +667,16 @@ class DrawBotContext(BaseContext):
         >>> len(installed) > 0
         True
         """
-        if isinstance(patterns, str): # In case it is a string, convert to a list
+        # In case it is a string, convert to a list.
+        if isinstance(patterns, str): 
             patterns = [patterns]
 
         fontNames = []
 
         for fontName in self.b.installedFonts():
             if not patterns:
-                fontNames.append(fontName) # If no pattern then answer all.
+                # If no pattern then answer all.
+                fontNames.append(fontName) 
             else:
                 for pattern in patterns:
                     if pattern in fontName:
