@@ -17,10 +17,10 @@ from pagebot.filepaths import DEFAULT_FONT_PATH
 from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.style import css
-from pagebotcocoa.strings.textline import TextLine
 from pagebot.toolbox.color import (color, Color, noColor, inheritColor,
         blackColor)
 from pagebot.toolbox.units import pt, upt, isUnit, units, em
+from pagebotcocoa.strings.textline import TextLine
 
 def pixelBounds(fs):
     """Answers the pixel-bounds rectangle of the text.
@@ -445,6 +445,8 @@ class DrawBotString(BabelString):
         185.2pt
         >>> #lines = bs.getTextLines(w=200, h=200)
         >>> attrString = bs.s.getNSObject()
+        >>> len(attrString)
+        12
         >>> setter = CTFramesetterCreateWithAttributedString(attrString)
         >>> path = CGPathCreateMutable()
         >>> CGPathAddRect(path, None, CGRectMake(0, 0, 200, 600))
