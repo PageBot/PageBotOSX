@@ -139,3 +139,21 @@ class CanvasContext(BaseContext):
 
     def fontLineHeight(self):
         pass
+
+    #   T E X T
+
+    def text(self, sOrBs, p):
+        pass
+
+    def textBox(self, sOrBs, r=None, clipPath=None, align=None):
+        pass
+
+    def textOverflow(self, sOrBs, box, align=None):
+        pass
+
+    def textBoxBaselines(self, txt, box, align=None):
+        pass
+
+    def textSize(self, bs, w=None, h=None, align=None):
+        pass
+
