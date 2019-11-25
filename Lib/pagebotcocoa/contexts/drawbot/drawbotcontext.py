@@ -22,6 +22,7 @@ from AppKit import NSFont
 import drawBot
 from drawBot import Variable
 from pagebot.constants import *
+from pagebot.contexts.base.babelstring import BabelString
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
