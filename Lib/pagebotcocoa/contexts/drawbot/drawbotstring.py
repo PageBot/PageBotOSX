@@ -112,7 +112,19 @@ class DrawBotString(BabelString):
         # Store the DrawBot FormattedString, as property to make sure it is a
         # FormattedString, otherwise create it.
         self.s = s
-        super().__init__(self.s, context, style=style)
+
+        # Some checking, in case we get something else here.
+        assert style is None or isinstance(style, dict)
+
+        # Optional style to set the context parameters. In case defined, store
+        # current status here as property and set the current FormattedString
+        # for future additions. Also the answered metrics will not be based on
+        # these values.
+        if style is None:
+            style = {}
+
+        self.style = style
+        super().__init__(context)
 
     def _get_s(self):
         """Answers the embedded FormattedString using a property to force string
@@ -136,10 +148,18 @@ class DrawBotString(BabelString):
     def columnStart(self, firstColumnIndent):
         bs = self
         style = self.getStyleAtIndex(0)
-        if style.get('firstLineIndent') is not None or firstColumnIndent is not None: # Something going on at start?
-            style['fontSize'] = pt(0.0001) # Really really small place holder period.
-            style['textFill'] = color(1, 1, 1, 1) # Transparant, so it will never show.
-            style['firstLineIndent'] = firstColumnIndent or 0 # Then make this one work
+
+        # Something going on at start?
+        if style.get('firstLineIndent') is not None or firstColumnIndent is not None: 
+
+            # Really really small place holder period.
+            style['fontSize'] = pt(0.0001) 
+
+            # Transparant, so it will never show.
+            style['textFill'] = color(1, 1, 1, 1) 
+
+            # Then make this one work.
+            style['firstLineIndent'] = firstColumnIndent or 0 
             bs = self.context.newString('.', style=style) + bs
         return bs
 
@@ -164,13 +184,16 @@ class DrawBotString(BabelString):
         >>> bs = context.newString('Example Text', style=style)
         >>> bs.fontSize
         85pt
-        >>> bs.fontSize = 96 # Auto-convert to points
+        >>> # Auto-convert to points
+        >>> bs.fontSize = 96 
         >>> bs.fontSize
         96pt
-        >>> bs.fontSize = mm(5) # Set at unit.
+        >>> # Set at unit.
+        >>> bs.fontSize = mm(5) 
         >>> bs.fontSize
         5mm
         >>> #bs.leading
+        >>> 
         1.4em
         """
         return units(self.style.get('fontSize'))
@@ -520,10 +543,14 @@ class DrawBotString(BabelString):
         else:
             tx, tw = 0, context.b.textSize(fs)[0]
         fspt, wpt, txpt, twpt = upt(fontSize, w, tx, tw)
-        dxpt = twpt - txpt # Render the units, to compare for zero division
+
+        # Render the units, to compare for zero division.
+        dxpt = twpt - txpt 
         if dxpt:
             return wpt * fspt / dxpt
-        return None # Zero division, cannot calculate
+
+        # Zero division, cannot calculate.
+        return None 
 
     @classmethod
     def _newFitHeightString(cls, fs, context, fontSize, h, pixelFit):
@@ -532,10 +559,14 @@ class DrawBotString(BabelString):
         else:
             ty, th = 0, context.b.textSize(fs)[1]
         fspt, hpt, typt, thpt = upt(fontSize, h, ty, th)
-        dypt = thpt - typt # Render the units, to compare for zero division
+
+        # Render the units, to compare for zero division.
+        dypt = thpt - typt 
         if dypt:
             return hpt * fspt / dypt
-        return None # Zero division, cannot calculate
+
+        # Zero division, cannot calculate.
+        return None 
 
     FITTING_TOLERANCE = 3
 
@@ -580,10 +611,15 @@ class DrawBotString(BabelString):
 
         """
         style = copy(style)
-        location = copy(css('', e, style, default={})) # In case the used already supplied a VF location, use it.
+
+        # In case the used already supplied a VF location, use it.
+        location = copy(css('', e, style, default={})) 
         font = css('font', e, style)
-        if isinstance(font, str): # Assuming it's a path, get the Font instance.
-            font = getFont(font) # Make sure we gave a real Font instance.
+
+        # Assuming it's a path, get the Font instance.
+        if isinstance(font, str): 
+            # Make sure we gave a real Font instance.
+            font = getFont(font) 
         style['font'] = font
 
         # Get the flag if fit locations should be rounded (less cached
@@ -615,14 +651,24 @@ class DrawBotString(BabelString):
 
         # Now we have a formatted string with a given fontSize, guess to fit on
         # the width.
-        tx, _, tw, _ = bs.bounds() # Get pixel bounds of the string
-        tw = tw - tx # Pixel width of the current string.
-        prevW = None # Testing if something changed, for extreme of axes.
+
+        # Get pixel bounds of the string
+        tx, _, tw, _ = bs.bounds() 
+
+        # Pixel width of the current string.
+        tw = tw - tx 
+
+        # Testing if something changed, for extreme of axes.
+        prevW = None 
         axisValue = defaultValue
 
-        for n in range(100): # Limit the maximum amount of iterations as safeguard
-            if tw > w: # Too wide, try iterate smaller in ratio of wdth/XTRA axis values
-                maxValue = axisValue # Clip wide range to current
+
+        # Limit the maximum amount of iterations as safeguard.
+        for n in range(100): 
+            # Too wide, try iterate smaller in ratio of wdth/XTRA axis values.
+            if tw > w: 
+                # Clip wide range to current.
+                maxValue = axisValue 
                 # Guess the new axisvalue from the ratio of tw/w
                 axisValue = (axisValue - minValue)/2 + minValue
                 if roundVariableFitLocation:
@@ -632,14 +678,22 @@ class DrawBotString(BabelString):
                 loc['opsz'] = upt(style['fontSize'])
                 style['font'] = getInstance(font, loc)
                 bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
-                tx, ty, tw, th = bs.bounds() # Get pixel bounds of the string
-                tw = tw - tx # Total width for the current
-                if prevW == tw: # Did not change, probably not able to get more condensed
+
+                # Get pixel bounds of the string.
+                tx, ty, tw, th = bs.bounds() 
+
+                # Total width for the current.
+                tw = tw - tx 
+
+                # Did not change, probably not able to get more condensed.
+                if prevW == tw: 
                     break
                 prevW = tw
 
-            elif tw < w - cls.FITTING_TOLERANCE: # Too condensed, try to make wider.
-                minValue = axisValue # Clip narrow range to current
+            # Too condensed, try to make wider.
+            elif tw < w - cls.FITTING_TOLERANCE: 
+                # Clip narrow range to current
+                minValue = axisValue 
                 axisValue = (maxValue - axisValue)/2 + axisValue
                 if roundVariableFitLocation:
                     axisValue = int(round(axisValue))
@@ -648,13 +702,22 @@ class DrawBotString(BabelString):
                 loc['opsz'] = upt(style['fontSize'])
                 style['font'] = getInstance(font, loc)
                 bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
-                tx, ty, tw, th = bs.bounds() # Get pixel bounds of the string
-                tw = tw - tx # Total width for the current
-                if prevW == tw: # Did not change, probably not able to get more condensed
+
+                # Get pixel bounds of the string.
+                tx, ty, tw, th = bs.bounds() 
+
+                # Total width for the current.
+                tw = tw - tx 
+
+                # Did not change, probably not able to get more condensed.
+                if prevW == tw: 
                     break
+
                 prevW = tw
 
-            else: # We found a fitting VF-location within tolerance. Back out.
+
+            # We found a fitting VF-location within tolerance. Back out.
+            else: 
                 break
         #print('Number of iterations', n)
         return bs
@@ -696,7 +759,9 @@ class DrawBotString(BabelString):
         root-fontSize) here too.
         '''
         if w is not None or h is not None:
-            uFontSize = pt(100) # Start with large font size to scale for fitting.
+
+            # Start with large font size to scale for fitting.
+            uFontSize = pt(100) 
         else:
             # May be scaled to fit w or h if target is defined.
             uFontSize = css('fontSize', e, style, default=DEFAULT_FONT_SIZE)
@@ -723,7 +788,10 @@ class DrawBotString(BabelString):
                 cFill = color(cFill)
             elif cFill is None:
                 cFill = noColor
-            assert isinstance(cFill, Color), ('DrawBotString.newString: Fill color "%s" is not Color in style %s' % (cFill, style))
+
+            msg = ('DrawBotString.newString: Fill color "%s" is not Color in style %s' % (cFill, style))
+            assert isinstance(cFill, Color), msg 
+
             if cFill is noColor:
                 fsAttrs['fill'] = None
             elif cFill.isCmyk:
@@ -752,7 +820,8 @@ class DrawBotString(BabelString):
 
             assert isinstance(cStroke, Color), ('DrawBotString.newString] Stroke color "%s" is not Color in style %s' % (cStroke, style))
 
-            if cStroke is noColor: # None is value to disable stroke drawing
+            # None is value to disable stroke drawing.
+            if cStroke is noColor: 
                 fsAttrs['stroke'] = None
             elif cStroke.isCmyk:
                 fsAttrs['cmykStroke'] = cStroke.cmyk
@@ -764,33 +833,41 @@ class DrawBotString(BabelString):
         # NOTE: xAlign is used for element alignment, not text.
         sAlign = css('xTextAlign', e, style)
 
-        if sAlign is not None: # yTextAlign must be solved by parent container element.
+        # yTextAlign must be solved by parent container element.
+        if sAlign is not None: 
             fsAttrs['align'] = sAlign
 
         sUnderline = css('underline', e, style)
 
-        if sUnderline in ('single', None): # Only these values work in FormattedString
+
+        # Only these values work in FormattedString.
+        if sUnderline in ('single', None): 
             fsAttrs['underline'] = sUnderline
 
         uParagraphTopSpacing = css('paragraphTopSpacing', e, style)
 
         if uParagraphTopSpacing is not None:
-            fsAttrs['paragraphTopSpacing'] = upt(uParagraphTopSpacing, base=fontSizePt) # Base for em or perc
+
+            # Base for em or perc.
+            fsAttrs['paragraphTopSpacing'] = upt(uParagraphTopSpacing, base=fontSizePt) 
 
         uParagraphBottomSpacing = css('paragraphBottomSpacing', e, style)
 
         if uParagraphBottomSpacing:
-            fsAttrs['paragraphBottomSpacing'] = upt(uParagraphBottomSpacing, base=fontSizePt) # Base for em or perc
+            # Base for em or perc.
+            fsAttrs['paragraphBottomSpacing'] = upt(uParagraphBottomSpacing, base=fontSizePt) 
 
         uTracking = css('tracking', e, style)
 
         if uTracking is not None:
-            fsAttrs['tracking'] = upt(uTracking, base=fontSizePt) # Base for em or perc
+            # Base for em or perc.
+            fsAttrs['tracking'] = upt(uTracking, base=fontSizePt) 
 
         uBaselineShift = css('baselineShift', e, style)
 
         if uBaselineShift is not None:
-            fsAttrs['baselineShift'] = upt(uBaselineShift, base=fontSizePt) # Base for em or perc
+            # Base for em or perc
+            fsAttrs['baselineShift'] = upt(uBaselineShift, base=fontSizePt) 
 
         openTypeFeatures = css('openTypeFeatures', e, style)
 
@@ -798,7 +875,9 @@ class DrawBotString(BabelString):
             fsAttrs['openTypeFeatures'] = openTypeFeatures
 
         tabs = []
-        for tab in (css('tabs', e, style) or []): # Can be [(10, LEFT), ...] or [10, 20, ...]
+
+        # Can be [(10, LEFT), ...] or [10, 20, ...]
+        for tab in (css('tabs', e, style) or []): 
             if not isinstance(tab, (list, tuple)):
                 tab = upt(tab), LEFT
             else:
@@ -819,16 +898,19 @@ class DrawBotString(BabelString):
         # firstTagIndent = style.get('firstTagIndent')
         # TODO: Use this value instead, if currently on top of a new string.
         if uFirstLineIndent is not None:
-            fsAttrs['firstLineIndent'] = upt(uFirstLineIndent, base=fontSizePt) # Base for em or perc
+            # Base for em or perc
+            fsAttrs['firstLineIndent'] = upt(uFirstLineIndent, base=fontSizePt) 
 
         uIndent = css('indent', e, style)
 
         if uIndent is not None:
-            fsAttrs['indent'] = upt(uIndent, base=fontSizePt) # Base for em or perc
+            # Base for em or perc
+            fsAttrs['indent'] = upt(uIndent, base=fontSizePt) 
 
         uTailIndent = css('tailIndent', e, style)
         if uTailIndent is not None:
-            fsAttrs['tailIndent'] = upt(uTailIndent, base=fontSizePt) # Base for em or perc
+            # Base for em or perc
+            fsAttrs['tailIndent'] = upt(uTailIndent, base=fontSizePt) 
 
         sLanguage = css('language', e, style)
 
@@ -859,7 +941,8 @@ class DrawBotString(BabelString):
         >>> bs = context.newString('ABC', style=dict(font=font.path, w=pt(100)))
         >>> int(round(bs.fontSize))
         12
-        >>> bs = context.newString('ABC', style=dict(font=font, w=pt(100))) # Use the font instance instead of path.
+        >>> # Use the font instance instead of path.
+        >>> bs = context.newString('ABC', style=dict(font=font, w=pt(100))) 
         >>> int(round(bs.fontSize))
         12
         >>> bs = context.newString('DEF')
@@ -943,7 +1026,9 @@ class DrawBotString(BabelString):
         # Store any adjust fitting parameters in the string, in case the caller
         # wants to know.
         newS.fittingFontSize = pt(fsAttrs.get('fontSize'))
-        newS.fittingFont = fsAttrs.get('font') # In case we are sampling with a Variable Font.
+
+        # In case we are sampling with a Variable Font.
+        newS.fittingFont = fsAttrs.get('font') 
         newS.fittingLocation = fsAttrs.get('location')
         newS.isFitting = isFitting
         newS.language = css('language', e, style)
