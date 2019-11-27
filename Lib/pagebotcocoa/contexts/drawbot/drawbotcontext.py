@@ -189,20 +189,20 @@ class DrawBotContext(BaseContext):
     #   T E X T
     #
 
-    def text(self, sOrBs, p):
-        """Draws the sOrBs text string at position p.
+    def text(self, s, p):
+        """Draws the s text string at position p.
 
-        `SOrBs` Can be a str, BabelString, or DrawBot FormattedString.
+        `S` Can be a str, BabelString, or DrawBot FormattedString.
 
         NOTE: signature differs from DrawBot.
         """
-        if isinstance(sOrBs, BabelString):
+        if isinstance(s, BabelString):
             # BabelString with a FormattedString inside.
-            s = sOrBs.s 
+            s = s.s 
             position = point2D(upt(p))
         else:
             # Regular string, use global font and size.
-            s = sOrBs
+            s = s
             position = point2D(upt(p))
             self.b.fontSize(self._fontSize)
             self.font(self._font)
@@ -210,10 +210,10 @@ class DrawBotContext(BaseContext):
         # Render point units to value tuple
         self.b.text(s, position) 
 
-    def textBox(self, sOrBs, r=None, clipPath=None, align=None):
-        """Draws the sOrBs text string in rectangle r.
+    def textBox(self, s, r=None, clipPath=None, align=None):
+        """Draws the s text string in rectangle r.
 
-        `SOrBs` Can be a str, BabelString, or DrawBot FormattedString.
+        `S` Can be a str, BabelString, or DrawBot FormattedString.
 
         NOTE: signature differs from DrawBot.
 
@@ -241,43 +241,43 @@ WaterparkTM which is freely accessible through a private gate.'''
         """
         tb = None 
 
-        if hasattr(sOrBs, 's'):
+        if hasattr(s, 's'):
             # Assumes it's a BabelString with a FormattedString inside.
-            sOrBs = sOrBs.s 
+            s = s.s 
         else:
-            if not isinstance(sOrBs, str):
+            if not isinstance(s, str):
                 # Otherwise converts to string if it is not already.
-                sOrBs = str(sOrBs) 
+                s = str(s) 
 
         if clipPath is not None:
             box = clipPath.bp
-            tb = self.b.textBox(sOrBs, clipPath.bp) 
+            tb = self.b.textBox(s, clipPath.bp) 
         elif isinstance(r, (tuple, list)):
             # Renders rectangle units to value tuple.
             xpt, ypt, wpt, hpt = upt(r)
             #ypt = ypt - hpt
             box = (xpt, ypt, wpt, hpt)
-            tb = self.b.textBox(sOrBs, box, align=None)
+            tb = self.b.textBox(s, box, align=None)
         else:
             msg = '%s.textBox has no box or clipPath defined' % self.__class__.__name__
             raise ValueError(msg)
 
         return tb
 
-    def textOverflow(self, sOrBs, box, align=None):
+    def textOverflow(self, s, box, align=None):
         """Answers the overflow text if flowing it in the box. In case a plain
         string is given then the current font / fontSize / ... settings of the
         builder are used.
 
-        `SOrBs` Can be a str, BabelString, or DrawBot FormattedString.
+        `S` Can be a str, BabelString, or DrawBot FormattedString.
 
         >>> from pagebot import getContext
-        >>> context = getContext('Flat')
+        >>> context = getContext('DrawBot')
         >>> context.newDrawing()
         >>> context.newPage(420, 420)
         >>> context.font('Verdana')
         >>> context.fontSize(12)
-        >>> box = 0, 0, 100, 10
+        >>> box = 0, 0, 50, 10
         >>> s = 'AAA ' * 200
         >>> len(s)
         800
@@ -293,11 +293,11 @@ WaterparkTM which is freely accessible through a private gate.'''
         ''
         >>> #len(of) # Should be 740.
         """
-        if isinstance(sOrBs, str):
-            return self.b.textOverflow(sOrBs, box, align=align) # Plain string
+        if isinstance(s, str):
+            return self.b.textOverflow(s, box, align=align) # Plain string
 
-        # Assume here it's a BabelString with a FormattedString inside
-        overflow = self.b.textOverflow(sOrBs.s, box, align=align)
+        # Assume here it's a DrawBotString with a FormattedString inside
+        overflow = self.b.textOverflow(s.s, box, align=align)
         bs = self.newString('')
         bs.s = overflow
         return bs
