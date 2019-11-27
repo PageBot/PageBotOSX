@@ -201,8 +201,10 @@ class DrawBotContext(BaseContext):
             s = s.s 
             position = point2D(upt(p))
         else:
+            if not isinstance(s, str):
+                # Otherwise converts to string if it is not already.
+                s = str(s) 
             # Regular string, use global font and size.
-            s = s
             position = point2D(upt(p))
             self.b.fontSize(self._fontSize)
             self.font(self._font)
