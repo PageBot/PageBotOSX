@@ -277,21 +277,20 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> context.newPage(420, 420)
         >>> context.font('Verdana')
         >>> context.fontSize(12)
-        >>> box = 0, 0, 50, 10
+        >>> box = 0, 0, 300, 20
         >>> s = 'AAA ' * 200
         >>> len(s)
         800
+        >>> # Plain string overflow.
         >>> of = context.textOverflow(s, box)
-        >>> of
-        ''
-        >>> len(of) # Should be 728.
-        0
-        >>> style = dict(font='Verdana', fontSize=12)
+        >>> len(of)
+        760
+        >>> # Styled DrawBotString overflow.
+        >>> style = dict(font='Verdana', fontSize=14)
         >>> bs = context.newString('AAA ' * 200, style=style)
         >>> of = context.textOverflow(bs, box)
-        >>> of
-        ''
-        >>> #len(of) # Should be 740.
+        >>> len(of)
+        764
         """
         if isinstance(s, str):
             return self.b.textOverflow(s, box, align=align) # Plain string
