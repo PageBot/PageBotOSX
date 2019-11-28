@@ -429,22 +429,22 @@ class DrawBotString(BabelString):
     def textOverflow(self, w, h, align=LEFT):
         """Answers the overflowing of from the box (0, 0, w, h) as a new
         DrawBotString in the current context."""
-        b = self.context.b
         wpt, hpt = upt(w, h)
+        box = (0, 0, wpt, hpt)
 
-        # Sets the hyphenation flag from style, as in DrawBot this is set by a
+        # Sets the hyphenation flag from style. In DrawBot this is set by a
         # global function, not as FormattedString attribute.
-        # TODO: Attributes don't seem to maintain in the string or overfill copy.
+
+        # TODO: Attributes don't seem to stay the same in the string or overfill copy.
         language = self.language or 'en'
         hyphenation = self.hyphenation or True
-        b.language(language)
-        b.hyphenation(hyphenation)
-        overflow = self.__class__(b.textOverflow(self.s, (0, 0, wpt, hpt), align), self.context)
+        self.context.b.language(language)
+        self.context.b.hyphenation(hyphenation)
+        overflow = self.__class__(self.context.b.textOverflow(self.s, box, align), self.context)
 
         # Pass on these parameters to the new constructed DrawBotString.
         overflow.language = language
         overflow.hyphenation = hyphenation
-        #print('OVERFLOW', overflow.language, overflow.hyphenation, overflow[:30])
         return overflow
 
     def getBaselines(self, w, h=None):
