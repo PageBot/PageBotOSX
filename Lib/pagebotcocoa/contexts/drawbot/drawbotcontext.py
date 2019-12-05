@@ -69,6 +69,8 @@ class DrawBotContext(BaseContext):
         # Holds the extension as soon as the export file path is defined.
         self.fileType = DEFAULT_FILETYPE
 
+    # Drawing.
+
     def newDrawing(self, w=None, h=None, doc=None):
         """Clear output canvas, start new export file. DrawBot function.
 
@@ -84,13 +86,12 @@ class DrawBotContext(BaseContext):
             w = w
             h = h
         '''
-
         self.b.newDrawing()
 
     def endDrawing(self, doc=None):
         self.b.endDrawing()
 
-    def saveDocument(self, path, multiPage=None):
+    def saveDrawing(self, path, multiPage=None):
         """Select non-standard DrawBot export builders here. Save the current
         image as path, rendering depending on the extension of the path file.
         In case the path starts with "_export", create its directories.
@@ -107,14 +108,14 @@ class DrawBotContext(BaseContext):
         else:
             self.b.saveImage(path, multipage=multiPage)
 
-    saveImage = saveDocument
+    saveImage = saveDrawing
+
+    def getDrawing(self):
+        """Returns a PDF document of the current state."""
+        return self.b.pdfImage()
 
     def setStyles(self, styles):
         pass
-
-    def getDocument(self):
-        """Returns a PDF document of the current state."""
-        return self.b.pdfImage()
 
     #   V A R I A B L E
 

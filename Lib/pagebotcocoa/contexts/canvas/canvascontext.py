@@ -26,7 +26,19 @@ class CanvasContext(BaseContext):
         self.b = CanvasBuilder()
         self.name = self.__class__.__name__
 
-    #   D O C U M E N T
+    #   Drawing.
+
+    def newDrawing(self, w=None, h=None, doc=None):
+        pass
+
+    def endDrawing(self, doc=None):
+        pass
+
+    def saveDrawing(self, path, multiPage=None):
+        pass
+
+    def getDrawing(self):
+        pass
 
     def newPage(self, width, height):
         return self.b.newPage(width, height)
