@@ -68,24 +68,27 @@ class DrawBotContext(BaseContext):
         self.name = self.__class__.__name__
         # Holds the extension as soon as the export file path is defined.
         self.fileType = DEFAULT_FILETYPE
-        self._openDocument = False
 
-    #   D O C U M E N T
-
-    def newDocument(self, w=None, h=None, doc=None):
-        """Can be ignored for DrawBot; document opens automatically if first
-        page is created. The @doc argument is the optional calling PageBot
-        Document instance.
+    def newDrawing(self, w=None, h=None, doc=None):
+        """Clear output canvas, start new export file. DrawBot function.
 
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
-        >>> context.newDocument(500, 700)
+        >>> context.newDrawing()
         """
+        '''
         if doc is not None:
             w = w or doc.w
             h = h or doc.h
+        else:
+            w = w
+            h = h
+        '''
 
-        self._openDocument = True
+        self.b.newDrawing()
+
+    def endDrawing(self, doc=None):
+        self.b.endDrawing()
 
     def saveDocument(self, path, multiPage=None):
         """Select non-standard DrawBot export builders here. Save the current
@@ -112,15 +115,6 @@ class DrawBotContext(BaseContext):
     def getDocument(self):
         """Returns a PDF document of the current state."""
         return self.b.pdfImage()
-
-    def newDrawing(self, doc=None):
-        """Clear output canvas, start new export file. DrawBot function.
-
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
-        >>> context.newDrawing()
-        """
-        self.b.newDrawing()
 
     #   V A R I A B L E
 

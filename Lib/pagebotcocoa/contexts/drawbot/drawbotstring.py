@@ -12,7 +12,7 @@
 #     Supporting Flat, xxyxyz.org/flat
 # -----------------------------------------------------------------------------
 #
-#     string.py
+#     drawbotstring.py
 #
 
 import re
@@ -376,7 +376,8 @@ class DrawBotString(BabelString):
     fontCapHeight = capHeight = property(_get_capHeight) 
 
     def _get_leading(self):
-        """Returns the current font leading, based on the current font and fontSize."""
+        """Returns the current font leading, based on the current font and
+        fontSize."""
         fontSize = upt(self.fontSize)
         return em(self.s.fontLeading()/fontSize, base=fontSize)
 
