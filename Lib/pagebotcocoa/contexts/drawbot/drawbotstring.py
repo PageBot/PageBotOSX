@@ -726,204 +726,6 @@ class DrawBotString(BabelString):
         #print('Number of iterations', n)
         return bs
 
-    @classmethod
-    def getStringAttributes(cls, t, context, e=None, style=None, w=None,
-            h=None):
-        '''
-        If there is a target (pixel) width or height defined, ignore the
-        requested fontSize and try the width or height first for fontSize =
-        100. The resulting width or height is then used as base value to
-        calculate the needed point size.
-
-        Forced fontSize, then this overwrites the style['fontSize'] if it is
-        there.
-
-        TODO: add calculation of rFontSize (relative float based on
-        root-fontSize) here too.
-        '''
-
-        attrs = {}
-
-        # Font selection.
-        sFont = css('font', e, style)
-
-        if sFont is not None:
-            # If the Font instance was supplied, then use it's path.
-            if hasattr(sFont, 'path'):
-                sFont = sFont.path
-            attrs['font'] = sFont
-        else:
-            attrs['font'] = DEFAULT_FONT_PATH
-
-        sFallbackFont = css('fallbackFont', e, style)
-
-        if isinstance(sFallbackFont, Font):
-            sFallbackFont = sFallbackFont.path
-        elif sFallbackFont is None:
-            sFallbackFont = DEFAULT_FALLBACK_FONT_PATH
-
-        attrs['fallbackFont'] = sFallbackFont
-
-        if w is not None or h is not None:
-            # Start with large font size to scale for fitting.
-            uFontSize = pt(100) 
-        else:
-            # May be scaled to fit w or h if target is defined.
-            uFontSize = css('fontSize', e, style, default=DEFAULT_FONT_SIZE)
-
-        if uFontSize is not None:
-            # Remember as base for relative units.
-            attrs['fontSize'] = fontSizePt = upt(uFontSize)
-        else:
-            fontSizePt = DEFAULT_FONT_SIZE
-
-        uLeading = css('leading', e, style)
-
-        # Base for em or percent.
-        attrs['lineHeight'] = upt(uLeading or DEFAULT_LEADING, base=fontSizePt)
-
-        # Color values for text fill
-        # Color: Fill the text with this color instance
-        # noColor: Set the value to None, no fill will be drawn
-        # inheritColor: Don't set color, inherit the current setting for fill
-        cFill = css('textFill', e, style, default=blackColor)
-
-        if cFill is not inheritColor:
-            if isinstance(cFill, (tuple, list, int, float)):
-                cFill = color(cFill)
-            elif cFill is None:
-                cFill = noColor
-
-            msg = ('DrawBotString.newString: Fill color "%s" is not Color in style %s' % (cFill, style))
-            assert isinstance(cFill, Color), msg 
-
-            if cFill is noColor:
-                attrs['fill'] = None
-            elif cFill.isCmyk:
-                attrs['cmykFill'] = cFill.cmyk
-            elif cFill.isRgba:
-                attrs['fill'] = cFill.rgba
-            else:
-                attrs['fill'] = cFill.rgb
-
-        # Color values for text stroke
-        # Color: Stroke the text with this color instance
-        # noColor: Set the value to None, no stroke will be drawn
-        # inheritColor: Don't set color, inherit the current setting for stroke
-        cStroke = css('textStroke', e, style, default=noColor)
-        strokeWidth = css('textStrokeWidth', e, style)
-
-        if strokeWidth is not None:
-            assert isUnit(strokeWidth), ('DrawBotString.newString: strokeWidth %s must of type Unit' % strokeWidth)
-            attrs['strokeWidth'] = upt(strokeWidth, base=fontSizePt)
-
-        if cStroke is not inheritColor:
-            if isinstance(cStroke, (tuple, list, int, float)):
-                cStroke = color(cStroke)
-            elif cStroke is None:
-                cStroke = noColor
-
-            assert isinstance(cStroke, Color), ('DrawBotString.newString] Stroke color "%s" is not Color in style %s' % (cStroke, style))
-
-            # None is value to disable stroke drawing.
-            if cStroke is noColor: 
-                attrs['stroke'] = None
-            elif cStroke.isCmyk:
-                attrs['cmykStroke'] = cStroke.cmyk
-            elif cStroke.isRgba:
-                attrs['stroke'] = cStroke.rgba
-            else:
-                attrs['stroke'] = cStroke.rgb
-
-        # NOTE: xAlign is used for element alignment, not text.
-        sAlign = css('xTextAlign', e, style)
-
-        # yTextAlign must be solved by parent container element.
-        if sAlign is not None: 
-            attrs['align'] = sAlign
-
-        sUnderline = css('underline', e, style)
-
-
-        # Only these values work in FormattedString.
-        if sUnderline in ('single', None): 
-            attrs['underline'] = sUnderline
-
-        uParagraphTopSpacing = css('paragraphTopSpacing', e, style)
-
-        if uParagraphTopSpacing is not None:
-
-            # Base for em or perc.
-            attrs['paragraphTopSpacing'] = upt(uParagraphTopSpacing, base=fontSizePt) 
-
-        uParagraphBottomSpacing = css('paragraphBottomSpacing', e, style)
-
-        if uParagraphBottomSpacing:
-            # Base for em or perc.
-            attrs['paragraphBottomSpacing'] = upt(uParagraphBottomSpacing, base=fontSizePt) 
-
-        uTracking = css('tracking', e, style)
-
-        if uTracking is not None:
-            # Base for em or perc.
-            attrs['tracking'] = upt(uTracking, base=fontSizePt) 
-
-        uBaselineShift = css('baselineShift', e, style)
-
-        if uBaselineShift is not None:
-            # Base for em or perc
-            attrs['baselineShift'] = upt(uBaselineShift, base=fontSizePt) 
-
-        openTypeFeatures = css('openTypeFeatures', e, style)
-
-        if openTypeFeatures is not None:
-            attrs['openTypeFeatures'] = openTypeFeatures
-
-        tabs = []
-
-        # Can be [(10, LEFT), ...] or [10, 20, ...]
-        for tab in (css('tabs', e, style) or []): 
-            if not isinstance(tab, (list, tuple)):
-                tab = upt(tab), LEFT
-            else:
-                tab = upt(tab[0]), tab[1]
-            tabs.append(tab)
-        if tabs:
-            attrs['tabs'] = tabs
-
-        # Set the hyphenation flag from style, as in DrawBot this is set by a
-        # global function, not as FormattedString attribute.
-        # FIX IN DRAWBOT attrs['language'] = bool(css('language', e, style))
-        # FIX IN DRAWBOT
-        #attrs['hyphenation'] = bool(css('hyphenation', e, style))
-
-        uFirstLineIndent = css('firstLineIndent', e, style)
-        # TODO: Use this value instead, if current tag is different from
-        # previous tag. How to get this info?
-        # firstTagIndent = style.get('firstTagIndent')
-        # TODO: Use this value instead, if currently on top of a new string.
-        if uFirstLineIndent is not None:
-            # Base for em or perc
-            attrs['firstLineIndent'] = upt(uFirstLineIndent, base=fontSizePt) 
-
-        uIndent = css('indent', e, style)
-
-        if uIndent is not None:
-            # Base for em or perc
-            attrs['indent'] = upt(uIndent, base=fontSizePt) 
-
-        uTailIndent = css('tailIndent', e, style)
-        if uTailIndent is not None:
-            # Base for em or perc
-            attrs['tailIndent'] = upt(uTailIndent, base=fontSizePt) 
-
-        sLanguage = css('language', e, style)
-
-        if sLanguage is not None:
-            attrs['language'] = sLanguage
-
-        return attrs
-
     """
     # FIXME: Disabled string fitting here. Use fitString(...) instead.
     if False and w is not None:
@@ -975,7 +777,7 @@ class DrawBotString(BabelString):
     """
 
     @classmethod
-    def newString(cls, t, context, e=None, style=None, w=None, h=None, **kwargs):
+    def newString(cls, s, context, e=None, style=None, w=None, h=None, **kwargs):
         """Answers a DrawBotString instance from valid attributes in *style*.
         Set all values after testing their existence, so they can inherit from
         previous style formats in the string.
@@ -1003,38 +805,33 @@ class DrawBotString(BabelString):
         >>> bs + bs1
         ABC DEF
         """
-        if t is None:
-            t = ''
+        assert isinstance(s, str)
 
-        elif not isinstance(t, str):
-            t = str(t)
+        if style is None:
+            style = {}
+        else:
+            assert isinstance(style, dict)
 
-        attrs = cls.getStringAttributes(t, context, e=e, style=style, w=w, h=h)
+        attrs = cls.getStringAttributes(s, e=e, style=style, w=w, h=h)
 
-        if css('uppercase', e, style):
-            t = t.upper()
-        elif css('lowercase', e, style):
-            t = t.lower()
-        elif css('capitalized', e, style):
-            t = t.capitalize()
+        s = cls.addCaseToString(s, e, style)
 
-        # Format plain string `t` onto a new formatted `fs`.
-        newT = context.b.FormattedString(t, **attrs)
+        # Turns plain string `s` into a FormattedString.
+        s = context.b.FormattedString(s, **attrs)
         isFitting = True
-        newS = cls(newT, context, attrs)
-        fittingStyle = {}
 
-        # Store any adjust fitting parameters in the string, in case the caller
-        # wants to know.
-        newS.fittingFontSize = pt(attrs.get('fontSize'))
+        # Turns FormattedString into a DrawBotString.
+        s = cls(s, context, attrs)
 
-        # In case we are sampling with a Variable Font.
-        newS.fittingFont = attrs.get('font') 
-        newS.fittingLocation = attrs.get('location')
-        newS.isFitting = isFitting
-        newS.language = css('language', e, style)
-        newS.hyphenation = css('hyphenation', e, style)
-        return newS
+        # In case we are sampling with a Variable Font, store any adjust
+        # fitting parameters in the string.
+        s.fittingFontSize = pt(attrs.get('fontSize'))
+        s.fittingFont = attrs.get('font') 
+        s.fittingLocation = attrs.get('location')
+        s.isFitting = isFitting
+        s.language = css('language', e, style)
+        s.hyphenation = css('hyphenation', e, style)
+        return s
 
 if __name__ == '__main__':
     import doctest
