@@ -22,15 +22,12 @@ from CoreText import (CTFramesetterCreateWithAttributedString,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 import drawBot as drawBotBuilder
-from pagebot.constants import (LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING,
-        DEFAULT_FALLBACK_FONT_PATH)
-from pagebot.filepaths import DEFAULT_FONT_PATH
-from pagebot.fonttoolbox.objects.font import Font, getFont, getInstance
+from pagebot.constants import LEFT
+from pagebot.fonttoolbox.objects.font import getFont, getInstance
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.style import css
-from pagebot.toolbox.color import (color, Color, noColor, inheritColor,
-        blackColor)
-from pagebot.toolbox.units import pt, upt, isUnit, units, em
+from pagebot.toolbox.color import color, noColor
+from pagebot.toolbox.units import pt, upt, units, em
 from pagebotcocoa.strings.textline import TextLine
 
 def pixelBounds(fs):
