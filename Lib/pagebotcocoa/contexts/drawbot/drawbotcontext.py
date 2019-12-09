@@ -216,8 +216,7 @@ class DrawBotContext(BaseContext):
 
         >>> from pagebot.toolbox.units import pt
         >>> from pagebot import getContext
-        >>> context = getContext('Flat')
-        >>> context.newDrawing()
+        >>> context = getContext('DrawBot')
         >>> context.newPage(420, 420)
         >>> txt = '''The 25-storey Jumeirah Beach Hotel, with its distinctive\
 design in the shape of a wave, has become one of the most successful\
@@ -231,10 +230,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> context.fontSize(14)
         >>> tb = context.textBox(txt, r=(100, 450, 200, 300))
         >>> tb = context.textBox(bs, r=(100, 450, 200, 300))
-        >>> #len(tb)
-        #112
-        >>> #tb
-        #'great time at the Sinbad’s Kids’ Club or Wild WadiWaterparkTM which is freely accessible through a private gate.'
+        >>> tb
         """
         tb = None 
 
