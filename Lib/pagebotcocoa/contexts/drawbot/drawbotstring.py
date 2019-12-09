@@ -587,6 +587,7 @@ class DrawBotString(BabelString):
         existing axes as Variable Font.
 
         >>> from pagebot import getContext
+        >>> from pagebot.toolbox.color import blackColor
         >>> context = getContext('DrawBot')
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('RobotoDelta-VF')
