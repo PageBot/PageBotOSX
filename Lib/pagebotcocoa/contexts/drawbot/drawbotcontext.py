@@ -230,7 +230,6 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> context.fontSize(14)
         >>> tb = context.textBox(txt, r=(100, 450, 200, 300))
         >>> tb = context.textBox(bs, r=(100, 450, 200, 300))
-        >>> tb
         """
         tb = None 
 
