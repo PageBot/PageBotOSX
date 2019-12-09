@@ -728,7 +728,7 @@ class DrawBotString(BabelString):
 
     @classmethod
     def getStringAttributes(cls, t, context, e=None, style=None, w=None,
-            h=None, pixelFit=True):
+            h=None):
         '''
         If there is a target (pixel) width or height defined, ignore the
         requested fontSize and try the width or height first for fontSize =
@@ -924,17 +924,65 @@ class DrawBotString(BabelString):
 
         return attrs
 
+    """
+    # FIXME: Disabled string fitting here. Use fitString(...) instead.
+    if False and w is not None:
+        # A target width is already defined, calculate again with the
+        # fontSize ratio correction. We use the enclosing pixel bounds
+        # instead of the context.textSide(newT) here, because it is more
+        # consistent for tracked text. context.textSize will add space to
+        # the right of the string.
+        attrs = copy(attrs)
+        attrs['textFill'] = attrs.get('fill')
+        attrs['textStroke'] = attrs.get('stroke')
+        attrs['textStrokeWidth'] = attrs.get('strokeWidth')
+
+        fittingFontSize = cls._newFitWidthString(newT, context, attrs.get('fontSize', DEFAULT_FONT_SIZE), w, pixelFit)
+        if fittingFontSize is not None: # Checked on zero division
+            # Repair the attrs to style, so it can be reused for new string
+            attrs['fontSize'] = fittingFontSize
+            newS = cls.newString(t, context, style=attrs)
+            # Test the width we got by linear interpolation. Scale back if still too large.
+            # Iterate until it really fits.
+            while newS.size[0] > w and attrs['fontSize']:
+                attrs['fontSize'] -= 0.1 # Incremental decrease the size until it fits
+                newS = cls.newString(t, context, style=attrs)
+        else:
+            newS = cls(newT, context, attrs) # Cannot fit, answer untouched.
+            isFitting = False
+    elif False and h is not None:
+        # A target height is already defined, calculate again with the
+        # fontSize ratio correction. We use the enclosing pixel bounds
+        # instead of the context.textSide(newT) here, because it is
+        # more consistent for tracked text. context.textSize will add space
+        # to the right of the string.
+        attrs = copy(attrs)
+        attrs['fontSize'] = fittingFontSize
+        attrs['textFill'] = attrs.get('fill')
+        attrs['textStroke'] = attrs.get('stroke')
+        attrs['textStrokeWidth'] = attrs.get('strokeWidth')
+
+        fittingFontSize = cls._newFitHeightString(newT, context, attrs.get('fontSize', DEFAULT_FONT_SIZE), h, pixelFit)
+
+        if fittingFontSize is not None:
+            # Repair the attrs to style, so it can be reused for new string
+            newS = cls.newString(t, context, style=attrs)
+            didFit = True
+        else:
+            newS = cls(newT, context, attrs) # Cannot fit, answer untouched.
+            isFitting = False
+    else:
+    """
+
     @classmethod
-    def newString(cls, t, context, e=None, style=None, w=None, h=None,
-            pixelFit=True):
+    def newString(cls, t, context, e=None, style=None, w=None, h=None, **kwargs):
         """Answers a DrawBotString instance from valid attributes in *style*.
         Set all values after testing their existence, so they can inherit from
         previous style formats in the string.
 
         If target width *w* or height *h* is defined, then *fontSize* is scaled
-        to make the string fit *w* or *h*.  In that case the pixelFit flag
-        defines if the current width or height comes from the pixel image of em
-        size.
+        to make the string fit *w* or *h*.
+        TODO: restore pixelFit implementation.
 
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
@@ -961,8 +1009,7 @@ class DrawBotString(BabelString):
         elif not isinstance(t, str):
             t = str(t)
 
-        attrs = cls.getStringAttributes(t, context, e=e, style=style, w=w, h=h,
-                pixelFit=pixelFit)
+        attrs = cls.getStringAttributes(t, context, e=e, style=style, w=w, h=h)
 
         if css('uppercase', e, style):
             t = t.upper()
@@ -988,56 +1035,6 @@ class DrawBotString(BabelString):
         newS.language = css('language', e, style)
         newS.hyphenation = css('hyphenation', e, style)
         return newS
-
-        # TODO: Disable string fitting here. Use fitString(...) instead.
-        """
-        if False and w is not None:
-            # A target width is already defined, calculate again with the
-            # fontSize ratio correction. We use the enclosing pixel bounds
-            # instead of the context.textSide(newT) here, because it is more
-            # consistent for tracked text. context.textSize will add space to
-            # the right of the string.
-            attrs = copy(attrs)
-            attrs['textFill'] = attrs.get('fill')
-            attrs['textStroke'] = attrs.get('stroke')
-            attrs['textStrokeWidth'] = attrs.get('strokeWidth')
-
-            fittingFontSize = cls._newFitWidthString(newT, context, attrs.get('fontSize', DEFAULT_FONT_SIZE), w, pixelFit)
-            if fittingFontSize is not None: # Checked on zero division
-                # Repair the attrs to style, so it can be reused for new string
-                attrs['fontSize'] = fittingFontSize
-                newS = cls.newString(t, context, style=attrs)
-                # Test the width we got by linear interpolation. Scale back if still too large.
-                # Iterate until it really fits.
-                while newS.size[0] > w and attrs['fontSize']:
-                    attrs['fontSize'] -= 0.1 # Incremental decrease the size until it fits
-                    newS = cls.newString(t, context, style=attrs)
-            else:
-                newS = cls(newT, context, attrs) # Cannot fit, answer untouched.
-                isFitting = False
-        elif False and h is not None:
-            # A target height is already defined, calculate again with the
-            # fontSize ratio correction. We use the enclosing pixel bounds
-            # instead of the context.textSide(newT) here, because it is
-            # more consistent for tracked text. context.textSize will add space
-            # to the right of the string.
-            attrs = copy(attrs)
-            attrs['fontSize'] = fittingFontSize
-            attrs['textFill'] = attrs.get('fill')
-            attrs['textStroke'] = attrs.get('stroke')
-            attrs['textStrokeWidth'] = attrs.get('strokeWidth')
-
-            fittingFontSize = cls._newFitHeightString(newT, context, attrs.get('fontSize', DEFAULT_FONT_SIZE), h, pixelFit)
-
-            if fittingFontSize is not None:
-                # Repair the attrs to style, so it can be reused for new string
-                newS = cls.newString(t, context, style=attrs)
-                didFit = True
-            else:
-                newS = cls(newT, context, attrs) # Cannot fit, answer untouched.
-                isFitting = False
-        else:
-        """
 
 if __name__ == '__main__':
     import doctest
