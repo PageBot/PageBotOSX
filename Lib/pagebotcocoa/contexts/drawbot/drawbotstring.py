@@ -519,13 +519,10 @@ class DrawBotString(BabelString):
         wpt, hpt = upt(w, h)
         textLines = []
         attrString = self.s.getNSObject()
-        #print(attrString)
         setter = CTFramesetterCreateWithAttributedString(attrString)
         path = CGPathCreateMutable()
-        #print(path)
         CGPathAddRect(path, None, CGRectMake(0, 0, wpt, hpt))
         ctBox = CTFramesetterCreateFrame(setter, (0, 0), path, None)
-        #print(ctBox)
         ctLines = CTFrameGetLines(ctBox)
         origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
 
@@ -721,7 +718,6 @@ class DrawBotString(BabelString):
             # We found a fitting VF-location within tolerance. Back out.
             else: 
                 break
-        #print('Number of iterations', n)
         return bs
 
     """
@@ -787,9 +783,12 @@ class DrawBotString(BabelString):
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
         >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> font = findFont('Roboto-Regular')
+        >>> font = findFont('Bungee-Regular')
         >>> font = findFont('Roboto-Black')
-        >>> #FIXME: yields Roboto-Regular.
         >>> bs = context.newString('ABC', style=dict(font=font.path, fontSize=pt(22)))
+        >>> bs.style['font'].endswith('Roboto-Black.ttf')
+        True
         >>> bs
         ABC
         >>> bs = context.newString('ABC', style=dict(font=font.path, w=pt(100)))
@@ -810,8 +809,8 @@ class DrawBotString(BabelString):
         else:
             assert isinstance(style, dict)
 
-        attrs = cls.getStringAttributes(s, e=e, style=style, w=w, h=h)
 
+        attrs = cls.getStringAttributes(s, e=e, style=style, w=w, h=h)
         s = cls.addCaseToString(s, e, style)
 
         # Turns plain string `s` into a FormattedString.

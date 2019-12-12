@@ -247,7 +247,6 @@ WaterparkTM which is freely accessible through a private gate.'''
         elif isinstance(r, (tuple, list)):
             # Renders rectangle units to value tuple.
             xpt, ypt, wpt, hpt = upt(r)
-            #ypt = ypt - hpt
             box = (xpt, ypt, wpt, hpt)
             tb = self.b.textBox(s, box, align=None)
         else:
@@ -289,9 +288,9 @@ WaterparkTM which is freely accessible through a private gate.'''
 
         # Assume here it's a DrawBotString with a FormattedString inside
         overflow = self.b.textOverflow(s.s, box, align=align)
-        bs = self.newString('')
-        bs.s = overflow
-        return bs
+        #bs = self.newString('')
+        #bs.s = overflow
+        return overflow
 
     def textBoxBaselines(self, txt, box, align=None):
         return self.b.textBoxBaselines(txt, box, align=align)

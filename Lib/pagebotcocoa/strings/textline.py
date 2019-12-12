@@ -44,7 +44,8 @@ class TextLine:
             self.string += textRun.string
 
     def __repr__(self):
-        return '<%s #%d y:%0.2f Runs:%d>' % (self.__class__.__name__, self.lineIndex, self.y, len(self.textRuns))
+        n = 'Cocoa' + self.__class__.__name__
+        return '<%s #%d y:%0.2f Runs:%d>' % (n, self.lineIndex, self.y, len(self.textRuns))
 
     def __len__(self):
         return self.glyphCount
