@@ -21,7 +21,7 @@ from CoreText import (CTFramesetterCreateWithAttributedString,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 import drawBot as drawBotBuilder
-from pagebot.constants import LEFT
+from pagebot.constants import LEFT, DEFAULT_FONT_SIZE
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
@@ -112,19 +112,6 @@ class DrawBotString(BabelString):
         a
         """
         fsAttrs = {}
-
-        for k, v in style.items():
-            if not k in self.formattedAttrKeys:
-                print('%s not allowed' % k)
-
-            else:
-                fsAttrs[k] = v
-
-        # Store the DrawBot FormattedString, as property to make sure it is a
-        # FormattedString, otherwise create it.
-        # Turns plain string `s` into a FormattedString.
-        self.s = context.b.FormattedString(s, **fsAttrs)
-
         # Some checking, in case we get something else here.
         assert style is None or isinstance(style, dict)
 
@@ -136,15 +123,29 @@ class DrawBotString(BabelString):
             style = {}
 
         self.style = style
+        self.language = style.get('language')
 
-        # In case we are sampling with a Variable Font, store any adjust
-        # fitting parameters in the string.
+        for k, v in style.items():
+            if k  == 'leading':
+                fontSize = style.get('fontSize', DEFAULT_FONT_SIZE)
+                lineHeight = v.byBase(fontSize)
+                fsAttrs['lineHeight'] = lineHeight
+            elif k == 'hyphenation':
+                # Global, not a FS attribute.
+                self.hyphenation = v
+            elif k in self.formattedAttrKeys:
+                fsAttrs[k] = v
+            else:
+                print('%s not allowed' % k)
+
+        # Turns plain text string `s` into a FormattedString.
+        self.s = context.b.FormattedString(s, **fsAttrs)
+
+        # Sets Variable Font fitting parameters.
         self.fittingFontSize = pt(style.get('fontSize'))
         self.fittingFont = style.get('font') 
         self.fittingLocation = style.get('location')
         self.isFitting = True
-        self.language = style.get('language')
-        self.hyphenation = style.get('hyphenation')
         super().__init__(context)
 
     def _get_s(self):
@@ -400,10 +401,11 @@ class DrawBotString(BabelString):
     fontCapHeight = capHeight = property(_get_capHeight) 
 
     def _get_leading(self):
-        """Returns the current font leading, based on the current font and
-        fontSize."""
-        fontSize = upt(self.fontSize)
-        return em(self.s.fontLeading()/fontSize, base=fontSize)
+        """Answers the current leading value."""
+        #fontSize = upt(self.fontSize)
+        #return em(self.s.fontLeading() / fontSize, base=fontSize)
+
+        return self.style.get('leading', DEFAULT_LEADING)
 
     # Compatibility with DrawBot API.
     fontLeading = leading = property(_get_leading) 
@@ -411,8 +413,8 @@ class DrawBotString(BabelString):
     def _get_lineHeight(self):
         """Returns the current line height, based on the current font and fontSize.
         If a lineHeight is set, this value will be returned."""
-        fontSize = upt(self.fontSize)
-        return em(self.s.fontLineHeight() / fontSize, base=fontSize)
+        #fontSize = upt(self.fontSize)
+        return self.s.fontLineHeight()
 
     # Compatibility with DrawBot API.
     fontLineHeight = lineHeight = property(_get_lineHeight) 
