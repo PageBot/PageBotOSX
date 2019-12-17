@@ -111,9 +111,19 @@ class DrawBotString(BabelString):
         >>> fs[5]
         a
         """
+        fsAttrs = {}
+
+        for k, v in style.items():
+            if not k in self.formattedAttrKeys:
+                print('%s not allowed' % k)
+
+            else:
+                fsAttrs[k] = v
+
         # Store the DrawBot FormattedString, as property to make sure it is a
         # FormattedString, otherwise create it.
-        self.s = s
+        # Turns plain string `s` into a FormattedString.
+        self.s = context.b.FormattedString(s, **fsAttrs)
 
         # Some checking, in case we get something else here.
         assert style is None or isinstance(style, dict)
@@ -126,6 +136,15 @@ class DrawBotString(BabelString):
             style = {}
 
         self.style = style
+
+        # In case we are sampling with a Variable Font, store any adjust
+        # fitting parameters in the string.
+        self.fittingFontSize = pt(style.get('fontSize'))
+        self.fittingFont = style.get('font') 
+        self.fittingLocation = style.get('location')
+        self.isFitting = True
+        self.language = style.get('language')
+        self.hyphenation = style.get('hyphenation')
         super().__init__(context)
 
     def _get_s(self):
@@ -578,32 +597,10 @@ class DrawBotString(BabelString):
         else:
             assert isinstance(style, dict)
 
-        fsAttrs = {}
         attrs = cls.getStringAttributes(s, e=e, style=style, w=w, h=h)
         s = cls.addCaseToString(s, e, style)
-
-        for k, v in attrs.items():
-            if not k in cls.formattedAttrKeys:
-                print('%s not allowed' % k)
-
-            else:
-                fsAttrs[k] = v
-
-        # Turns plain string `s` into a FormattedString.
-        s = context.b.FormattedString(s, **fsAttrs)
-
-        # Turns FormattedString into a DrawBotString.
-        s = cls(s, context, attrs)
-
-        # In case we are sampling with a Variable Font, store any adjust
-        # fitting parameters in the string.
-        s.fittingFontSize = pt(attrs.get('fontSize'))
-        s.fittingFont = attrs.get('font') 
-        s.fittingLocation = attrs.get('location')
-        s.isFitting = True
-        s.language = css('language', e, style)
-        s.hyphenation = css('hyphenation', e, style)
-        return s
+        # Creates a new DrawBotString.
+        return cls(s, context, style=attrs)
 
 if __name__ == '__main__':
     import doctest

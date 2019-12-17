@@ -18,7 +18,7 @@
 from copy import copy
 from pagebot.fonttoolbox.objects.font import getFont, getInstance
 from pagebot.style import css
-from pagebot.toolbox.units import pt, pt
+from pagebot.toolbox.units import upt
 from pagebotcocoa.contexts.drawbot.drawbotstring import pixelBounds
 
 class Variations:
