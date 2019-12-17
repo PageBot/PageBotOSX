@@ -23,7 +23,6 @@ from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 import drawBot as drawBotBuilder
 from pagebot.constants import LEFT
 from pagebot.contexts.base.babelstring import BabelString
-from pagebot.style import css
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
 from pagebotcocoa.strings.textline import TextLine
@@ -33,9 +32,10 @@ def pixelBounds(fs):
 
     NOTE that @by can be a negative value, if there is text (e.g. overshoot)
     below the baseline.
-    @bh is the amount of pixels above the baseline.
-    For the total height of the pixel-map, calculate @ph - @py.
-    For the total width of the pixel-map, calculate @pw - @px."""
+
+    - @bh is the amount of pixels above the baseline.
+    - For the total height of the pixel-map, calculate @ph - @py.
+    - For the total width of the pixel-map, calculate @pw - @px."""
     if not fs:
         return pt(0, 0, 0, 0)
     p = drawBotBuilder.BezierPath()
