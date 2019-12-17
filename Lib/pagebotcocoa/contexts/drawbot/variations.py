@@ -1,4 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
+#
+#     P A G E B O T
+#
+#     Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
+#     www.pagebot.io
+#     Licensed under MIT conditions
+#
+#     Supporting DrawBot, www.drawbot.com
+#     Supporting Flat, xxyxyz.org/flat
+# -----------------------------------------------------------------------------
+#
+#     variations.py
+#
 
+from copy import copy
+from pagebot.fonttoolbox.objects.font import getFont, getInstance
+from pagebot.style import css
+from pagebot.toolbox.units import pt, pt
+from pagebotcocoa.contexts.drawbot.drawbotstring import pixelBounds
 
 class Variations:
 

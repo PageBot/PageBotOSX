@@ -16,14 +16,12 @@
 #
 
 import re
-from copy import copy
 from AppKit import NSAttributeDictionary, NSRange
 from CoreText import (CTFramesetterCreateWithAttributedString,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 import drawBot as drawBotBuilder
 from pagebot.constants import LEFT
-from pagebot.fonttoolbox.objects.font import getFont, getInstance
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.style import css
 from pagebot.toolbox.color import color, noColor
