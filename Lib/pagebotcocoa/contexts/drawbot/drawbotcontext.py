@@ -78,14 +78,6 @@ class DrawBotContext(BaseContext):
         >>> context = getContext('DrawBot')
         >>> context.newDrawing()
         """
-        '''
-        if doc is not None:
-            w = w or doc.w
-            h = h or doc.h
-        else:
-            w = w
-            h = h
-        '''
         self.b.newDrawing()
 
     def endDrawing(self, doc=None):

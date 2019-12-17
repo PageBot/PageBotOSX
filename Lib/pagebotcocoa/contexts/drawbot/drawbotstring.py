@@ -57,6 +57,13 @@ class DrawBotString(BabelString):
     """DrawBotString is a wrapper around the standard DrawBot FormattedString."""
 
     BABEL_STRING_TYPE = 'fs'
+    formattedAttrKeys = ['font', 'fallbackFont', 'fontSize', 'fill',
+            'cmykFill', 'stroke', 'cmykStroke', 'strokeWidth', 'align',
+            'lineHeight', 'tracking', 'baselineShift', 'underline',
+            'openTypeFeatures', 'fontVariations', 'tabs', 'indent',
+            'tailIndent', 'firstLineIndent', 'paragraphTopSpacing',
+            'paragraphBottomSpacing', 'language', ]
+
 
     def __init__(self, s, context, style=None):
         """Constructor of the DrawBotString, wrapper around DrawBot
@@ -573,13 +580,19 @@ class DrawBotString(BabelString):
         else:
             assert isinstance(style, dict)
 
-
+        fsAttrs = {}
         attrs = cls.getStringAttributes(s, e=e, style=style, w=w, h=h)
         s = cls.addCaseToString(s, e, style)
 
+        for k, v in attrs.items():
+            if not k in cls.formattedAttrKeys:
+                print('%s not allowed' % k)
+
+            else:
+                fsAttrs[k] = v
+
         # Turns plain string `s` into a FormattedString.
-        s = context.b.FormattedString(s, **attrs)
-        isFitting = True
+        s = context.b.FormattedString(s, **fsAttrs)
 
         # Turns FormattedString into a DrawBotString.
         s = cls(s, context, attrs)
@@ -589,7 +602,7 @@ class DrawBotString(BabelString):
         s.fittingFontSize = pt(attrs.get('fontSize'))
         s.fittingFont = attrs.get('font') 
         s.fittingLocation = attrs.get('location')
-        s.isFitting = isFitting
+        s.isFitting = True
         s.language = css('language', e, style)
         s.hyphenation = css('hyphenation', e, style)
         return s
