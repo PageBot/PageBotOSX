@@ -21,7 +21,7 @@ from CoreText import (CTFramesetterCreateWithAttributedString,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 import drawBot as drawBotBuilder
-from pagebot.constants import LEFT, DEFAULT_FONT_SIZE
+from pagebot.constants import LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
