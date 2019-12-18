@@ -22,7 +22,7 @@ from CoreText import (CTFramesetterCreateWithAttributedString,
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 import drawBot as drawBotBuilder
 from pagebot.constants import LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING
-from pagebot.contexts.base.babelstring import BabelString
+from pagebot.contexts.base.babelstring import getLineHeight, BabelString
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
 from pagebotcocoa.strings.textline import TextLine
@@ -128,7 +128,7 @@ class DrawBotString(BabelString):
         for k, v in style.items():
             if k  == 'leading':
                 fontSize = style.get('fontSize', DEFAULT_FONT_SIZE)
-                lineHeight = v.byBase(fontSize)
+                lineHeight = getLineHeight(v, fontSize)
                 fsAttrs['lineHeight'] = lineHeight
             elif k == 'hyphenation':
                 # Global, not a FS attribute.
@@ -238,11 +238,11 @@ class DrawBotString(BabelString):
         >>> context = getContext('DrawBot')
         >>> c1 = color(0.2, 0.3, 0.4)
         >>> c2 = color(1, 0, 0.22)
-        >>> style = style=dict(font='Verdana', fontSize=17, leading=21, textFill=c1, textStroke=c2, textStrokeWidth=pt(3))
+        >>> style = style=dict(font='Verdana', fontSize=pt(17), leading=pt(21), textFill=c1, textStroke=c2, textStrokeWidth=pt(3))
         >>> bs = context.newString('Example Text1', style=style)
         >>> bs.getStyleAtIndex(3)['fontSize']
         17pt
-        >>> style = dict(font='Georgia', fontSize=20, leading=25, textFill=c2, textStroke=c1, textStrokeWidth=pt(2))
+        >>> style = dict(font='Georgia', fontSize=pt(20), leading=pt(25), textFill=c2, textStroke=c1, textStrokeWidth=pt(2))
         >>> bs += context.newString('Another Text', style=style)
         >>> bs.getStyleAtIndex(20)['leading']
         25pt
