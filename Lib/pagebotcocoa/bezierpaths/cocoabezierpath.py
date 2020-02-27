@@ -22,9 +22,9 @@ import CoreText
 import booleanOperations
 from fontTools.pens.basePen import BasePen
 from fontTools.pens.pointPen import PointToSegmentPen
-from drawBot.context.tools import traceImage
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.contexts.base.basepoint import BasePoint
+from drawBot.context.tools import traceImage
 from pagebotcocoa.errors import PageBotCocoaError
 from pagebotcocoa.bezierpaths.beziercontour import BezierContour
 from pagebotcocoa.mathematics.transform import *

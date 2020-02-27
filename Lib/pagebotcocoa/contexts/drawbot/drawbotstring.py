@@ -20,11 +20,11 @@ from AppKit import NSAttributeDictionary, NSRange
 from CoreText import (CTFramesetterCreateWithAttributedString,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
-import drawBot as drawBotBuilder
 from pagebot.constants import LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING
 from pagebot.contexts.base.babelstring import getLineHeight, BabelString
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
+import drawBot as drawBotBuilder
 from pagebotcocoa.strings.textline import TextLine
 
 def pixelBounds(fs):
@@ -143,7 +143,7 @@ class DrawBotString(BabelString):
 
         # Sets Variable Font fitting parameters.
         self.fittingFontSize = pt(style.get('fontSize'))
-        self.fittingFont = style.get('font') 
+        self.fittingFont = style.get('font')
         self.fittingLocation = style.get('location')
         self.isFitting = True
         super().__init__(context)
@@ -165,7 +165,7 @@ class DrawBotString(BabelString):
         elif isinstance(s, DrawBotString):
             # TODO: needs a deeper copy?
             s = s.s
-            
+
         self._s = s
 
     s = property(_get_s, _set_s)
@@ -175,16 +175,16 @@ class DrawBotString(BabelString):
         style = self.getStyleAtIndex(0)
 
         # Something going on at start?
-        if style.get('firstLineIndent') is not None or firstColumnIndent is not None: 
+        if style.get('firstLineIndent') is not None or firstColumnIndent is not None:
 
             # Really really small place holder period.
-            style['fontSize'] = pt(0.0001) 
+            style['fontSize'] = pt(0.0001)
 
             # Transparant, so it will never show.
-            style['textFill'] = color(1, 1, 1, 1) 
+            style['textFill'] = color(1, 1, 1, 1)
 
             # Then make this one work.
-            style['firstLineIndent'] = firstColumnIndent or 0 
+            style['firstLineIndent'] = firstColumnIndent or 0
             bs = self.context.newString('.', style=style) + bs
         return bs
 
@@ -210,15 +210,15 @@ class DrawBotString(BabelString):
         >>> bs.fontSize
         85pt
         >>> # Auto-convert to points
-        >>> bs.fontSize = 96 
+        >>> bs.fontSize = 96
         >>> bs.fontSize
         96pt
         >>> # Set at unit.
-        >>> bs.fontSize = mm(5) 
+        >>> bs.fontSize = mm(5)
         >>> bs.fontSize
         5mm
         >>> #bs.leading
-        >>> 
+        >>>
         1.4em
         """
         return units(self.style.get('fontSize'))
@@ -371,7 +371,7 @@ class DrawBotString(BabelString):
         return em(self.s.fontAscender() / fontSize, base=fontSize)
 
     # Compatibility with DrawBot API.
-    fontAscender = ascender = property(_get_ascender) 
+    fontAscender = ascender = property(_get_ascender)
 
     def _get_descender(self):
         """Returns the current font descender as Em, based on the current font
@@ -380,7 +380,7 @@ class DrawBotString(BabelString):
         return em(self.s.fontDescender()/fontSize, base=fontSize)
 
     # Compatibility with DrawBot API.
-    fontDescender = descender = property(_get_descender) 
+    fontDescender = descender = property(_get_descender)
 
     def _get_xHeight(self):
         """Returns the current font x-height as Em, based on the current font
@@ -389,7 +389,7 @@ class DrawBotString(BabelString):
         return em(self.s.fontXHeight()/fontSize, base=fontSize)
 
     # Compatibility with DrawBot API.
-    fontXHeight = xHeight = property(_get_xHeight) 
+    fontXHeight = xHeight = property(_get_xHeight)
 
     def _get_capHeight(self):
         """Returns the current font cap height as Em, based on the current font
@@ -398,7 +398,7 @@ class DrawBotString(BabelString):
         return em(self.s.fontCapHeight()/fontSize, base=fontSize)
 
     # Compatibility with DrawBot API.
-    fontCapHeight = capHeight = property(_get_capHeight) 
+    fontCapHeight = capHeight = property(_get_capHeight)
 
     def _get_leading(self):
         """Answers the current leading value."""
@@ -408,7 +408,7 @@ class DrawBotString(BabelString):
         return self.style.get('leading', DEFAULT_LEADING)
 
     # Compatibility with DrawBot API.
-    fontLeading = leading = property(_get_leading) 
+    fontLeading = leading = property(_get_leading)
 
     def _get_lineHeight(self):
         """Returns the current line height, based on the current font and fontSize.
@@ -417,7 +417,7 @@ class DrawBotString(BabelString):
         return self.s.fontLineHeight()
 
     # Compatibility with DrawBot API.
-    fontLineHeight = lineHeight = property(_get_lineHeight) 
+    fontLineHeight = lineHeight = property(_get_lineHeight)
 
     def appendGlyph(self, *glyphNames):
         """Append a glyph by his glyph name using the current font. Multiple
@@ -585,7 +585,7 @@ class DrawBotString(BabelString):
         >>> int(round(bs.fontSize))
         12
         >>> # Use the font instance instead of path.
-        >>> bs = context.newString('ABC ', style=dict(font=font, w=pt(100))) 
+        >>> bs = context.newString('ABC ', style=dict(font=font, w=pt(100)))
         >>> int(round(bs.fontSize))
         12
         >>> bs1 = context.newString('DEF')

@@ -14,11 +14,10 @@
 #
 #     canvasapp.py
 #
-from vanilla import Window
 from pagebot import getContext
 from pagebot.toolbox.units import pt
 from pagebot.toolbox.color import blueColor, blackColor, color, noColor
-
+from vanilla import Window
 from pagebotcocoa.apps.baseapp import BaseApp
 
 W = H = 1000

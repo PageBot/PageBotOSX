@@ -14,7 +14,6 @@
 #
 #     pagebotapp.py
 #
-from vanilla import *
 from pagebot import getResourcesPath
 from pagebot.publications import PublicationCategories
 from pagebot.elements import newRect
@@ -27,9 +26,10 @@ from pagebot.conditions import *
 from pagebot.document import Document
 from pagebot.toolbox.units import inch, pt
 from pagebot.toolbox.color import color
+from drawBot.ui.drawView import DrawView
+from vanilla import *
 from pagebotcocoa.apps.baseapp import BaseApp
 from pagebotcocoa.contexts.drawbot.drawbotcontext import DrawBotContext
-from drawBot.ui.drawView import DrawView
 
 ADD_MENU = True
 

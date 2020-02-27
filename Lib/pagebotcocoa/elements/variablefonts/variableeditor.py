@@ -17,8 +17,8 @@
 import sys
 import AppKit
 import CoreText
-from vanilla import Window, Slider, TextEditor #, Button
 from pagebot import getContext
+from vanilla import Window, Slider, TextEditor #, Button
 
 context = getContext('DrawBot')
 

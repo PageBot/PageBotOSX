@@ -20,16 +20,16 @@ from CoreText import (CTFontDescriptorCreateWithNameAndSize,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute)
 from AppKit import NSFont
 import drawBot
-from drawBot import Variable
 from pagebot.constants import *
 from pagebot.contexts.base.babelstring import BabelString
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
+from drawBot import Variable
+from vanilla import *
 from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
 #from pagebotcocoa.bezierpaths.cocoabezierpath import CocoaBezierPath
-from vanilla import *
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
 drawBotBuilder = drawBot
@@ -185,19 +185,19 @@ class DrawBotContext(BaseContext):
         """
         if isinstance(s, BabelString):
             # BabelString with a FormattedString inside.
-            s = s.s 
+            s = s.s
             position = point2D(upt(p))
         else:
             if not isinstance(s, str):
                 # Otherwise converts to string if it is not already.
-                s = str(s) 
+                s = str(s)
             # Regular string, use global font and size.
             position = point2D(upt(p))
             self.b.fontSize(self._fontSize)
             self.font(self._font)
-        
+
         # Render point units to value tuple
-        self.b.text(s, position) 
+        self.b.text(s, position)
 
     def textBox(self, s, r=None, clipPath=None, align=None):
         """Draws the s text string in rectangle r.
@@ -223,19 +223,19 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> tb = context.textBox(txt, r=(100, 450, 200, 300))
         >>> tb = context.textBox(bs, r=(100, 450, 200, 300))
         """
-        tb = None 
+        tb = None
 
         if hasattr(s, 's'):
             # Assumes it's a BabelString with a FormattedString inside.
-            s = s.s 
+            s = s.s
         else:
             if not isinstance(s, str):
                 # Otherwise converts to string if it is not already.
-                s = str(s) 
+                s = str(s)
 
         if clipPath is not None:
             box = clipPath.bp
-            tb = self.b.textBox(s, clipPath.bp) 
+            tb = self.b.textBox(s, clipPath.bp)
         elif isinstance(r, (tuple, list)):
             # Renders rectangle units to value tuple.
             xpt, ypt, wpt, hpt = upt(r)
@@ -377,7 +377,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         flattenedContours = [contour]
 
         # Use / create self._bezierpath if path is None.
-        flatPath = self.bezierPathByFlatteningPath(path) 
+        flatPath = self.bezierPathByFlatteningPath(path)
 
         if flatPath is not None:
             for index in range(flatPath.elementCount()):
@@ -442,7 +442,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
         >>> # Does not exist.
-        >>> context.fontPath2FontName('Aaa.ttf') is None 
+        >>> context.fontPath2FontName('Aaa.ttf') is None
         True
         >>> path = TEST_FONTS_PATH + '/fontbureau/Amstelvar-Roman-VF.ttf'
         >>> os.path.exists(path)
@@ -560,13 +560,13 @@ WaterparkTM which is freely accessible through a private gate.'''
         'This.Is.An.Image.110x120.0.jpg'
         """
         # /_scaled will be ignored with default .gitignore settings.
-        # If docs/images/_scaled need to be committed into Git repo, 
+        # If docs/images/_scaled need to be committed into Git repo,
         # then remove _scaled from .gitignore.
-        cachePath = '%s/%s/' % (path2Dir(path), self.SCALED_PATH) 
+        cachePath = '%s/%s/' % (path2Dir(path), self.SCALED_PATH)
         fileNameParts = path2Name(path).split('.')
 
         # If undefined, take the original extension for exporting the cache.
-        if not exportExtension: 
+        if not exportExtension:
             exportExtension = fileNameParts[-1].lower()
         cachedFileName = '%s.%dx%d.%d.%s' % ('.'.join(fileNameParts[:-1]), w, h, index or 0, exportExtension)
         return cachePath, cachedFileName
@@ -604,7 +604,7 @@ WaterparkTM which is freely accessible through a private gate.'''
 
         if force or not os.path.exists(cachedFilePath):
             # Clean the drawing stack.
-            self.newDrawing() 
+            self.newDrawing()
             self.newPage(w=w, h=h)
             self.image(path, (0, 0), w=w, h=h, pageNumber=index or 0)
             if showImageLoresMarker:
@@ -617,7 +617,7 @@ WaterparkTM which is freely accessible through a private gate.'''
             self.saveImage(cachedFilePath)
 
             # Clean the drawing stack again.
-            self.newDrawing() 
+            self.newDrawing()
         return cachedFilePath
 
     def imagePixelColor(self, path, p=None):
@@ -651,7 +651,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         True
         """
         # In case it is a string, convert to a list.
-        if isinstance(patterns, str): 
+        if isinstance(patterns, str):
             patterns = [patterns]
 
         fontNames = []
@@ -659,7 +659,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         for fontName in self.b.installedFonts():
             if not patterns:
                 # If no pattern then answer all.
-                fontNames.append(fontName) 
+                fontNames.append(fontName)
             else:
                 for pattern in patterns:
                     if pattern in fontName:
