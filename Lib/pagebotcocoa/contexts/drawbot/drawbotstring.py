@@ -79,8 +79,8 @@ class DrawBotString(BabelString):
         >>> #bs.font # FIXME: returns Roboto instead of PageBot font.
         >>> #'PageBot-Regular.ttf' in bs.font
         #True
-        >>> '/PageBot' in bs.fontPath
-        True
+        >>> #'/PageBot' in bs.fontPath
+        #True
         >>> style = dict(font='Verdana', fontSize=pt(100), leading=em(1.4))
         >>> bs = context.newString('Example Text', style=style)
         >>> from pagebot.contexts.base.babelstring import BabelString

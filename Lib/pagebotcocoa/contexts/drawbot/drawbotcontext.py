@@ -27,7 +27,6 @@ from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from drawBot import Variable
-from vanilla import *
 from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
 #from pagebotcocoa.bezierpaths.cocoabezierpath import CocoaBezierPath
 

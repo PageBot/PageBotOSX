@@ -55,8 +55,6 @@ setup(
     install_requires=[
         'pyobjc',
         'pagebot',
-        #'compositor',
-        #'defconAppKit',
         #'drawbot',
         #'vanilla',
         ]
