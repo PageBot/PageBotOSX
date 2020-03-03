@@ -2,8 +2,5 @@ pyobjc==5.2
 flat==0.3.1
 pagebot
 # Dependencies that are not yet available on PyPI:
-#git+https://github.com/robotools/compositor.git#egg=compositor
-#git+https://github.com/robotools/defconAppKit.git#egg=defconAppKit
 git+https://github.com/typemytype/drawbot.git#egg=drawbot
-git+https://github.com/robotools/vanilla.git#egg=vanilla
 .
