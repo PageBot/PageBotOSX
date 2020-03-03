@@ -11,9 +11,6 @@ python3 $PWD/contexts/__init__.py
 python3 $PWD/contexts/drawbot/__init__.py
 python3 $PWD/contexts/drawbot/drawbotcontext.py
 python3 $PWD/contexts/drawbot/drawbotstring.py
-python3 $PWD/contexts/canvas/__init__.py
-python3 $PWD/contexts/canvas/canvascontext.py
-python3 $PWD/contexts/canvas/canvasbuilder.py
 python3 $PWD/graphics/__init__.py
 python3 $PWD/graphics/graphic.py
 python3 $PWD/fonttoolbox/__init__.py
