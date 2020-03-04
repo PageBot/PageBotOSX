@@ -16,14 +16,14 @@
 #
 #
 
-class PageBotCocoaError(TypeError):
+class PageBotOSXError(TypeError):
     pass
 
-class PageBotCocoaFileFormatError(Exception):
+class PageBotOSXFileFormatError(Exception):
 
     def __init__(self, msg):
         super().__init__()
         self.msg = msg
 
     def __str__(self):
-        return '! PageBot Cocoa file format error: %s' % self.msg
+        return '! PageBot OSX file format error: %s' % self.msg
