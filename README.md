@@ -1,13 +1,12 @@
-# PageBotCocoa
+# PageBotOSX
 
-Cocoa parts for PageBot, including the DrawBot and Canvas contexts and
-formatted strings (OS X only).
+Mac OS X context for PageBot, based on DrawBot.
 
 # Installation
 
 To install the stable release:
 
-    pip install pagebotcocoa
+    pip install pagebotosx
 
 To setup the development environment and install the version from this git repo:
 
@@ -23,15 +22,15 @@ To setup the development environment and install the version from this git repo:
 
 Bugs, enhancements and requested features can be added to the GitHub issue tracker:
 
- * https://github.com/PageBot/PageBotCocoa/issues
- * https://github.com/PageBot/PageBotCocoa/projects
- * https://github.com/PageBot/PageBotCocoa/milestones
+ * https://github.com/PageBot/PageBotOSX/issues
+ * https://github.com/PageBot/PageBotOSX/projects
+ * https://github.com/PageBot/PageBotOSX/milestones
 
 # External Links
 
-- Download: [PyPi](https://pypi.org/project/pagebotcocoa/)
-- Continuous Integration: [Travis](https://travis-ci.org/PageBot/PageBotCocoa)
-- Documentation: [ReadTheDocs](https://pagebotcocoa.readthedocs.io/en/latest/)
+- Download: [PyPi](https://pypi.org/project/pagebotosx/)
+- Continuous Integration: [Travis](https://travis-ci.org/PageBot/PageBotOSX)
+- Documentation: [ReadTheDocs](https://pagebotosx.readthedocs.io/en/latest/)
 - Main PageBot repository: [github.com/PageBot/PageBot](https://github.com/PageBot/PageBot)
 - Examples repository: [github.com/PageBot/PageBotExamples](https://github.com/PageBot/PageBotExamples)
 
