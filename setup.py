@@ -20,7 +20,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='pagebotcocoa',
+    name='pagebotosx',
     description='Mac OS X context for PageBot based on DrawBot.',
     long_description=long_description,
     long_description_content_type='text/markdown',
