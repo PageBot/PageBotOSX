@@ -12,7 +12,7 @@
 #     Supporting Flat, xxyxyz.org/flat
 # -----------------------------------------------------------------------------
 #
-#     cocoabezierpath.py
+#     osxbezierpath.py
 #
 
 import math
@@ -25,13 +25,13 @@ from fontTools.pens.pointPen import PointToSegmentPen
 from pagebot.contexts.base.basecontext import BaseContext
 from pagebot.contexts.base.basepoint import BasePoint
 from drawBot.context.tools import traceImage
-from pagebotcocoa.errors import PageBotCocoaError
-from pagebotcocoa.bezierpaths.beziercontour import BezierContour
-from pagebotcocoa.mathematics.transform import *
+from pagebotosx.errors import PageBotOSXError
+from pagebotosx.bezierpaths.beziercontour import BezierContour
+from pagebotosx.mathematics.transform import *
 
 _FALLBACKFONT = "LucidaGrande"
 
-class CocoaBezierPath(BasePen):
+class OSXBezierPath(BasePen):
     """A Bézier path object, if you want to draw the same over and over
     again."""
 
@@ -58,7 +58,7 @@ class CocoaBezierPath(BasePen):
         BasePen.__init__(self, glyphSet)
 
     def __repr__(self):
-        return "<CocoaBezierPath>"
+        return "<OSXBezierPath>"
 
     # pen support.
 
@@ -91,7 +91,7 @@ class CocoaBezierPath(BasePen):
         `beginPath` must have been called prior to adding points with
         `addPoint` calls."""
         if not hasattr(self, "_pointToSegmentPen"):
-            raise PageBotCocoaError("path.beginPath() must be called before the path can be used as a point pen")
+            raise PageBotOSXError("path.beginPath() must be called before the path can be used as a point pen")
         self._pointToSegmentPen.addPoint(
             point,
             segmentType=segmentType,
@@ -171,7 +171,7 @@ class CocoaBezierPath(BasePen):
         context = BaseContext()
 
         if align and align not in self._textAlignMap.keys():
-            raise PageBotCocoaError("align must be %s" % (", ".join(self._textAlignMap.keys())))
+            raise PageBotOSXError("align must be %s" % (", ".join(self._textAlignMap.keys())))
 
         context.font(font, fontSize)
         attributedString = context.attributedString(txt, align)
@@ -213,7 +213,7 @@ class CocoaBezierPath(BasePen):
         - Optionally `box` can be a `BezierPath`.
         """
         if align and align not in self._textAlignMap.keys():
-            raise PageBotCocoaError("align must be %s" % (", ".join(self._textAlignMap.keys())))
+            raise PageBotOSXError("align must be %s" % (", ".join(self._textAlignMap.keys())))
 
         context = BaseContext()
         context.font(font, fontSize)
@@ -403,7 +403,7 @@ class CocoaBezierPath(BasePen):
         for contour in contours:
             contour.drawPoints = contour.drawToPointPen
             if contour.open:
-                raise PageBotCocoaError("open contours are not supported during boolean operations")
+                raise PageBotOSXError("open contours are not supported during boolean operations")
         return contours
 
     def union(self, other):

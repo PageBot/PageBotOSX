@@ -27,8 +27,8 @@ from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from drawBot import Variable
-from pagebotcocoa.contexts.drawbot.drawbotstring import DrawBotString as stringClass
-#from pagebotcocoa.bezierpaths.cocoabezierpath import CocoaBezierPath
+from pagebotosx.contexts.drawbot.drawbotstring import DrawBotString as stringClass
+#from pagebotosx.bezierpaths.osxbezierpath import OSXBezierPath
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
 drawBotBuilder = drawBot
@@ -303,7 +303,7 @@ WaterparkTM which is freely accessible through a private gate.'''
     #
 
     def newPath(self):
-        #self._bezierpath = CocoaBezierPath(self.b)
+        #self._bezierpath = OSXBezierPath(self.b)
         # Using DrawBot's BezierPath class for now.
         self._bezierpath = self.b.BezierPath()
         return self.bezierpath

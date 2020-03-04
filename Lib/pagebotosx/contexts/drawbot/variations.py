@@ -19,7 +19,7 @@ from copy import copy
 from pagebot.fonttoolbox.objects.font import getFont, getInstance
 from pagebot.style import css
 from pagebot.toolbox.units import upt
-from pagebotcocoa.contexts.drawbot.drawbotstring import pixelBounds
+from pagebotosx.contexts.drawbot.drawbotstring import pixelBounds
 
 class Variations:
 
@@ -32,12 +32,12 @@ class Variations:
         fspt, wpt, txpt, twpt = upt(fontSize, w, tx, tw)
 
         # Render the units, to compare for zero division.
-        dxpt = twpt - txpt 
+        dxpt = twpt - txpt
         if dxpt:
             return wpt * fspt / dxpt
 
         # Zero division, cannot calculate.
-        return None 
+        return None
 
     @classmethod
     def _newFitHeightString(cls, fs, context, fontSize, h, pixelFit):
@@ -49,12 +49,12 @@ class Variations:
         fspt, hpt, typt, thpt = upt(fontSize, h, ty, th)
 
         # Render the units, to compare for zero division.
-        dypt = thpt - typt 
+        dypt = thpt - typt
         if dypt:
             return hpt * fspt / dypt
 
         # Zero division, cannot calculate.
-        return None 
+        return None
 
     FITTING_TOLERANCE = 3
 
@@ -104,13 +104,13 @@ class Variations:
         style = copy(style)
 
         # In case the used already supplied a VF location, use it.
-        location = copy(css('', e, style, default={})) 
+        location = copy(css('', e, style, default={}))
         font = css('font', e, style)
 
         # Assuming it's a path, get the Font instance.
-        if isinstance(font, str): 
+        if isinstance(font, str):
             # Make sure we gave a real Font instance.
-            font = getFont(font) 
+            font = getFont(font)
         style['font'] = font
 
         # Get the flag if fit locations should be rounded (less cached
@@ -144,23 +144,23 @@ class Variations:
         # the width.
 
         # Get pixel bounds of the string
-        tx, _, tw, _ = bs.bounds() 
+        tx, _, tw, _ = bs.bounds()
 
         # Pixel width of the current string.
-        tw = tw - tx 
+        tw = tw - tx
 
         # Testing if something changed, for extreme of axes.
-        prevW = None 
+        prevW = None
         axisValue = defaultValue
 
 
         # Limit the maximum amount of iterations as safeguard.
-        for n in range(100): 
+        for n in range(100):
             # Too wide, try iterate smaller in ratio of wdth / XTRA axis
             # values.
-            if tw > w: 
+            if tw > w:
                 # Clip wide range to current.
-                maxValue = axisValue 
+                maxValue = axisValue
                 # Guess the new axisvalue from the ratio of tw / w
                 axisValue = (axisValue - minValue)/2 + minValue
                 if roundVariableFitLocation:
@@ -172,20 +172,20 @@ class Variations:
                 bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
 
                 # Get pixel bounds of the string.
-                tx, ty, tw, th = bs.bounds() 
+                tx, ty, tw, th = bs.bounds()
 
                 # Total width for the current.
-                tw = tw - tx 
+                tw = tw - tx
 
                 # Did not change, probably not able to get more condensed.
-                if prevW == tw: 
+                if prevW == tw:
                     break
                 prevW = tw
 
             # Too condensed, try to make wider.
-            elif tw < w - cls.FITTING_TOLERANCE: 
+            elif tw < w - cls.FITTING_TOLERANCE:
                 # Clip narrow range to current
-                minValue = axisValue 
+                minValue = axisValue
                 axisValue = (maxValue - axisValue)/2 + axisValue
                 if roundVariableFitLocation:
                     axisValue = int(round(axisValue))
@@ -196,20 +196,20 @@ class Variations:
                 bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
 
                 # Get pixel bounds of the string.
-                tx, ty, tw, th = bs.bounds() 
+                tx, ty, tw, th = bs.bounds()
 
                 # Total width for the current.
-                tw = tw - tx 
+                tw = tw - tx
 
                 # Did not change, probably not able to get more condensed.
-                if prevW == tw: 
+                if prevW == tw:
                     break
 
                 prevW = tw
 
 
             # We found a fitting VF-location within tolerance. Back out.
-            else: 
+            else:
                 break
         return bs
 

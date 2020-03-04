@@ -25,7 +25,7 @@ from pagebot.contexts.base.babelstring import getLineHeight, BabelString
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
 import drawBot as drawBotBuilder
-from pagebotcocoa.strings.textline import TextLine
+from pagebotosx.strings.textline import TextLine
 
 def pixelBounds(fs):
     """Answers the pixel-bounds rectangle of the text.

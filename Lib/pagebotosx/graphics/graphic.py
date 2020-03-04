@@ -15,17 +15,17 @@
 #     graphic.py
 #
 
-from pagebotcocoa.cocoacolor import CocoaColor
-#from pagebotcocoa.bezierpaths.bezierpath import BezierPath
-from pagebotcocoa.strings.formattedstring import FormattedString
+from pagebotosx.osxcolor import OSXColor
+#from pagebotosx.bezierpaths.bezierpath import BezierPath
+from pagebotosx.strings.formattedstring import FormattedString
 
 class Graphic:
     """A graphical object to be drawn."""
 
     def __init__(self):
-        self.colorSpace = CocoaColor.colorSpace
+        self.colorSpace = OSXColor.colorSpace
         self.blendMode = None
-        self.fillColor = CocoaColor(0)
+        self.fillColor = OSXColor(0)
         self.strokeColor = None
         self.cmykFillColor = None
         self.cmykStrokeColor = None
@@ -88,4 +88,4 @@ class Graphic:
         self.updateColorSpace(None)
 
     def updateColorSpace(self, context):
-        CocoaColor.colorSpace = self.colorSpace
+        OSXColor.colorSpace = self.colorSpace

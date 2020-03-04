@@ -21,10 +21,10 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pagebotcocoa',
-    description='Cocoa canvas & DrawBot context for PageBot.',
+    description='Mac OS X context for PageBot based on DrawBot.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url="https://github.com/PageBot/PageBotCocoa",
+    url="https://github.com/PageBot/PageBotOSX",
     author = 'Petr van Blokland, Michiel Kauw-A-Tjoe',
     author_email = 'r@petr.com',
     version='0.1.3',

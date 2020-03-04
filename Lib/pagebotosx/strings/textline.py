@@ -20,8 +20,8 @@ from CoreText import (CGPoint, CTLineGetGlyphRuns,
         CTLineGetStringRange, CTLineGetImageBounds, CTLineGetTypographicBounds,
         CTLineGetTrailingWhitespaceWidth)
 from pagebot.toolbox.units import pt, upt
-from pagebotcocoa.strings.textrun import TextRun
-from pagebotcocoa.strings.pattern import FoundPattern
+from pagebotosx.strings.textrun import TextRun
+from pagebotosx.strings.pattern import FoundPattern
 
 class TextLine:
     """Wraps the CoreText CTLine class. See also:
@@ -44,7 +44,7 @@ class TextLine:
             self.string += textRun.string
 
     def __repr__(self):
-        n = 'Cocoa' + self.__class__.__name__
+        n = 'OSX' + self.__class__.__name__
         return '<%s #%d y:%0.2f Runs:%d>' % (n, self.lineIndex, self.y, len(self.textRuns))
 
     def __len__(self):

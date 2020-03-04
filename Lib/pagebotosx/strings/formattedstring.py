@@ -27,9 +27,9 @@ from fontTools.misc.macRes import ResourceReader, ResourceError
 # https://github.com/typemytype/drawbot/pull/307
 from drawBot.context.tools.openType import getFeatureTagsForFontName#, featureMap
 from drawBot.context.tools.variation import *
-from pagebotcocoa.errors import PageBotCocoaError
-from pagebotcocoa.cocoacolor import CocoaColor, CocoaCMYKColor
-from pagebotcocoa.strings.tryinstallfont import _tryInstallFontFromFontName
+from pagebotosx.errors import PageBotOSXError
+from pagebotosx.osxcolor import OSXColor, OSXCMYKColor
+from pagebotosx.strings.tryinstallfont import _tryInstallFontFromFontName
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +42,8 @@ class FormattedString:
     multiple times. FormattedString objects can be drawn with the `text(txt,
     (x, y))` and `textBox(txt, (x, y, w, h))` methods."""
 
-    _colorClass = CocoaColor
-    _cmykColorClass = CocoaCMYKColor
+    _colorClass = OSXColor
+    _cmykColorClass = OSXCMYKColor
 
     _textAlignMap = dict(
         center=AppKit.NSCenterTextAlignment,
@@ -448,7 +448,7 @@ class FormattedString:
             font = str(font)
             testFont = AppKit.NSFont.fontWithName_size_(font, self._fontSize)
             if testFont is None:
-                raise PageBotCocoaError("Fallback font '%s' is not available" % font)
+                raise PageBotOSXError("Fallback font '%s' is not available" % font)
         self._fallbackFont = font
         return font
 
@@ -545,12 +545,12 @@ class FormattedString:
             text(t, (10, 80))
         """
         if args and features:
-            raise PageBotCocoaError("Can't combine positional arguments and keyword arguments")
+            raise PageBotOSXError("Can't combine positional arguments and keyword arguments")
         if args:
             if len(args) != 1:
-                raise PageBotCocoaError("There can only be one positional argument")
+                raise PageBotOSXError("There can only be one positional argument")
             if args[0] is not None:
-                raise PageBotCocoaError("First positional argument can only be None")
+                raise PageBotOSXError("First positional argument can only be None")
             logger.warning("openTypeFeatures(None) is deprecated, use openTypeFeatures(resetFeatures=True) instead.")
             self._openTypeFeatures.clear()
         else:
@@ -579,13 +579,13 @@ class FormattedString:
         If no arguments are given `fontVariations()` will just return the
         current font variations settings."""
         if args and axes:
-            raise PageBotCocoaError("Can't combine positional arguments and keyword arguments")
+            raise PageBotOSXError("Can't combine positional arguments and keyword arguments")
 
         if args:
             if len(args) != 1:
-                raise PageBotCocoaError("There can only be one positional argument")
+                raise PageBotOSXError("There can only be one positional argument")
             if args[0] is not None:
-                raise PageBotCocoaError("First positional argument can only be None")
+                raise PageBotOSXError("First positional argument can only be None")
             logger.warning("fontVariations(None) is deprecated, use fontVariations(resetVariations=True) instead.")
             self._fontVariations.clear()
         else:

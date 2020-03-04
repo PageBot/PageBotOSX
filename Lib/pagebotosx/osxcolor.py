@@ -12,13 +12,13 @@
 #     Supporting Flat, xxyxyz.org/flat
 # -----------------------------------------------------------------------------
 #
-#     cocoacolor.py
+#     osxcolor.py
 #
 
 import AppKit
-from pagebotcocoa.errors import PageBotCocoaError
+from pagebotosx.errors import PageBotOSXError
 
-class CocoaColor:
+class OSXColor:
 
     colorSpace = AppKit.NSColorSpace.genericRGBColorSpace
 
@@ -74,9 +74,9 @@ class CocoaColor:
             return cls(*color)
         elif isinstance(color, AppKit.NSColor):
             return cls(color)
-        raise PageBotCocoaError("Not a valid color: %s" % color)
+        raise PageBotOSXError("Not a valid color: %s" % color)
 
-class CocoaCMYKColor(CocoaColor):
+class OSXCMYKColor(OSXColor):
 
     colorSpace = AppKit.NSColorSpace.genericCMYKColorSpace
 
@@ -91,9 +91,9 @@ class CocoaCMYKColor(CocoaColor):
         self._cmyka = c, m, y, k, a
         super().__init__()
 
-class CocoaShadow:
+class OSXShadow:
 
-    _colorClass = CocoaColor
+    _colorClass = OSXColor
 
     def __init__(self, offset=None, blur=None, color=None):
         if offset is None:
@@ -113,21 +113,21 @@ class CocoaShadow:
             new.cmykColor = self.cmykColor.copy()
         return new
 
-class CocoaGradient:
+class OSXGradient:
 
-    _colorClass = CocoaColor
+    _colorClass = OSXColor
 
     def __init__(self, gradientType=None, start=None, end=None, colors=None, positions=None, startRadius=None, endRadius=None):
         if gradientType is None:
             return
         if gradientType not in ("linear", "radial"):
-            raise PageBotCocoaError("Gradient type must be either 'linear' or 'radial'")
+            raise PageBotOSXError("Gradient type must be either 'linear' or 'radial'")
         if not colors or len(colors) < 2:
-            raise PageBotCocoaError("Gradient needs at least 2 colors")
+            raise PageBotOSXError("Gradient needs at least 2 colors")
         if positions is None:
             positions = [i / float(len(colors) - 1) for i in range(len(colors))]
         if len(colors) != len(positions):
-            raise PageBotCocoaError("Gradient needs a correct position for each color")
+            raise PageBotOSXError("Gradient needs a correct position for each color")
 
         self.gradientType = gradientType
         self.colors = self._colorClass.getColorsFromList(colors)
