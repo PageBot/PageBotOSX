@@ -27,7 +27,7 @@ setup(
     url="https://github.com/PageBot/PageBotOSX",
     author = 'Petr van Blokland, Michiel Kauw-A-Tjoe',
     author_email = 'r@petr.com',
-    version='0.1.3',
+    version='0.1.3.1',
     package_dir={'': 'Lib'},
     packages=find_packages('Lib'),
     include_package_data=True,
