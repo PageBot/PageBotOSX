@@ -1,6 +1,5 @@
 pyobjc==5.2
 pagebot
-#flat==0.3.1
 
 # Dependencies that are not yet available on PyPI:
 git+https://github.com/typemytype/drawbot.git#egg=drawbot
