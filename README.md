@@ -52,7 +52,7 @@ Bugs, enhancements and requested features can be added to the GitHub issue track
 - The core library, tutorials and basic examples for PageBot are available
   under the MIT Open Source license. Some depencendies have been included in
   this repository and are available under their own licenses. See also the
-  [LICENSE](https://github.com/PageBot/PageBotCocoa/blob/master/LICENSE.md).
+  [LICENSE](https://github.com/PageBot/PageBotOSX/blob/master/LICENSE.md).
 
 > PageBot® is a registered trademark 
 > U.S. Serial Number: 87-457,280
