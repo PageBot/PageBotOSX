@@ -4,19 +4,32 @@ Mac OS X context for PageBot, based on DrawBot.
 
 # Installation
 
-To install the stable release:
+Pagebot runs on Python 3. We recommend updating to version 3.7 / 3.8.
+
+## System Wide
+
+To install `pagebotosx` as a general Python package:
 
     pip install pagebotosx
 
-To setup the development environment and install the version from this git repo:
+Upgrade to the latest if already installed:
 
-    virtualenv venv -ppython3
-    . venv/bin/activate
-    pip install -r requirements.txt
+    pip install pagebot pagebotosx --upgrade
+
+## Virtual Environment
+
+To setup `pagebotosx` and its requirements in a virtual environemnt environment:
+
+    pip install virtualenv
+    mkdir ~/virtualenvironment
+    virtualenv ~/virtualenvironment/pagebot
+    cd ~/virtualenvironment/pagebot/bin
+    source activate
+    pip-3.8 install pagebotosx
 
 # Usage
 
-    ...
+See [github.com/PageBot/PageBot](https://github.com/PageBot/PageBot).
 
 # Issue Tracking 
 
