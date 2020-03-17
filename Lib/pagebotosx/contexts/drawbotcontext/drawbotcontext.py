@@ -21,8 +21,8 @@ from CoreText import (CTFontDescriptorCreateWithNameAndSize,
 from AppKit import NSFont
 import drawBot
 from pagebot.constants import *
-from pagebot.contexts.base.babelstring import BabelString
-from pagebot.contexts.base.basecontext import BaseContext
+from pagebot.contexts.basecontext.babelstring import BabelString
+from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir

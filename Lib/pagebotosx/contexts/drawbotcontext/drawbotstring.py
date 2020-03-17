@@ -21,7 +21,7 @@ from CoreText import (CTFramesetterCreateWithAttributedString,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 from pagebot.constants import LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING
-from pagebot.contexts.base.babelstring import getLineHeight, BabelString
+from pagebot.contexts.basecontext.babelstring import getLineHeight, BabelString
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
 import drawBot as drawBotBuilder
@@ -83,7 +83,7 @@ class DrawBotString(BabelString):
         #True
         >>> style = dict(font='Verdana', fontSize=pt(100), leading=em(1.4))
         >>> bs = context.newString('Example Text', style=style)
-        >>> from pagebot.contexts.base.babelstring import BabelString
+        >>> from pagebot.contexts.basecontext.babelstring import BabelString
         >>> isinstance(bs, BabelString)
         True
         >>> bs[2:]
