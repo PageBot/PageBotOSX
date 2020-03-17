@@ -8,9 +8,9 @@ python3 $PWD/bezierpaths/__init__.py
 python3 $PWD/bezierpaths/osxbezierpath.py
 python3 $PWD/bezierpaths/beziercontour.py
 python3 $PWD/contexts/__init__.py
-python3 $PWD/contexts/drawbot/__init__.py
-python3 $PWD/contexts/drawbot/drawbotcontext.py
-python3 $PWD/contexts/drawbot/drawbotstring.py
+python3 $PWD/contexts/drawbotcontext/__init__.py
+python3 $PWD/contexts/drawbotcontext/drawbotcontext.py
+python3 $PWD/contexts/drawbotcontext/drawbotstring.py
 python3 $PWD/graphics/__init__.py
 python3 $PWD/graphics/graphic.py
 python3 $PWD/fonttoolbox/__init__.py
