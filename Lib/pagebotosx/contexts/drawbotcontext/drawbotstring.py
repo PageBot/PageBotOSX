@@ -75,7 +75,7 @@ class DrawBotString(BabelString):
         >>> style = dict(font=font, fontSize=pt(80))
         >>> bs = context.newString('Example Text', style=style)
         >>> bs.fontSize, round(upt(bs.xHeight)), bs.xHeight, bs.capHeight, bs.ascender, bs.descender
-        (80pt, 42, 0.53em, 0.71em, 0.93em, -0.24em)
+        (80pt, 37, 0.47em, 0.66em, 0.9em, -0.3em)
         >>> #bs.font # FIXME: returns Roboto instead of PageBot font.
         >>> #'PageBot-Regular.ttf' in bs.font
         #True
@@ -576,7 +576,7 @@ class DrawBotString(BabelString):
         >>> font = findFont('Roboto-Regular')
         >>> font = findFont('Bungee-Regular')
         >>> font = findFont('Roboto-Black')
-        >>> bs = context.newString('ABC', style=dict(font=font.path, fontSize=pt(22)))
+        >>> bs = context.newString('ABC', style=dict(font=font, fontSize=pt(22)))
         >>> bs.style['font'].endswith('Roboto-Black.ttf')
         True
         >>> bs

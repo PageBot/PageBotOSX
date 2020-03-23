@@ -257,7 +257,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> context = getContext('DrawBot')
         >>> context.newDrawing()
         >>> context.newPage(420, 420)
-        >>> context.font('Verdana')
+        >>> context.font('PageBot-Regular')
         >>> context.fontSize(12)
         >>> box = 0, 0, 300, 20
         >>> s = 'AAA ' * 200
@@ -266,9 +266,9 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> # Plain string overflow.
         >>> of = context.textOverflow(s, box)
         >>> len(of)
-        760
+        756
         >>> # Styled DrawBotString overflow.
-        >>> style = dict(font='Verdana', fontSize=14)
+        >>> style = dict(font='PageBot-Bold', fontSize=14)
         >>> bs = context.newString('AAA ' * 200, style=style)
         >>> of = context.textOverflow(bs, box)
         >>> len(of)
