@@ -4,9 +4,6 @@ export PWD="Lib/pagebotosx"
 python3 $PWD/__init__.py
 python3 $PWD/osxcolor.py
 python3 $PWD/errors.py
-python3 $PWD/bezierpaths/__init__.py
-python3 $PWD/bezierpaths/osxbezierpath.py
-python3 $PWD/bezierpaths/beziercontour.py
 python3 $PWD/contexts/__init__.py
 python3 $PWD/contexts/drawbotcontext/__init__.py
 python3 $PWD/contexts/drawbotcontext/drawbotcontext.py

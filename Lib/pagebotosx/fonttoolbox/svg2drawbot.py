@@ -17,7 +17,7 @@
 #     Converts SVG paths to drawbot Bézier paths.
 #
 from xml.dom import minidom
-from pagebotosx.bezierpaths.osxbezierpath import OSXBezierPath
+from drawBot import BezierPath
 
 def getSvgPaths(fileName):
     """Extracts path strings from XML."""
@@ -98,7 +98,7 @@ def copyPoint(previousPoint, currentPoint):
 
 def contourToPath(contour):
     """Converts SVG contour to a path in DrawBot."""
-    path = OSXBezierPath()
+    path = BezierPath()
     pPrev = [0.0, 0.0]
     pPrev2 = None
     previousCommand = None

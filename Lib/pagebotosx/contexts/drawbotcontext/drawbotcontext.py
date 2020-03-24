@@ -28,7 +28,6 @@ from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from drawBot import Variable
 from pagebotosx.contexts.drawbotcontext.drawbotstring import DrawBotString as stringClass
-#from pagebotosx.bezierpaths.osxbezierpath import OSXBezierPath
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
 drawBotBuilder = drawBot
@@ -123,7 +122,7 @@ class DrawBotContext(BaseContext):
     def bluntCornerRect(self, x, y, w, h, offset=5):
         """Draw a rectangle in the canvas. This method is using the core
         BezierPath as path to draw on. For a more rich environment use
-        PageBotPath(context) instead.
+        BasePath(context) instead.
 
         TODO: move to elements.
 
@@ -148,7 +147,7 @@ class DrawBotContext(BaseContext):
 
     def roundedRect(self, x, y, w, h, offset=25):
         """Draw a rectangle in the canvas. This method is using the core BezierPath
-        as path to draw on. For a more rich environment use PageBotPath(context)
+        as path to draw on. For a more rich environment use BasePath(context)
         instead.
 
         TODO: move to elements.
@@ -303,8 +302,6 @@ WaterparkTM which is freely accessible through a private gate.'''
     #
 
     def newPath(self):
-        #self._bezierpath = OSXBezierPath(self.b)
-        # Using DrawBot's BezierPath class for now.
         self._bezierpath = self.b.BezierPath()
         return self.bezierpath
 
@@ -359,7 +356,7 @@ WaterparkTM which is freely accessible through a private gate.'''
             path = self.bezierpath
 
         if hasattr(path, 'path'):
-            # In case it is a PageBotPath.
+            # In case it is a BasePath.
             path = path.path
 
         return path._path.bezierPathByFlatteningPath()
