@@ -1,4 +1,4 @@
-pyobjc==5.2
+pyobjc
 pagebot
 
 # Dependencies that are not yet available on PyPI:
