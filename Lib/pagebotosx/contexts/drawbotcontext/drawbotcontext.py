@@ -19,14 +19,17 @@ import os
 from CoreText import (CTFontDescriptorCreateWithNameAndSize,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute)
 from AppKit import NSFont
+
 import drawBot
+from drawBot import Variable
+
 from pagebot.constants import *
+from pagebot.contexts.basecontext.bezierpath import BezierPath
 from pagebot.contexts.basecontext.babelstring import BabelString
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
 from pagebot.toolbox.transformer import path2Name, path2Dir
-from drawBot import Variable
 from pagebotosx.contexts.drawbotcontext.drawbotstring import DrawBotString as stringClass
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
@@ -120,9 +123,8 @@ class DrawBotContext(BaseContext):
     #   D R A W I N G
 
     def bluntCornerRect(self, x, y, w, h, offset=5):
-        """Draw a rectangle in the canvas. This method is using the core
-        BezierPath as path to draw on. For a more rich environment use
-        BasePath(context) instead.
+        """Draw a rectangle in the canvas. This method is using the Bézier path
+        to draw on.
 
         TODO: move to elements.
 
@@ -146,9 +148,8 @@ class DrawBotContext(BaseContext):
         self.drawPath(path)
 
     def roundedRect(self, x, y, w, h, offset=25):
-        """Draw a rectangle in the canvas. This method is using the core BezierPath
-        as path to draw on. For a more rich environment use BasePath(context)
-        instead.
+        """Draw a rectangle in the canvas. This method is using the Bézier path
+        as path to draw on.
 
         TODO: move to elements.
 
@@ -303,6 +304,7 @@ WaterparkTM which is freely accessible through a private gate.'''
 
     def newPath(self):
         self._bezierpath = self.b.BezierPath()
+        #self._bezierpath = BezierPath()
         return self.bezierpath
 
     def drawGlyphPath(self, glyph):
@@ -349,7 +351,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         return path
 
     def bezierPathByFlatteningPath(self, path=None):
-        """Use the NSBezierPath flatten function. Answers None if the flattened
+        """Use the Bézier path flatten function. Answers None if the flattened
         path could not be made.
         """
         if path is None:
