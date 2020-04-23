@@ -187,7 +187,7 @@ class DrawBotContext(BaseContext):
         >>> context = getContext('DrawBot')
         >>> font = findFont('PageBot-Regular')
         >>> style = dict(font=font, fontSize=pt(12))
-        >>> bs = context.newString('Example Text and more ' * 1000, style=style)
+        >>> bs = context.newString('Example Text and more ' * 1000, style)
         >>> textLines = context.textLines(bs, w=300)
         >>> textLine = textLines[0]
         >>> textLine.bs

@@ -14,6 +14,7 @@
 #
 #     drawbotstring.py
 #
+#     D E P R E C A T E D
 
 import re
 from AppKit import NSAttributeDictionary, NSRange
@@ -26,7 +27,7 @@ from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
 from pagebot.fonttoolbox.objects.font import getLineHeight
 import drawBot as drawBotBuilder
-from pagebotosx.strings.textline import TextLine
+#from pagebotosx.strings.textline import TextLine
 
 def pixelBounds(fs):
     """Answers the pixel-bounds rectangle of the text.
