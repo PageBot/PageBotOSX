@@ -23,8 +23,12 @@ from CoreText import (CTFontDescriptorCreateWithNameAndSize, CGPathAddRect,
         CTLineGetGlyphRuns, CTRunGetAttributes, CTRunGetGlyphCount,
         CTRunGetGlyphs)
 from AppKit import NSFont
+
 import drawBot
+from drawBot import Variable
+
 from pagebot.constants import *
+#from pagebot.contexts.basecontext.bezierpath import BezierPath
 from pagebot.contexts.basecontext.babelstring import BabelString, BabelLine
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
@@ -123,9 +127,8 @@ class DrawBotContext(BaseContext):
     #   D R A W I N G
 
     def bluntCornerRect(self, x, y, w, h, offset=5):
-        """Draw a rectangle in the canvas. This method is using the core
-        BezierPath as path to draw on. For a more rich environment use
-        BasePath(context) instead.
+        """Draw a rectangle in the canvas. This method is using the Bézier path
+        to draw on.
 
         TODO: move to elements.
 
@@ -149,9 +152,8 @@ class DrawBotContext(BaseContext):
         self.drawPath(path)
 
     def roundedRect(self, x, y, w, h, offset=25):
-        """Draw a rectangle in the canvas. This method is using the core BezierPath
-        as path to draw on. For a more rich environment use BasePath(context)
-        instead.
+        """Draw a rectangle in the canvas. This method is using the Bézier path
+        as path to draw on.
 
         TODO: move to elements.
 
@@ -201,13 +203,13 @@ class DrawBotContext(BaseContext):
                 w = 500
             else:
                 w = bs.e.w # Take the width of the references element.
-        if h is None: 
+        if h is None:
             if bs.e is None:
                 h = 500
             else:
                 h = bs.e.h or 500
 
-        fs = self.fromBabelString(bs) # Answers a DrawBot.FormattedString    
+        fs = self.fromBabelString(bs) # Answers a DrawBot.FormattedString
         wpt, hpt = upt(w, h)
         attrString = fs.getNSObject()
         setter = CTFramesetterCreateWithAttributedString(attrString)
@@ -224,6 +226,7 @@ class DrawBotContext(BaseContext):
             origin = origins[index]
             babelLine = BabelLine(bs, x=origin.x, y=origin.y, index=index)
             textLines.append(babelLine)
+
             for ctRun in CTLineGetGlyphRuns(ctLine):
                 attributes = CTRunGetAttributes(ctRun)
                 c = attributes['NSColor']
@@ -235,11 +238,11 @@ class DrawBotContext(BaseContext):
                     fontSize=pt(attributes['NSFont'].pointSize()),
                     baselineOffset=pt(attributes['NSBaselineOffset']),
                     language=attributes['NSLanguage'],
-                    textFill=color(r=c.redComponent(), g=c.greenComponent(), 
+                    textFill=color(r=c.redComponent(), g=c.greenComponent(),
                         b=c.blueComponent(), a=c.alphaComponent())
                     #paragraphstyle=attributes['NSParagraphStyle'],
                 )
-                #s = ''
+
                 #for uCode in CTRunGetGlyphs(ctRun, (0, CTRunGetGlyphCount(ctRun)), None):
                 #    s += glyphOrder[uCode]
                 # Hack for now to find the string in repr-string if self._ctLine.
@@ -323,8 +326,8 @@ class DrawBotContext(BaseContext):
                 fsStyle['tabs'] = tabs
 
             # In case there is an error in these parameters, DrawBot ignors all.
-            #print('FS-style attributes:', run.s, fontPath, 
-            #    upt(fontSize), upt(leading, base=fontSize), 
+            #print('FS-style attributes:', run.s, fontPath,
+            #    upt(fontSize), upt(leading, base=fontSize),
             #    textColor.rgba, align)
             fs.append(run.s, **fsStyle)
         return fs
@@ -452,7 +455,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         >>> tw, th = context.textSize(bs) # Render to FormattedString for new size.
         >>> tw.rounded, th.rounded
         (105pt, 50pt)
-        >>> 
+        >>>
         """
         if w is None: # If not defined, try to the use the width of referenced element.
             if bs.e is not None:
@@ -469,7 +472,9 @@ WaterparkTM which is freely accessible through a private gate.'''
     #
 
     def newPath(self):
+        # TODO: use our own Bézier path.
         self._bezierpath = self.b.BezierPath()
+        #self._bezierpath = BezierPath()
         return self.bezierpath
 
     def drawGlyphPath(self, glyph):
@@ -516,7 +521,7 @@ WaterparkTM which is freely accessible through a private gate.'''
         return path
 
     def bezierPathByFlatteningPath(self, path=None):
-        """Use the NSBezierPath flatten function. Answers None if the flattened
+        """Use the Bézier path flatten function. Answers None if the flattened
         path could not be made.
         """
         if path is None:
