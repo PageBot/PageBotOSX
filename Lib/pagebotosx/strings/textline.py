@@ -14,6 +14,9 @@
 #
 #     textline.py
 #
+#     D E P R E C A T E D
+#     Use BabelString BabelLine class instead.
+#
 import re
 from CoreText import (CGPoint, CTLineGetGlyphRuns,
         CTLineGetStringIndexForPosition, CTLineGetOffsetForStringIndex,
@@ -23,7 +26,7 @@ from pagebot.toolbox.units import pt, upt
 from pagebotosx.strings.textrun import TextRun
 from pagebotosx.strings.pattern import FoundPattern
 
-class TextLine:
+class XXXTextLine:
     """Wraps the CoreText CTLine class. See also:
 
     https://developer.apple.com/documentation/coretext/ctline-61l

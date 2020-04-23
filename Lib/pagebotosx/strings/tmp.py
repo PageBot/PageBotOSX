@@ -1,6 +1,6 @@
 
 '''
-def getTextLines(txt, box):
+def textLines(txt, box):
     """Answers a list of (x,y) positions of all line starts in the box. This
     function may become part of standard DrawBot in the near future."""
     x, y, w, h = box

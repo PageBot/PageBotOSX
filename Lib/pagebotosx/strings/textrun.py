@@ -14,6 +14,8 @@
 #
 #     textrun.py
 #
+#     D E P R E C A T E D
+#     Use BabelString BabelRun instead.
 
 from CoreText import (CTRunGetGlyphCount, CTRunGetStringRange,
         CTRunGetStringIndicesPtr, CTRunGetAdvances, CTRunGetStatus,
