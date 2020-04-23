@@ -21,9 +21,10 @@ from CoreText import (CTFramesetterCreateWithAttributedString,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins)
 from Quartz import CGPathAddRect, CGPathCreateMutable, CGRectMake
 from pagebot.constants import LEFT, DEFAULT_FONT_SIZE, DEFAULT_LEADING
-from pagebot.contexts.basecontext.babelstring import getLineHeight, BabelString
+from pagebot.contexts.basecontext.babelstring import BabelString
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, units, em
+from pagebot.fonttoolbox.objects.font import getLineHeight
 import drawBot as drawBotBuilder
 from pagebotosx.strings.textline import TextLine
 
@@ -51,7 +52,7 @@ def pixelBounds(fs):
     bx, by, bw, bh = p.bounds()
     return pt(bx, by, bw - bx, bh - by)
 
-class DrawBotString(BabelString):
+class XXXDrawBotString(BabelString):
     """DrawBotString is a wrapper around the standard DrawBot FormattedString."""
 
     BABEL_STRING_TYPE = 'fs'
@@ -63,7 +64,7 @@ class DrawBotString(BabelString):
             'paragraphBottomSpacing', 'language', ]
 
 
-    def __init__(self, s, context, style=None):
+    def __init__(self, s=None, style=None, e=None, context=None):
         """Constructor of the DrawBotString, wrapper around DrawBot
         FormattedString. Optionally stores the (latest) style that was used to
         produce the formatted string.
@@ -74,7 +75,9 @@ class DrawBotString(BabelString):
         >>> font = findFont('Pagebot-Regular')
         >>> style = dict(font=font, fontSize=pt(80))
         >>> bs = context.newString('Example Text', style=style)
-        >>> bs.fontSize, round(upt(bs.xHeight)), bs.xHeight, bs.capHeight, bs.ascender, bs.descender
+        >>> bs.context
+        <DrawBotContext>
+        >>> bs.fontSize, bs.xHeight, bs.capHeight, bs.ascender, bs.descender
         (80pt, 37, 0.47em, 0.66em, 0.9em, -0.3em)
         >>> #bs.font # FIXME: returns Roboto instead of PageBot font.
         >>> #'PageBot-Regular.ttf' in bs.font
@@ -83,12 +86,11 @@ class DrawBotString(BabelString):
         #True
         >>> style = dict(font='Verdana', fontSize=pt(100), leading=em(1.4))
         >>> bs = context.newString('Example Text', style=style)
-        >>> from pagebot.contexts.basecontext.babelstring import BabelString
-        >>> isinstance(bs, BabelString)
-        True
+        >>> bs, bs.__class__.__name__
+        ($Example Text$, BabelString)
         >>> bs[2:]
         ample Text
-        >>> #lines = bs.getTextLines(w=100)
+        >>> #lines = pbs.textLines(w=100)
         >>> #lines
         #[<TextLine #0 y:181.00 Runs:1>, <TextLine #1 y:41.00 Runs:1>]
         >>> #len(lines)
@@ -114,6 +116,11 @@ class DrawBotString(BabelString):
         fsAttrs = {}
         # Some checking, in case we get something else here.
         assert style is None or isinstance(style, dict)
+        assert e is None or isinstance(e, Element)
+        assert context is None is instance(context, BaseContext)
+
+        self.e = e # Optional weakref property to reference element for style and width
+        self.context = context # Optional weakref property to context
 
         # Optional style to set the context parameters. In case defined, store
         # current status here as property and set the current FormattedString
@@ -121,7 +128,6 @@ class DrawBotString(BabelString):
         # these values.
         if style is None:
             style = {}
-
         self.style = style
         self.language = style.get('language')
 
@@ -299,6 +305,8 @@ class DrawBotString(BabelString):
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
         >>> bs = context.newString('Example Text')
+        >>> bs
+
         >>> bs.asText()
         'Example Text'
         """
@@ -315,8 +323,8 @@ class DrawBotString(BabelString):
         >>> context = getContext('DrawBot')
         >>> font = findFont('Bungee-Regular')
         >>> style = dict(font=font, fontSize=pt(12))
-        >>> bs = context.newString('Example Text ' * 20, style=style)
-        >>> #len(bs.getTextLines(w=100))
+        >>> pbs = context.newString('Example Text ' * 20, style=style)
+        >>> len(pbs.textLines(w=100))
         #16
         >>> uRound(bs.textSize(w=300))
         [290pt, 130pt]
@@ -491,118 +499,11 @@ class DrawBotString(BabelString):
         """
         baselines = {}
 
-        for textLine in self.getTextLines(w, h):
+        for textLine in self.textLines(w, h):
             baselines[textLine.y.pt] = textLine
 
         return baselines
 
-    def getTextLines(self, w, h=None, align=LEFT):
-        """Answers the dictionary of TextLine instances. Key is y position of
-        the line.
-
-        >>> from pagebot.toolbox.units import mm, uRound
-        >>> from pagebot import getContext
-        >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> context = getContext('DrawBot')
-        >>> font = findFont('Bungee-Regular')
-        >>> style = dict(font=font, fontSize=pt(12))
-        >>> bs = context.newString('Example Text', style=style)
-        >>> lines = bs.getTextLines(w=200, h=200)
-        >>> len(lines)
-        1
-        >>> #lines # FIXME: baseline shift on Travis OSX.
-        #[<TextLine #0 y:185.20 Runs:1>]
-        >>> line = lines[0]
-        >>> line.maximumLineHeight
-        1.4em
-        >>> #line.y # FIXME: baseline shift on Travis OSX.
-        #185.2pt
-        >>> #lines = bs.getTextLines(w=200, h=200)
-        >>> attrString = bs.s.getNSObject()
-        >>> len(attrString)
-        12
-        >>> setter = CTFramesetterCreateWithAttributedString(attrString)
-        >>> path = CGPathCreateMutable()
-        >>> CGPathAddRect(path, None, CGRectMake(0, 0, 200, 600))
-        >>> ctBox = CTFramesetterCreateFrame(setter, (0, 0), path, None)
-        >>> ctLines = CTFrameGetLines(ctBox)
-        >>> from CoreText import CTLineGetGlyphRuns, CTRunGetAttributes
-        >>> runs = CTLineGetGlyphRuns(ctLines[0])
-        >>> attrs = CTRunGetAttributes(runs[0])
-        >>> origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
-        >>> lineHeight = 16.8
-        >>> oy = origins[0].y
-        >>> #oy # FIXME: baseline shift on Travis OSX.
-        #585.2
-        >>> 600 - lineHeight
-        583.2
-        """
-        assert w
-
-        if h is None:
-            h = 3 * w
-
-        wpt, hpt = upt(w, h)
-        textLines = []
-        attrString = self.s.getNSObject()
-        setter = CTFramesetterCreateWithAttributedString(attrString)
-        path = CGPathCreateMutable()
-        CGPathAddRect(path, None, CGRectMake(0, 0, wpt, hpt))
-        ctBox = CTFramesetterCreateFrame(setter, (0, 0), path, None)
-        ctLines = CTFrameGetLines(ctBox)
-        origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
-
-        for lIndex, ctLine in enumerate(ctLines):
-            origin = origins[lIndex]
-            origin_y = origin.y
-            textLine = TextLine(ctLine, pt(origin.x), pt(origin_y), lIndex)
-            textLines.append(textLine)
-
-        return textLines
-
-    @classmethod
-    def newString(cls, s, context, e=None, style=None, w=None, h=None, **kwargs):
-        """Answers a DrawBotString instance from valid attributes in *style*.
-        Set all values after testing their existence, so they can inherit from
-        previous style formats in the string.
-
-        If target width *w* or height *h* is defined, then *fontSize* is scaled
-        to make the string fit *w* or *h*.
-        TODO: restore pixelFit implementation.
-
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
-        >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> font = findFont('Roboto-Regular')
-        >>> font = findFont('Bungee-Regular')
-        >>> font = findFont('Roboto-Black')
-        >>> bs = context.newString('ABC', style=dict(font=font, fontSize=pt(22)))
-        >>> bs.style['font'].endswith('Roboto-Black.ttf')
-        True
-        >>> bs
-        ABC
-        >>> bs = context.newString('ABC', style=dict(font=font.path, w=pt(100)))
-        >>> int(round(bs.fontSize))
-        12
-        >>> # Use the font instance instead of path.
-        >>> bs = context.newString('ABC ', style=dict(font=font, w=pt(100)))
-        >>> int(round(bs.fontSize))
-        12
-        >>> bs1 = context.newString('DEF')
-        >>> bs + bs1
-        ABC DEF
-        """
-        assert isinstance(s, str)
-
-        if style is None:
-            style = {}
-        else:
-            assert isinstance(style, dict)
-
-        attrs = cls.getStringAttributes(s, e=e, style=style, w=w, h=h)
-        s = cls.addCaseToString(s, e, style)
-        # Creates a new DrawBotString.
-        return cls(s, context, style=attrs)
 
 if __name__ == '__main__':
     import doctest
