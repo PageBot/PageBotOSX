@@ -375,10 +375,14 @@ class DrawBotContext(BaseContext):
         >>> context.drawString(bs, pt(100, 100))
 
         """
-        assert isinstance(bs, (str, BabelString)),\
-            'DrawBotContext.text needs str or BabelString: %s' % (bs.__class__.__name__)
-        fs = self.fromBabelString(bs)
-        self.b.text(fs, point2D(upt(p)))
+        assert isinstance(bs, BabelString),\
+            'DrawBotContext.text needs BabelString: %s' % (bs.__class__.__name__)
+        if bs.w is None and bs.h is None:
+            self.b.text(bs.cs, point2D(upt(p)))
+        else:
+            x, y = point2D(upt(p))
+            box = (x, y, bs.w or DEFAULT_WIDTH, bs.h or 1000)
+            self.b.textBox(bs.cs, box)
 
     def drawText(self, bt, p):
         """ Draw the textLines with the first line on position @p. Alignment is already
