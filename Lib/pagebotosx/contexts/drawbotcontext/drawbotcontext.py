@@ -377,8 +377,12 @@ class DrawBotContext(BaseContext):
         """
         assert isinstance(bs, BabelString),\
             'DrawBotContext.drawString needs str or BabelString: %s' % (bs.__class__.__name__)
-        fs = self.fromBabelString(bs)
-        self.b.text(fs, point2D(upt(p)))
+        if bs.w is None and bs.h is None:
+            self.b.text(bs.cs, point2D(upt(p)))
+        else:
+            x, y = point2D(upt(p))
+            box = (x, y, bs.w or DEFAULT_WIDTH, bs.h or 1000)
+            self.b.textBox(bs.cs, box)
 
     def drawText(self, bs, box):
         """ Draw the text block, in case there is a width or heigh defined.
