@@ -375,17 +375,19 @@ class DrawBotContext(BaseContext):
         >>> context.drawString(bs, pt(100, 100))
 
         """
-        assert isinstance(bs, (str, BabelString)),\
-            'DrawBotContext.text needs str or BabelString: %s' % (bs.__class__.__name__)
+        assert isinstance(bs, BabelString),\
+            'DrawBotContext.drawString needs str or BabelString: %s' % (bs.__class__.__name__)
         fs = self.fromBabelString(bs)
         self.b.text(fs, point2D(upt(p)))
 
-    def drawText(self, bt, p):
-        """ Draw the textLines with the first line on position @p. Alignment is already
-        rendered in the textLine instances.
+    def drawText(self, bs, box):
+        """ Draw the text block, in case there is a width or heigh defined.
 
         """
-        self.b.textBox(bt.ct, (p[0], p[1]-bt.h, bt.w, bt.h))
+        assert isinstance(bs, BabelString),\
+            'DrawBotContext.drawText needs str or BabelString: %s' % (bs.__class__.__name__)
+        fs = self.fromBabelString(bs)
+        self.b.textBox(fs, upt(box))
 
     def textOverflow(self, bt, h):
         """Answers the overflow text if flowing it in the box. In case a plain
@@ -461,7 +463,11 @@ class DrawBotContext(BaseContext):
         (105pt, 50pt)
         >>>
         """
-        return pt(self.b.textSize(fs, width=w, height=h, align=LEFT))
+        if w is not None:
+            return pt(self.b.textSize(fs, width=w, align=LEFT))
+        if h is not None:
+            return pt(self.b.textSize(fs, height=h, align=LEFT))
+        return pt(self.b.textSize(fs, align=LEFT))
 
     #   P A T H
     #
