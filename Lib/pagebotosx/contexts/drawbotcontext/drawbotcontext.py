@@ -184,12 +184,12 @@ class DrawBotContext(BaseContext):
         By default, w render the full height of the text, so other functions (self.overfill)
 
         >>> from pagebot.toolbox.units import mm, pt, em
-        >>> from pagebot.toolbox.lorumipsum import lorumipsum
+        >>> from pagebot.toolbox.loremipsum import loremipsum
         >>> from pagebot import getContext
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> context = getContext('DrawBot')
         >>> style = dict(font='PageBot-Regular', fontSize=pt(16), leading=em(1))
-        >>> bs = context.newString(lorumipsum(), style, w=pt(500))
+        >>> bs = context.newString(loremipsum(), style, w=pt(500))
         >>> bs.tw, bs.th
         (497.89pt, 1216pt)
         >>> lines = bs.lines # Equivalent of context.textLines(bs.cs, bs.w)
@@ -312,13 +312,20 @@ class DrawBotContext(BaseContext):
             style = run.style
             # DrawBot-OSX, setting the hyphenation is global, before a FormattedString is created.
             self.b.hyphenation(style.get('hyphenation', False))
+
+            # In case there is an error in these parameters, DrawBot ignors all.
+            #print('FS-style attributes:', run.s, fontPath,
+            #    upt(fontSize), upt(leading, base=fontSize),
+            #    textColor.rgba, align)
+
+            # Create the style for this text run.
             font = findFont(style.get('font', DEFAULT_FONT))
             if font is None:
                 fontPath = DEFAULT_FONT
             else:
                 fontPath = font.path
             fontSize = style.get('fontSize', DEFAULT_FONT_SIZE)
-            leading = style.get('leading', em(1)) # Vertical space adding to fontSize.
+            leading = style.get('leading', em(1, base=fontSize)) # Vertical space adding to fontSize.
             fsStyle = dict(
                 font=fontPath,
                 fontSize=upt(fontSize),
@@ -331,20 +338,27 @@ class DrawBotContext(BaseContext):
                 indent=upt(style.get('indent', 0), base=fontSize),
                 tailIndent=upt(style.get('tailIndent', 0), base=fontSize),
                 firstLineIndent=upt(style.get('firstLineIndent', 0), base=fontSize),
-                paragraphTopSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
-                paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
                 underline={True:'single', False:None}.get(style.get('underline', False)),
+                # Increasing value moves text up, decreasing the leading.
+                paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize) or None, 
+                paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize) or None,
             )
             if 'textFill' in style:
                 textFill = style['textFill']
                 if textFill is not None:
                     textFill = color(textFill)
-                fsStyle['fill'] = textFill.rgba
+                if textFill.isCmyk:
+                    fsStyle['cmykFill'] = textFill.cmyk
+                else:
+                    fsStyle['fill'] = textFill.rgba
             if 'textStroke' in style:
                 textStroke = style['textStroke']
                 if textStroke is not None:
                     textStroke = color(textStroke)
-                fsStyle['stroke'] = textStroke.rgba
+                if textStroke.isCmyk:
+                    fsStyle['cmykStroke'] = textStroke.cmyk
+                else:
+                   fsStyle['stroke'] = textStroke.rgba
             if 'openTypeFeatures' in style:
                 fsStyle['openTypeFeatures'] = style['openTypeFeatures']
             if 'fontVariations' in style:
@@ -355,10 +369,6 @@ class DrawBotContext(BaseContext):
                     tabs.append((upt(tx, base=fontSize), alignment))
                 fsStyle['tabs'] = tabs
 
-            # In case there is an error in these parameters, DrawBot ignors all.
-            #print('FS-style attributes:', run.s, fontPath,
-            #    upt(fontSize), upt(leading, base=fontSize),
-            #    textColor.rgba, align)
             fs.append(run.s, **fsStyle)
         return fs
 
@@ -400,12 +410,12 @@ class DrawBotContext(BaseContext):
 
         `S` Can be a str, BabelString, or DrawBot FormattedString.
 
-        >>> from pagebot.toolbox.lorumipsum import lorumipsum
+        >>> from pagebot.toolbox.loremipsum import loremipsum
         >>> from pagebot.toolbox.units import pt
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
         >>> style = dict(font='PageBot-Regular', fontSize=pt(24))
-        >>> bs = context.newString(lorumipsum(), style)
+        >>> bs = context.newString(loremipsum(), style)
         >>> lines = bs.lines # Same as context.textLines(bs.cs, bs.w)
         >>> #of = context.textOverflow(lines, h=pt(100))
         >>> #of[1]

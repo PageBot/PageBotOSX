@@ -185,13 +185,13 @@ class DrawBotContext(BaseContext):
         the line.
 
         >>> from pagebot.toolbox.units import mm, pt, em
-        >>> from pagebot.toolbox.lorumipsum import lorumipsum
+        >>> from pagebot.toolbox.loremipsum import loremipsum
         >>> from pagebot import getContext
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> context = getContext('DrawBot')
         >>> font = findFont('PageBot-Regular')
         >>> style = dict(font=font, fontSize=pt(12), leading=em(1))
-        >>> bs = context.newString(lorumipsum(False), style)
+        >>> bs = context.newString(loremipsum(False), style)
         >>> textLines = context.textLines(bs, w=300)
         >>> textLines[:2]
         [<BabelLine #0 y=8pt $Lorem ipsu...$>, <BabelLine #1 y=20pt $sapien tem...$>]
