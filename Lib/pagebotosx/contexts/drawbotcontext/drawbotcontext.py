@@ -326,6 +326,7 @@ class DrawBotContext(BaseContext):
                 fontPath = font.path
             fontSize = style.get('fontSize', DEFAULT_FONT_SIZE)
             leading = style.get('leading', em(1, base=fontSize)) # Vertical space adding to fontSize.
+            fs.align('right')
             fsStyle = dict(
                 font=fontPath,
                 fontSize=upt(fontSize),
@@ -340,8 +341,8 @@ class DrawBotContext(BaseContext):
                 firstLineIndent=upt(style.get('firstLineIndent', 0), base=fontSize),
                 underline={True:'single', False:None}.get(style.get('underline', False)),
                 # Increasing value moves text up, decreasing the leading.
-                paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize) or None, 
-                paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize) or None,
+                paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize), 
+                paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
             )
             if 'textFill' in style:
                 textFill = style['textFill']
@@ -387,7 +388,7 @@ class DrawBotContext(BaseContext):
         """
         assert isinstance(bs, BabelString),\
             'DrawBotContext.drawString needs str or BabelString: %s' % (bs.__class__.__name__)
-        if bs.w is None and bs.h is None:
+        if bs._w is None and bs._h is None:
             self.b.text(bs.cs, point2D(upt(p)))
         else:
             x, y = point2D(upt(p))
@@ -400,8 +401,7 @@ class DrawBotContext(BaseContext):
         """
         assert isinstance(bs, BabelString),\
             'DrawBotContext.drawText needs str or BabelString: %s' % (bs.__class__.__name__)
-        fs = self.fromBabelString(bs)
-        self.b.textBox(fs, upt(box))
+        self.b.textBox(bs.cs, upt(box))
 
     def textOverflow(self, bt, h):
         """Answers the overflow text if flowing it in the box. In case a plain
