@@ -241,7 +241,7 @@ class DrawBotContext(BaseContext):
                     language=attributes['NSLanguage'],
                     textFill=color(r=c.redComponent(), g=c.greenComponent(),
                         b=c.blueComponent(), a=c.alphaComponent()),
-                    xAlign={0:LEFT, 1:RIGHT, 2:CENTER}.get(paragraph.alignment()),
+                    xTextAlign={0:LEFT, 1:RIGHT, 2:CENTER}.get(paragraph.alignment()),
                     firstLineIndent=pt(paragraph.firstLineHeadIndent()),
                     indent=pt(paragraph.headIndent()),
                     tailIndent=pt(paragraph.tailIndent()),
@@ -326,12 +326,11 @@ class DrawBotContext(BaseContext):
                 fontPath = font.path
             fontSize = style.get('fontSize', DEFAULT_FONT_SIZE)
             leading = style.get('leading', em(1, base=fontSize)) # Vertical space adding to fontSize.
-            fs.align('right')
             fsStyle = dict(
                 font=fontPath,
                 fontSize=upt(fontSize),
                 lineHeight=upt(leading, base=fontSize),
-                align=style.get('xAlign', LEFT),
+                align=style.get('xTextAlign') or style.get('xAlign', LEFT),
                 tracking=upt(style.get('tracking', 0), base=fontSize),
                 strokeWidth=upt(style.get('strokeWidth')),
                 baselineShift=upt(style.get('baselineShift'), base=fontSize),
@@ -369,7 +368,6 @@ class DrawBotContext(BaseContext):
                 for tx, alignment in style.get('tabs', []):
                     tabs.append((upt(tx, base=fontSize), alignment))
                 fsStyle['tabs'] = tabs
-
             fs.append(run.s, **fsStyle)
         return fs
 
@@ -660,7 +658,7 @@ class DrawBotContext(BaseContext):
     #   G L Y P H
 
     def drawGlyph(self, glyph, x, y, fill=noColor, stroke=noColor,
-            strokeWidth=0, fontSize=None, xAlign=CENTER):
+            strokeWidth=0, fontSize=None, xTextAlign=CENTER):
         """Draw the font[glyphName] at the defined position with the defined
         fontSize."""
         font = glyph.font
@@ -669,9 +667,9 @@ class DrawBotContext(BaseContext):
             fontSize = font.info.unitsPerEm
         s = fontSize/font.info.unitsPerEm
 
-        if xAlign == CENTER:
+        if xTextAlign == CENTER:
             x -= (glyph.width or 0)/2*s
-        elif xAlign == RIGHT:
+        elif xTextAlign == RIGHT:
             x -= glyph.width*s
 
         self.save()
