@@ -21,7 +21,7 @@ from CoreText import (CTFontDescriptorCreateWithNameAndSize, CGPathAddRect,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute, CGRectMake,
         CTLineGetGlyphRuns, CTRunGetAttributes, CTRunGetGlyphCount,
-        CTRunGetGlyphs, NSGraphicsContext)
+        CTRunGetGlyphs)
 from AppKit import NSFont
 
 import drawBot
@@ -29,7 +29,8 @@ from drawBot import Variable
 
 from pagebot.constants import *
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
-from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo
+from pagebot.contexts.basecontext.babelstring import BabelString
+from pagebot.contexts.basecontext.babeltext import BabelText
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D
@@ -179,32 +180,37 @@ class DrawBotContext(BaseContext):
     #   T E X T
     #
 
-    def textLines(self, fs, w=None, h=None):
-        """Answers the list of BabelLineInfo instances, after rendering it by self.
-        By default, w render the full height of the text, so other functions (self.overfill)
+    def textLines(self, bs, w=None, h=None):
+        """Answers the list of BabelLines. Key is y position of
+        the line.
 
         >>> from pagebot.toolbox.units import mm, pt, em
         >>> from pagebot.toolbox.loremipsum import loremipsum
         >>> from pagebot import getContext
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> context = getContext('DrawBot')
-        >>> style = dict(font='PageBot-Regular', fontSize=pt(16), leading=em(1))
-        >>> bs = context.newString(loremipsum(), style, w=pt(500))
-        >>> bs.tw, bs.th
-        (497.89pt, 1216pt)
-        >>> lines = bs.lines # Equivalent of context.textLines(bs.cs, bs.w)
-        >>> lines[2]
-        <BabelLineInfo x=0pt y=43pt runs=1>
-        >>> lines[-1]
-        <BabelLineInfo x=0pt y=1211pt runs=1>
+        >>> font = findFont('PageBot-Regular')
+        >>> style = dict(font=font, fontSize=pt(12), leading=em(1))
+        >>> bs = context.newString(loremipsum(False), style)
+        >>> textLines = context.textLines(bs, w=300)
+        >>> textLines[:2]
+        [<BabelLine #0 y=8pt $Lorem ipsu...$>, <BabelLine #1 y=20pt $sapien tem...$>]
+        >>> textLines[-1]
+        <BabelLine #94 y=1136pt $magna ulla...$>
+        >>> textLines[0].bs
+        $Lorem ipsu...$
+        >>> textLines[0].bs.runs
+        [<BabelRun "Lorem ipsu...">]
         """
         if w is None:
-            w = 1000
+            if bs.e is None:
+                w = 500
+            else:
+                w = bs.e.w # Take the width of the references element.
         if h is None:
-            h = 10000
+            h = XXH # Infinite length if not defined
 
-        textLines = []
-
+        fs = self.fromBabelString(bs) # Answers a DrawBot.FormattedString
         wpt, hpt = upt(w, h)
         attrString = fs.getNSObject()
         setter = CTFramesetterCreateWithAttributedString(attrString)
@@ -214,17 +220,16 @@ class DrawBotContext(BaseContext):
         ctLines = CTFrameGetLines(ctBox)
         origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
 
+        textLines = []
+
         # Make origin at top line, not at bottom line, as OSX does.
         offsetY = origins[-1].y - origins[0].y
 
         for index, ctLine in enumerate(ctLines):
+            bs = self.newString()
             origin = origins[index]
-            x = pt(origin.x)
-            y = pt(h-origin.y)
-            if y > h:
-                break
-            lineInfo = BabelLineInfo(x, y, ctLine, self)
-            textLines.append(lineInfo)
+            babelLine = BabelLine(bs, x=origin.x, y=XXH-origin.y, index=index)
+            textLines.append(babelLine)
 
             for ctRun in CTLineGetGlyphRuns(ctLine):
                 attributes = CTRunGetAttributes(ctRun)
@@ -241,7 +246,7 @@ class DrawBotContext(BaseContext):
                     language=attributes['NSLanguage'],
                     textFill=color(r=c.redComponent(), g=c.greenComponent(),
                         b=c.blueComponent(), a=c.alphaComponent()),
-                    xTextAlign={0:LEFT, 1:RIGHT, 2:CENTER}.get(paragraph.alignment()),
+                    xAlign={0:LEFT, 1:RIGHT, 2:CENTER}.get(paragraph.alignment()),
                     firstLineIndent=pt(paragraph.firstLineHeadIndent()),
                     indent=pt(paragraph.headIndent()),
                     tailIndent=pt(paragraph.tailIndent()),
@@ -260,14 +265,12 @@ class DrawBotContext(BaseContext):
                     # paragraph.tighteningFactorForTruncation()
                     # paragraph.allewsDefaultTighteningForTruncation()
                     # paragraph.headerLevel()
+
+
+
                 )                
                 #for uCode in CTRunGetGlyphs(ctRun, (0, CTRunGetGlyphCount(ctRun)), None):
                 #    s += glyphOrder[uCode]
-                # Reconstruct the CTLine runs back into a styled BabelString.
-                # Not that this string can only be used as reference (e.g. to determine the
-                # fontSize(s) in the first line or to find the pattern of markers.
-                # The reconstructed string cannot be used for display, as it is missing 
-                # important style parameters, such as OT-feature settings.
                 # Hack for now to find the string in repr-string if self._ctLine.
                 s = ''
                 for index, part in enumerate(str(ctRun).split('"')[1].replace('\\n', '').split('\\u')):
@@ -275,7 +278,7 @@ class DrawBotContext(BaseContext):
                         s += part
                     elif len(part) >= 4:
                         s += chr(int(part[0:4], 16))
-                lineInfo.runs.append(BabelRunInfo(s, style))
+                bs.add(s, style)
 
         return textLines
 
@@ -291,7 +294,7 @@ class DrawBotContext(BaseContext):
         >>> bs = BabelString('Hkpx', style, context=context)
         >>> bs.textStrokeWidth = pt(4)
         >>> bs.textStroke = (1, 0, 0)
-        >>> tw, th = bs.textSize
+        >>> tw, th = context.textSize(bs) # Same as bs.textSize
         >>> tw, th
         (209.7pt, 100pt)
         >>> fs = context.fromBabelString(bs) # DrawBot.FormattedString
@@ -312,53 +315,39 @@ class DrawBotContext(BaseContext):
             style = run.style
             # DrawBot-OSX, setting the hyphenation is global, before a FormattedString is created.
             self.b.hyphenation(style.get('hyphenation', False))
-
-            # In case there is an error in these parameters, DrawBot ignors all.
-            #print('FS-style attributes:', run.s, fontPath,
-            #    upt(fontSize), upt(leading, base=fontSize),
-            #    textColor.rgba, align)
-
-            # Create the style for this text run.
             font = findFont(style.get('font', DEFAULT_FONT))
             if font is None:
                 fontPath = DEFAULT_FONT
             else:
                 fontPath = font.path
             fontSize = style.get('fontSize', DEFAULT_FONT_SIZE)
-            leading = style.get('leading', em(1, base=fontSize)) # Vertical space adding to fontSize.
+            leading = style.get('leading', 0) or DEFAULT_LEADING
             fsStyle = dict(
                 font=fontPath,
                 fontSize=upt(fontSize),
                 lineHeight=upt(leading, base=fontSize),
-                align=style.get('xTextAlign') or style.get('xAlign', LEFT),
+                align=style.get('xAlign', LEFT),
                 tracking=upt(style.get('tracking', 0), base=fontSize),
                 strokeWidth=upt(style.get('strokeWidth')),
                 baselineShift=upt(style.get('baselineShift'), base=fontSize),
                 language=style.get('language', DEFAULT_LANGUAGE),
                 indent=upt(style.get('indent', 0), base=fontSize),
-                tailIndent=-abs(upt(style.get('tailIndent', 0), base=fontSize)), # DrawBot wants negative number)
+                tailIndent=upt(style.get('tailIndent', 0), base=fontSize),
                 firstLineIndent=upt(style.get('firstLineIndent', 0), base=fontSize),
-                underline={True:'single', False:None}.get(style.get('underline', False)),
-                # Increasing value moves text up, decreasing the leading.
-                paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize), 
+                paragraphTopSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
                 paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
+                underline={True:'single', False:None}.get(style.get('underline', False)),
             )
             if 'textFill' in style:
                 textFill = style['textFill']
                 if textFill is not None:
                     textFill = color(textFill)
-                if textFill.isCmyk:
-                    fsStyle['cmykFill'] = textFill.cmyk
-                else:
-                    fsStyle['fill'] = textFill.rgba
+                fsStyle['fill'] = textFill.rgba
             if 'textStroke' in style:
                 textStroke = style['textStroke']
                 if textStroke is not None:
                     textStroke = color(textStroke)
-                if textStroke.isCmyk:
-                    fsStyle['cmykStroke'] = textStroke.cmyk
-                else:
-                   fsStyle['stroke'] = textStroke.rgba
+                fsStyle['stroke'] = textStroke.rgba
             if 'openTypeFeatures' in style:
                 fsStyle['openTypeFeatures'] = style['openTypeFeatures']
             if 'fontVariations' in style:
@@ -369,11 +358,15 @@ class DrawBotContext(BaseContext):
                     tabs.append((upt(tx, base=fontSize), alignment))
                 fsStyle['tabs'] = tabs
 
+            # In case there is an error in these parameters, DrawBot ignors all.
+            #print('FS-style attributes:', run.s, fontPath,
+            #    upt(fontSize), upt(leading, base=fontSize),
+            #    textColor.rgba, align)
             fs.append(run.s, **fsStyle)
         return fs
 
-    def drawString(self, bs, p):
-        """Draws the BabelString at position p.
+    def text(self, bs, p):
+        """Draws the s text string at position p.
 
         >>> from pagebot.contexts import getContext
         >>> from pagebot.toolbox.units import pt, em
@@ -382,65 +375,97 @@ class DrawBotContext(BaseContext):
         >>> context = getContext('DrawBot')
         >>> style = dict(font='PageBot-Regular', fontSize=pt(100), leading=em(1))
         >>> bs = BabelString('Hkpx'+chr(10)+'Hkpx', style, context=context)
-        >>> context.drawString(bs, pt(100, 100))
+        >>> context.text(bs, (100, 100))
 
         """
-        assert isinstance(bs, BabelString),\
-            'DrawBotContext.drawString needs str or BabelString: %s' % (bs.__class__.__name__)
-        if bs._w is None and bs._h is None:
-            self.b.text(bs.cs, point2D(upt(p)))
+        assert isinstance(bs, (str, BabelString)),\
+            'DrawBotContext.text needs str or BabelString: %s' % (bs.__class__.__name__)
+        fs = self.fromBabelString(bs)
+        self.b.text(fs, point2D(upt(p)))
+
+    def XXXtextBox(self, bs, r=None, clipPath=None, align=None):
+        """Draws the bs BabelString in rectangle r.
+
+        """
+
+        """
+        >>> from pagebot.toolbox.units import pt
+        >>> from pagebot import getContext
+        >>> context = getContext('DrawBot')
+        >>> context.newPage(420, 420)
+        >>> txt = '''The 25-storey Jumeirah Beach Hotel, with its distinctive\
+design in the shape of a wave, has become one of the most successful\
+hotels in the world. Located on Jumeirah Beach, this well-known hotel\
+offers a wonderful holiday experience and a variety of pleasurable\
+activities. The many restaurants, bars and cafés, daily live\
+entertainment and sports facilities will keep you entertained, whilst\
+children will have a great time at the Sinbad’s Kids’ Club or Wild Wadi\
+WaterparkTM which is freely accessible through a private gate.'''
+        >>> bs = context.newString(txt)
+        >>> context.fontSize(14)
+        >>> tb = context.textBox(bs, r=(100, 450, 200, 300))
+        """
+        assert isinstance(bs, BabelString)
+
+        tb = None
+
+        fs = self.fromBabelString(bs)
+        if clipPath is not None:
+            box = clipPath.bp
+            tb = self.b.textBox(fs, clipPath.bp)
+        elif isinstance(r, (tuple, list)):
+            # Renders rectangle units to value tuple.
+            xpt, ypt, wpt, hpt = upt(r)
+            box = (xpt, ypt, wpt, hpt)
+            tb = self.b.textBox(fs, box, align=None)
         else:
-            x, y = point2D(upt(p))
-            box = (x, y, bs.w or DEFAULT_WIDTH, bs.h or 1000)
-            self.b.textBox(bs.cs, box)
+            msg = '%s.textBox has no box or clipPath defined' % self.__class__.__name__
+            raise ValueError(msg)
 
-    def drawText(self, bs, box):
-        """ Draw the text block, in case there is a width or heigh defined.
+        return tb
 
-        """
-        assert isinstance(bs, BabelString),\
-            'DrawBotContext.drawText needs str or BabelString: %s' % (bs.__class__.__name__)
-        self.b.textBox(bs.cs, upt(box))
-
-    def textOverflow(self, bt, h):
+    def textOverflow(self, bs, box, align=None):
         """Answers the overflow text if flowing it in the box. In case a plain
         string is given then the current font / fontSize / ... settings of the
         builder are used.
 
         `S` Can be a str, BabelString, or DrawBot FormattedString.
 
-        >>> from pagebot.toolbox.loremipsum import loremipsum
-        >>> from pagebot.toolbox.units import pt
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
-        >>> style = dict(font='PageBot-Regular', fontSize=pt(24))
-        >>> bs = context.newString(loremipsum(), style)
-        >>> lines = bs.lines # Same as context.textLines(bs.cs, bs.w)
-        >>> #of = context.textOverflow(lines, h=pt(100))
-        >>> #of[1]
-        <BabelLine $consectetu...$ x=0pt y=24pt *DrawBotContext>
+        >>> context.newDrawing()
+        >>> context.newPage(420, 420)
+        >>> context.font('PageBot-Regular')
+        >>> context.fontSize(12)
+        >>> box = 0, 0, 300, 20
+        >>> s = 'AAA ' * 200
+        >>> len(s)
+        800
+        >>> # Plain string overflow.
+        >>> of = context.textOverflow(s, box)
+        >>> len(of)
+        756
+        >>> # Styled DrawBotString overflow.
+        >>> style = dict(font='PageBot-Bold', fontSize=14)
+        >>> bs = context.newString('AAA ' * 200, style=style)
+        >>> of = context.textOverflow(bs, box)
+        >>> len(of)
+        756
         """
-        assert isinstance(bt, BabelText) # Container of BabelLine instances.
-        overflow = []
-        if bt.lines:
-            originY = bt.lines[0].y
-        for line in bt.lines:
-            y = line.y - originY
-            if y > h:
-                break
-            line.y -= originY 
-            overflow.append(line)
+        if isinstance(bs, str):
+            return self.b.textOverflow(bs, box, align=align) # Plain string
+
+        # Assume here it's a BabelString, convert to DrawBot.FormattedString
+        # and let that render by DrawBot in the given frame.
+        overflow = self.b.textOverflow(s.s, box, align=align)
+        #bs = self.newString('')
+        #bs.s = overflow
         return overflow
 
-    def textBoxBaselines(self, bs, w, h=None):
-        """Answer the list of relative baseline positions.
-        """
-        baselines = {}
-        for textLine in self.textLines(bs, w, h=h):
-            baselines[textLine.y] = textLine
-        return baselines
+    def textBoxBaselines(self, txt, box, align=None):
+        return self.b.textBoxBaselines(txt, box, align=align)
 
-    def textSize(self, fs, w=None, h=None):
+    def textSize(self, bs, w=None, h=None):
         """Answers the width and height of the formatted string with an
         optional given w or h.
 
@@ -451,7 +476,7 @@ class DrawBotContext(BaseContext):
         >>> # Make the string, we can adapt the document/page size to it.
         >>> style = dict(font='PageBot-Regular', leading=em(1), fontSize=pt(100))
         >>> bs = context.newString('Hkpx', style)
-        >>> tw, th = context.textSize(bs.cs) # Same as bs.textSize, Show size of the text box, with baseline.
+        >>> tw, th = context.textSize(bs) # Same as bs.textSize, Show size of the text box, with baseline.
         >>> (tw, th) == bs.textSize
         True
         >>> m = 50
@@ -467,20 +492,23 @@ class DrawBotContext(BaseContext):
         >>> doc.export('_export/DrawBotContext-textSize.pdf')
 
         >>> bs = context.newString('Hkpx', style)
-        >>> tw, th = context.textSize(bs.cs, w=bs.w, h=bs.h) # Answering point units. Same as bs.textSize
+        >>> tw, th = context.textSize(bs) # Answering point units.
         >>> tw.rounded, th.rounded
         (210pt, 100pt)
         >>> bs.fontSize *= 0.5 # Same as bs.runs[0].style['fontSize'] *= 0.5 to scale by 50%
-        >>> tw, th = context.textSize(bs.cs, w=bs.w, h=bs.h) # Render to FormattedString for new size.
+        >>> tw, th = context.textSize(bs) # Render to FormattedString for new size.
         >>> tw.rounded, th.rounded
         (105pt, 50pt)
         >>>
         """
-        if w is not None:
-            return pt(self.b.textSize(fs, width=w, align=LEFT))
-        if h is not None:
-            return pt(self.b.textSize(fs, height=h, align=LEFT))
-        return pt(self.b.textSize(fs, align=LEFT))
+        if w is None: # If not defined, try to the use the width of referenced element.
+            if bs.e is not None:
+                w = bs.e.w
+        if h is None:
+            if bs.e is not None:
+                h = bs.e.h
+        fs = self.fromBabelString(bs)
+        return pt(self.b.textSize(fs, width=w, height=h, align=LEFT))
 
     #   P A T H
     #
@@ -659,7 +687,7 @@ class DrawBotContext(BaseContext):
     #   G L Y P H
 
     def drawGlyph(self, glyph, x, y, fill=noColor, stroke=noColor,
-            strokeWidth=0, fontSize=None, xTextAlign=CENTER):
+            strokeWidth=0, fontSize=None, xAlign=CENTER):
         """Draw the font[glyphName] at the defined position with the defined
         fontSize."""
         font = glyph.font
@@ -668,9 +696,9 @@ class DrawBotContext(BaseContext):
             fontSize = font.info.unitsPerEm
         s = fontSize/font.info.unitsPerEm
 
-        if xTextAlign == CENTER:
+        if xAlign == CENTER:
             x -= (glyph.width or 0)/2*s
-        elif xTextAlign == RIGHT:
+        elif xAlign == RIGHT:
             x -= glyph.width*s
 
         self.save()
