@@ -20,21 +20,23 @@ from CoreText import (CTFontDescriptorCreateWithNameAndSize, CGPathAddRect,
         CTFramesetterCreateWithAttributedString, CGPathCreateMutable,
         CTFramesetterCreateFrame, CTFrameGetLines, CTFrameGetLineOrigins,
         CTFontDescriptorCopyAttribute, kCTFontURLAttribute, CGRectMake,
-        CTLineGetGlyphRuns, CTRunGetAttributes, CTRunGetGlyphCount,
-        CTRunGetGlyphs, NSGraphicsContext)
+        CTLineGetGlyphRuns, CTRunGetAttributes)
 from AppKit import NSFont
 
 import drawBot
 from drawBot import Variable
 
-from pagebot.constants import *
+from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, DEFAULT_FONT_SIZE,
+        DEFAULT_LANGUAGE, DEFAULT_WIDTH, LEFT, RIGHT, CENTER, FILETYPE_PDF,
+        FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG, FILETYPE_GIF, FILETYPE_MOV,
+        SCALE_TYPE_FITWH, SCALE_TYPE_FITW, SCALE_TYPE_FITH,
+        DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
-from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo
+from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo, BabelText
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
-from pagebot.toolbox.units import pt, upt, point2D
+from pagebot.toolbox.units import pt, upt, point2D, em
 from pagebot.toolbox.transformer import path2Name, path2Dir
-from drawBot import Variable
 from pagebot.fonttoolbox.objects.font import findFont
 
 # Identifier to make builder hook name. Views will try to call e.build_html()
@@ -260,13 +262,13 @@ class DrawBotContext(BaseContext):
                     # paragraph.tighteningFactorForTruncation()
                     # paragraph.allewsDefaultTighteningForTruncation()
                     # paragraph.headerLevel()
-                )                
+                )
                 #for uCode in CTRunGetGlyphs(ctRun, (0, CTRunGetGlyphCount(ctRun)), None):
                 #    s += glyphOrder[uCode]
                 # Reconstruct the CTLine runs back into a styled BabelString.
                 # Not that this string can only be used as reference (e.g. to determine the
                 # fontSize(s) in the first line or to find the pattern of markers.
-                # The reconstructed string cannot be used for display, as it is missing 
+                # The reconstructed string cannot be used for display, as it is missing
                 # important style parameters, such as OT-feature settings.
                 # Hack for now to find the string in repr-string if self._ctLine.
                 s = ''
@@ -340,7 +342,7 @@ class DrawBotContext(BaseContext):
                 firstLineIndent=upt(style.get('firstLineIndent', 0), base=fontSize),
                 underline={True:'single', False:None}.get(style.get('underline', False)),
                 # Increasing value moves text up, decreasing the leading.
-                paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize), 
+                paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize),
                 paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
             )
             if 'textFill' in style:
@@ -428,7 +430,7 @@ class DrawBotContext(BaseContext):
             y = line.y - originY
             if y > h:
                 break
-            line.y -= originY 
+            line.y -= originY
             overflow.append(line)
         return overflow
 
