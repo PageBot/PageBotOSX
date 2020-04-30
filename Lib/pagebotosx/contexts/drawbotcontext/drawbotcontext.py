@@ -32,7 +32,7 @@ from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, DEFAULT_FONT_SIZE
         SCALE_TYPE_FITWH, SCALE_TYPE_FITW, SCALE_TYPE_FITH,
         DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
-from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo, BabelText
+from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D, em
