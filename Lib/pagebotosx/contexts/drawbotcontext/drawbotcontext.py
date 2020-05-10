@@ -216,68 +216,69 @@ class DrawBotContext(BaseContext):
         ctLines = CTFrameGetLines(ctBox)
         origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
 
-        # Make origin at top line, not at bottom line, as OSX does.
-        offsetY = origins[-1].y - origins[0].y
+        if origins: # Only if there is content
+            # Make origin at top line, not at bottom line, as OSX does.
+            offsetY = origins[-1].y - origins[0].y
 
-        for index, ctLine in enumerate(ctLines):
-            origin = origins[index]
-            x = pt(origin.x)
-            y = pt(h-origin.y)
-            if y > h:
-                break
-            lineInfo = BabelLineInfo(x, y, ctLine, self)
-            textLines.append(lineInfo)
+            for index, ctLine in enumerate(ctLines):
+                origin = origins[index]
+                x = pt(origin.x)
+                y = pt(h-origin.y)
+                if y > h:
+                    break
+                lineInfo = BabelLineInfo(x, y, ctLine, self)
+                textLines.append(lineInfo)
 
-            for ctRun in CTLineGetGlyphRuns(ctLine):
-                attributes = CTRunGetAttributes(ctRun)
-                c = attributes['NSColor']
-                fontName = attributes['NSFont'].fontDescriptor()['NSFontNameAttribute']
-                font = findFont(fontName) or findFont(DEFAULT_FONT)
-                paragraph = attributes['NSParagraphStyle']
-                #glyphOrder = font.ttFont.getGlyphOrder()
-                style = dict(
-                    font=font,
-                    fontSize=pt(attributes['NSFont'].pointSize()),
-                    leading=pt(paragraph.lineHeightMultiple()),
-                    baselineShift=pt(attributes['NSBaselineOffset']),
-                    language=attributes['NSLanguage'],
-                    textFill=color(r=c.redComponent(), g=c.greenComponent(),
-                        b=c.blueComponent(), a=c.alphaComponent()),
-                    xTextAlign={0:LEFT, 1:RIGHT, 2:CENTER}.get(paragraph.alignment()),
-                    firstLineIndent=pt(paragraph.firstLineHeadIndent()),
-                    indent=pt(paragraph.headIndent()),
-                    tailIndent=pt(paragraph.tailIndent()),
-                    paragraphBottomSpacing=pt(paragraph.paragraphSpacing()),
-                    paragraphTopSpacing=pt(paragraph.paragraphSpacingBefore()),
-                    # https://developer.apple.com/documentation/uikit/nsparagraphstyle
-                    # paragraph.maximumLineHeight()
-                    # paragraph.minimumLineHeight()
-                    # paragraph.lineSpacing()
-                    # paragraph.tabStops()
-                    # paragraph.defaultTabInterval()
-                    # paragraph.textBlocks()
-                    # paragraph.textLists()
-                    # paragraph.lineBreakMode()
-                    # paragraph.hyphenationFactor()
-                    # paragraph.tighteningFactorForTruncation()
-                    # paragraph.allewsDefaultTighteningForTruncation()
-                    # paragraph.headerLevel()
-                )
-                #for uCode in CTRunGetGlyphs(ctRun, (0, CTRunGetGlyphCount(ctRun)), None):
-                #    s += glyphOrder[uCode]
-                # Reconstruct the CTLine runs back into a styled BabelString.
-                # Not that this string can only be used as reference (e.g. to determine the
-                # fontSize(s) in the first line or to find the pattern of markers.
-                # The reconstructed string cannot be used for display, as it is missing
-                # important style parameters, such as OT-feature settings.
-                # Hack for now to find the string in repr-string if self._ctLine.
-                s = ''
-                for index, part in enumerate(str(ctRun).split('"')[1].replace('\\n', '').split('\\u')):
-                    if index == 0:
-                        s += part
-                    elif len(part) >= 4:
-                        s += chr(int(part[0:4], 16))
-                lineInfo.runs.append(BabelRunInfo(s, style))
+                for ctRun in CTLineGetGlyphRuns(ctLine):
+                    attributes = CTRunGetAttributes(ctRun)
+                    c = attributes['NSColor']
+                    fontName = attributes['NSFont'].fontDescriptor()['NSFontNameAttribute']
+                    font = findFont(fontName) or findFont(DEFAULT_FONT)
+                    paragraph = attributes['NSParagraphStyle']
+                    #glyphOrder = font.ttFont.getGlyphOrder()
+                    style = dict(
+                        font=font,
+                        fontSize=pt(attributes['NSFont'].pointSize()),
+                        leading=pt(paragraph.lineHeightMultiple()),
+                        baselineShift=pt(attributes['NSBaselineOffset']),
+                        language=attributes['NSLanguage'],
+                        textFill=color(r=c.redComponent(), g=c.greenComponent(),
+                            b=c.blueComponent(), a=c.alphaComponent()),
+                        xTextAlign={0:LEFT, 1:RIGHT, 2:CENTER}.get(paragraph.alignment()),
+                        firstLineIndent=pt(paragraph.firstLineHeadIndent()),
+                        indent=pt(paragraph.headIndent()),
+                        tailIndent=pt(paragraph.tailIndent()),
+                        paragraphBottomSpacing=pt(paragraph.paragraphSpacing()),
+                        paragraphTopSpacing=pt(paragraph.paragraphSpacingBefore()),
+                        # https://developer.apple.com/documentation/uikit/nsparagraphstyle
+                        # paragraph.maximumLineHeight()
+                        # paragraph.minimumLineHeight()
+                        # paragraph.lineSpacing()
+                        # paragraph.tabStops()
+                        # paragraph.defaultTabInterval()
+                        # paragraph.textBlocks()
+                        # paragraph.textLists()
+                        # paragraph.lineBreakMode()
+                        # paragraph.hyphenationFactor()
+                        # paragraph.tighteningFactorForTruncation()
+                        # paragraph.allewsDefaultTighteningForTruncation()
+                        # paragraph.headerLevel()
+                    )
+                    #for uCode in CTRunGetGlyphs(ctRun, (0, CTRunGetGlyphCount(ctRun)), None):
+                    #    s += glyphOrder[uCode]
+                    # Reconstruct the CTLine runs back into a styled BabelString.
+                    # Not that this string can only be used as reference (e.g. to determine the
+                    # fontSize(s) in the first line or to find the pattern of markers.
+                    # The reconstructed string cannot be used for display, as it is missing
+                    # important style parameters, such as OT-feature settings.
+                    # Hack for now to find the string in repr-string if self._ctLine.
+                    s = ''
+                    for index, part in enumerate(str(ctRun).split('"')[1].replace('\\n', '').split('\\u')):
+                        if index == 0:
+                            s += part
+                        elif len(part) >= 4:
+                            s += chr(int(part[0:4], 16))
+                    lineInfo.runs.append(BabelRunInfo(s, style))
 
         return textLines
 
@@ -686,7 +687,7 @@ class DrawBotContext(BaseContext):
     #   I M A G E
 
     def image(self, path, p=None, alpha=1, pageNumber=None, w=None, h=None,
-            scaleType=None):
+            scaleType=None, clipPath=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
             p = ORIGIN
@@ -707,14 +708,23 @@ class DrawBotContext(BaseContext):
         else:
             # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
             sx = sy = min(pt(w/iw), upt(h/ih))
-
         # Else both w and h are defined, scale disproportionally.
+        
         xpt, ypt, = point2D(p)
+
         self.save()
-        self.scale(sx, sy)
-        self.translate(xpt/sx, ypt/sy)
-        self.b.image(path, (0, 0), alpha=alpha, pageNumber=pageNumber)
+        with self.b.savedState():
+            if clipPath is not None:
+                self.b.clipPath(clipPath)
+            self.scale(sx, sy)
+            self.translate(xpt/sx, ypt/sy)
+            self.b.image(path, (0, 0), alpha=alpha, pageNumber=pageNumber)
         self.restore()
+        if clipPath is not None:
+            #self.b.fill(1, 1, 0, 0.4)
+            #self.b.rect(xpt, xpt, 200, 200)
+            self.b.fill(0, 1, 0, 0.4)
+            self.b.drawPath(clipPath)
 
     def ImageObject(self, path=None):
         """Answers an ImageObject that knows about filters. For names
