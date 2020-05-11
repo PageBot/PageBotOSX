@@ -720,11 +720,10 @@ class DrawBotContext(BaseContext):
             self.translate(xpt/sx, ypt/sy)
             self.b.image(path, (0, 0), alpha=alpha, pageNumber=pageNumber)
         self.restore()
-        if clipPath is not None:
-            #self.b.fill(1, 1, 0, 0.4)
-            #self.b.rect(xpt, xpt, 200, 200)
-            self.b.fill(0, 1, 0, 0.4)
-            self.b.drawPath(clipPath)
+        # For debugging, show the clipPath as opaque rectangle.
+        #if clipPath is not None:
+        #    self.b.fill(0, 1, 0, 0.4)
+        #    self.b.drawPath(clipPath)
 
     def ImageObject(self, path=None):
         """Answers an ImageObject that knows about filters. For names
