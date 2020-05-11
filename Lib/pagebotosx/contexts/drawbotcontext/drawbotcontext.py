@@ -206,7 +206,6 @@ class DrawBotContext(BaseContext):
             h = 10000
 
         textLines = []
-
         wpt, hpt = upt(w, h)
         attrString = fs.getNSObject()
         setter = CTFramesetterCreateWithAttributedString(attrString)
@@ -708,8 +707,8 @@ class DrawBotContext(BaseContext):
         else:
             # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
             sx = sy = min(pt(w/iw), upt(h/ih))
+
         # Else both w and h are defined, scale disproportionally.
-        
         xpt, ypt, = point2D(p)
 
         self.save()
