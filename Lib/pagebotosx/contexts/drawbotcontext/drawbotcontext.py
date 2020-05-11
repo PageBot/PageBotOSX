@@ -685,13 +685,13 @@ class DrawBotContext(BaseContext):
 
     #   I M A G E
 
-    def image(self, path, p=None, alpha=1, pageNumber=None, w=None, h=None,
-            scaleType=None, clipPath=None):
+    def image(self, path=None, imo=None, p=None, alpha=1, pageNumber=None, 
+            w=None, h=None, scaleType=None, clipPath=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
             p = ORIGIN
 
-        iw, ih = self.imageSize(path)
+        iw, ih = self.imageSize(path or imo.path)
 
         if not w and not h:
             w = iw
@@ -724,7 +724,7 @@ class DrawBotContext(BaseContext):
         #    self.b.fill(0, 1, 0, 0.4)
         #    self.b.drawPath(clipPath)
 
-    def ImageObject(self, path=None):
+    def getImageObject(self, path=None):
         """Answers an ImageObject that knows about filters. For names
         and parameters of filters see:
 
