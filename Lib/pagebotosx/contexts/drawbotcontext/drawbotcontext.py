@@ -707,8 +707,8 @@ class DrawBotContext(BaseContext):
         else:
             # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
             sx = sy = min(pt(w/iw), upt(h/ih))
-        # Else both w and h are defined, scale disproportionally.
 
+        # Else both w and h are defined, scale disproportionally.
         xpt, ypt, = point2D(p)
 
         self.save()
