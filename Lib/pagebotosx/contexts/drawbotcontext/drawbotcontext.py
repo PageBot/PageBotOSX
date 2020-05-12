@@ -404,6 +404,12 @@ class DrawBotContext(BaseContext):
             'DrawBotContext.drawText needs str or BabelString: %s' % (bs.__class__.__name__)
         self.b.textBox(bs.cs, upt(box))
 
+    def text(self, s, p, align=None):
+        self.b.text(s, p, align=align)
+
+    def textBox(self, s, box):
+        self.b.textBox(s, box, align=None)
+
     def textOverflow(self, bt, h):
         """Answers the overflow text if flowing it in the box. In case a plain
         string is given then the current font / fontSize / ... settings of the
@@ -423,7 +429,9 @@ class DrawBotContext(BaseContext):
         <BabelLine $consectetu...$ x=0pt y=24pt *DrawBotContext>
         """
         assert isinstance(bt, BabelText) # Container of BabelLine instances.
+
         overflow = []
+
         if bt.lines:
             originY = bt.lines[0].y
         for line in bt.lines:
@@ -435,11 +443,12 @@ class DrawBotContext(BaseContext):
         return overflow
 
     def textBoxBaselines(self, bs, w, h=None):
-        """Answer the list of relative baseline positions.
-        """
+        """Answers the list of relative baseline positions."""
         baselines = {}
+
         for textLine in self.textLines(bs, w, h=h):
             baselines[textLine.y] = textLine
+
         return baselines
 
     def textSize(self, fs, w=None, h=None):
@@ -685,7 +694,7 @@ class DrawBotContext(BaseContext):
 
     #   I M A G E
 
-    def image(self, path=None, imo=None, p=None, alpha=1, pageNumber=None, 
+    def image(self, path=None, imo=None, p=None, alpha=1, pageNumber=None,
             w=None, h=None, scaleType=None, clipPath=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
