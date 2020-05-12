@@ -685,7 +685,7 @@ class DrawBotContext(BaseContext):
 
     #   I M A G E
 
-    def image(self, path=None, imo=None, p=None, alpha=1, pageNumber=None, 
+    def image(self, path=None, p=None, alpha=1, pageNumber=None, 
             w=None, h=None, scaleType=None, clipPath=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
