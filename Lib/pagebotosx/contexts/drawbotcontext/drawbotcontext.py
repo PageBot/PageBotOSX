@@ -31,6 +31,8 @@ from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, DEFAULT_FONT_SIZE
         FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG, FILETYPE_GIF, FILETYPE_MOV,
         SCALE_TYPE_FITWH, SCALE_TYPE_FITW, SCALE_TYPE_FITH,
         DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
+
+# TODO: switch to our own Bézier path format.
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
 from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
@@ -200,6 +202,7 @@ class DrawBotContext(BaseContext):
         >>> lines[-1]
         <BabelLineInfo x=0pt y=1211pt runs=1>
         """
+        # FIXME: isn't it better to determine lines in BabelRuns?
         if w is None:
             w = 1000
         if h is None:
@@ -308,11 +311,17 @@ class DrawBotContext(BaseContext):
         >>> doc.export('_export/DrawBotContext-fromBabelString.pdf')
         """
         fs = self.b.FormattedString()
+
+
+        # TODO: move to base context, separate function for styles. Only
+        # FormattedString is DrawBot-specific.
         for run in bs.runs:
-            # Instead of using e.g. bs.tracking, we need to process the
-            # styles of all runs, not just the last one.
+            # Instead of using e.g. bs.tracking, we need to process the styles
+            # of all runs, not just the last one.
             style = run.style
-            # DrawBot-OSX, setting the hyphenation is global, before a FormattedString is created.
+
+            # DrawBot-OSX, setting the hyphenation is global, before a
+            # FormattedString is created.
             self.b.hyphenation(style.get('hyphenation', False))
 
             # In case there is an error in these parameters, DrawBot ignors all.
@@ -345,6 +354,7 @@ class DrawBotContext(BaseContext):
                 paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize),
                 paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
             )
+
             if 'textFill' in style:
                 textFill = style['textFill']
                 if textFill is not None:
@@ -353,6 +363,7 @@ class DrawBotContext(BaseContext):
                     fsStyle['cmykFill'] = textFill.cmyk
                 else:
                     fsStyle['fill'] = textFill.rgba
+
             if 'textStroke' in style:
                 textStroke = style['textStroke']
                 if textStroke is not None:
@@ -361,10 +372,13 @@ class DrawBotContext(BaseContext):
                     fsStyle['cmykStroke'] = textStroke.cmyk
                 else:
                    fsStyle['stroke'] = textStroke.rgba
+
             if 'openTypeFeatures' in style:
                 fsStyle['openTypeFeatures'] = style['openTypeFeatures']
+
             if 'fontVariations' in style:
                 fsStyle['fontVariantions'] = style['fontVariations']
+
             if 'tabs' in style:
                 tabs = [] # Render the tab values to points.
                 for tx, alignment in style.get('tabs', []):
@@ -373,36 +387,6 @@ class DrawBotContext(BaseContext):
 
             fs.append(run.s, **fsStyle)
         return fs
-
-    def drawString(self, bs, p):
-        """Draws the BabelString at position p.
-
-        >>> from pagebot.contexts import getContext
-        >>> from pagebot.toolbox.units import pt, em
-        >>> from pagebot.document import Document
-        >>> from pagebot.elements import *
-        >>> context = getContext('DrawBot')
-        >>> style = dict(font='PageBot-Regular', fontSize=pt(100), leading=em(1))
-        >>> bs = BabelString('Hkpx'+chr(10)+'Hkpx', style, context=context)
-        >>> context.drawString(bs, pt(100, 100))
-
-        """
-        assert isinstance(bs, BabelString),\
-            'DrawBotContext.drawString needs str or BabelString: %s' % (bs.__class__.__name__)
-        if bs._w is None and bs._h is None:
-            self.b.text(bs.cs, point2D(upt(p)))
-        else:
-            x, y = point2D(upt(p))
-            box = (x, y, bs.w or DEFAULT_WIDTH, bs.h or 1000)
-            self.b.textBox(bs.cs, box)
-
-    def drawText(self, bs, box):
-        """ Draw the text block, in case there is a width or heigh defined.
-
-        """
-        assert isinstance(bs, BabelString),\
-            'DrawBotContext.drawText needs str or BabelString: %s' % (bs.__class__.__name__)
-        self.b.textBox(bs.cs, upt(box))
 
     def text(self, s, p, align=None):
         self.b.text(s, p, align=align)
@@ -428,6 +412,7 @@ class DrawBotContext(BaseContext):
         >>> #of[1]
         <BabelLine $consectetu...$ x=0pt y=24pt *DrawBotContext>
         """
+        # TODO: move to base context.
         assert isinstance(bt, BabelText) # Container of BabelLine instances.
 
         overflow = []
@@ -444,6 +429,7 @@ class DrawBotContext(BaseContext):
 
     def textBoxBaselines(self, bs, w, h=None):
         """Answers the list of relative baseline positions."""
+        # TODO: move to base context.
         baselines = {}
 
         for textLine in self.textLines(bs, w, h=h):
@@ -489,8 +475,10 @@ class DrawBotContext(BaseContext):
         """
         if w is not None:
             return pt(self.b.textSize(fs, width=w, align=LEFT))
+
         if h is not None:
             return pt(self.b.textSize(fs, height=h, align=LEFT))
+
         return pt(self.b.textSize(fs, align=LEFT))
 
     #   P A T H
@@ -694,7 +682,7 @@ class DrawBotContext(BaseContext):
 
     #   I M A G E
 
-    def image(self, path=None, p=None, alpha=1, pageNumber=None, 
+    def image(self, path=None, p=None, alpha=1, pageNumber=None,
             w=None, h=None, scaleType=None, clipPath=None):
         """Draws the image. If w or h is defined, scale the image to fit."""
         if p is None:
