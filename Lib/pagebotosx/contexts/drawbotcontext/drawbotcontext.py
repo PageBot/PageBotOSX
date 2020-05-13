@@ -72,8 +72,9 @@ class DrawBotContext(BaseContext):
         """
         super().__init__()
         # The context builder "cls.b" is drawBot which executes actual drawing
-        # calls, similar to function calls in DrawBot scripts.
-        self.b = drawBotBuilder #  Builder for this canvas.
+        # calls, similar to function calls in DrawBot scripts.  Builder for
+        # this canvas:
+        self.b = drawBotBuilder
         self.name = self.__class__.__name__
         # Holds the extension as soon as the export file path is defined.
         self.fileType = DEFAULT_FILETYPE
@@ -118,21 +119,11 @@ class DrawBotContext(BaseContext):
     def setStyles(self, styles):
         pass
 
-    #   V A R I A B L E
-
-    def Variable(self, variables, workSpace):
-        """Offers interactive global value manipulation in DrawBot. Should be
-        ignored in other contexts.
-
-        Variable is a DrawBot context global, used to make simple UI with
-        controls on input parameters."""
-        Variable(variables, workSpace)
-
     #   D R A W I N G
 
     def bluntCornerRect(self, x, y, w, h, offset=5):
-        """Draw a rectangle in the canvas. This method is using the Bézier path
-        to draw on.
+        """Draws a rectangle in the canvas. This method is using the Bézier
+        path to draw on.
 
         TODO: move to elements.
 
@@ -184,8 +175,9 @@ class DrawBotContext(BaseContext):
     #
 
     def textLines(self, fs, w=None, h=None):
-        """Answers the list of BabelLineInfo instances, after rendering it by self.
-        By default, w render the full height of the text, so other functions (self.overfill)
+        """Answers the list of BabelLineInfo instances, after rendering it by
+        self. By default, w render the full height of the text, so other
+        functions (self.overfill)
 
         >>> from pagebot.toolbox.units import mm, pt, em
         >>> from pagebot.toolbox.loremipsum import loremipsum
@@ -226,8 +218,10 @@ class DrawBotContext(BaseContext):
                 origin = origins[index]
                 x = pt(origin.x)
                 y = pt(h-origin.y)
+
                 if y > h:
                     break
+
                 lineInfo = BabelLineInfo(x, y, ctLine, self)
                 textLines.append(lineInfo)
 
@@ -316,77 +310,11 @@ class DrawBotContext(BaseContext):
         # TODO: move to base context, separate function for styles. Only
         # FormattedString is DrawBot-specific.
         for run in bs.runs:
-            # Instead of using e.g. bs.tracking, we need to process the styles
-            # of all runs, not just the last one.
-            style = run.style
-
-            # DrawBot-OSX, setting the hyphenation is global, before a
-            # FormattedString is created.
-            self.b.hyphenation(style.get('hyphenation', False))
-
-            # In case there is an error in these parameters, DrawBot ignors all.
-            #print('FS-style attributes:', run.s, fontPath,
-            #    upt(fontSize), upt(leading, base=fontSize),
-            #    textColor.rgba, align)
-
-            # Create the style for this text run.
-            font = findFont(style.get('font', DEFAULT_FONT))
-            if font is None:
-                fontPath = DEFAULT_FONT
-            else:
-                fontPath = font.path
-            fontSize = style.get('fontSize', DEFAULT_FONT_SIZE)
-            leading = style.get('leading', em(1, base=fontSize)) # Vertical space adding to fontSize.
-            fsStyle = dict(
-                font=fontPath,
-                fontSize=upt(fontSize),
-                lineHeight=upt(leading, base=fontSize),
-                align=style.get('xTextAlign') or style.get('xAlign', LEFT),
-                tracking=upt(style.get('tracking', 0), base=fontSize),
-                strokeWidth=upt(style.get('strokeWidth')),
-                baselineShift=upt(style.get('baselineShift'), base=fontSize),
-                language=style.get('language', DEFAULT_LANGUAGE),
-                indent=upt(style.get('indent', 0), base=fontSize),
-                tailIndent=-abs(upt(style.get('tailIndent', 0), base=fontSize)), # DrawBot wants negative number)
-                firstLineIndent=upt(style.get('firstLineIndent', 0), base=fontSize),
-                underline={True:'single', False:None}.get(style.get('underline', False)),
-                # Increasing value moves text up, decreasing the leading.
-                paragraphTopSpacing=upt(style.get('paragraphTopSpacing', 0), base=fontSize),
-                paragraphBottomSpacing=upt(style.get('paragraphBottomSpacing', 0), base=fontSize),
-            )
-
-            if 'textFill' in style:
-                textFill = style['textFill']
-                if textFill is not None:
-                    textFill = color(textFill)
-                if textFill.isCmyk:
-                    fsStyle['cmykFill'] = textFill.cmyk
-                else:
-                    fsStyle['fill'] = textFill.rgba
-
-            if 'textStroke' in style:
-                textStroke = style['textStroke']
-                if textStroke is not None:
-                    textStroke = color(textStroke)
-                if textStroke.isCmyk:
-                    fsStyle['cmykStroke'] = textStroke.cmyk
-                else:
-                   fsStyle['stroke'] = textStroke.rgba
-
-            if 'openTypeFeatures' in style:
-                fsStyle['openTypeFeatures'] = style['openTypeFeatures']
-
-            if 'fontVariations' in style:
-                fsStyle['fontVariantions'] = style['fontVariations']
-
-            if 'tabs' in style:
-                tabs = [] # Render the tab values to points.
-                for tx, alignment in style.get('tabs', []):
-                    tabs.append((upt(tx, base=fontSize), alignment))
-                fsStyle['tabs'] = tabs
-
+            fsStyle, hyphenation = run.getFSStyle()
+            self.b.hyphenation(hyphenation)
             fs.append(run.s, **fsStyle)
         return fs
+
 
     def text(self, s, p, align=None):
         self.b.text(s, p, align=align)
@@ -961,8 +889,20 @@ class DrawBotContext(BaseContext):
     def listFontVariations(self, fontName=None):
         return self.b.listFontVariations(fontName=fontName)
 
+    #  User interface.
+
+    def group(self, x=None, y=None, w=None, h=None, **kwargs):
+        #return Group((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0))
+        pass
+
+    def button(self, title=None, x=None, y=None, w=None, h=None, style=None,
+            callback=None, **kwargs):
+        """Create a Vanilla button"""
+        #return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
+        #title or 'Button', callback=callback)
+
     # TODO
-    # Future experiment, making UI/Vanilla layout for apps by PageBot
+    # Future experiment, making UI / Vanilla layout for apps by PageBot
     # Needs some additional conceptual thinking.
 
     #   U I  components based on Vanilla API
@@ -1004,21 +944,9 @@ class DrawBotContext(BaseContext):
             minSize=minSize, maxSize=maxSize, closable=closable)
         '''
 
-    def group(self, x=None, y=None, w=None, h=None, **kwargs):
-        #return Group((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0))
-        pass
-
-    def button(self, title=None, x=None, y=None, w=None, h=None, style=None,
-            callback=None, **kwargs):
-        """Create a Vanilla button"""
-        #return Button((upt(x) or 0, upt(y) or 0, upt(w) or 0, upt(h) or 0),
-        #title or 'Button', callback=callback)
-
     def canvas(self, x=None, y=None, w=None, h=None):
         """Answer an instance of the DrawBot drawing canvas."""
         #return drawBot.ui.drawView.DrawView((upt(x or 0), upt(y or 0), upt(w or 0), upt(h or 0)))
-
-    #   S C R E E N
 
     def screenSize(self):
         """Answers the current screen size in DrawBot. Otherwise default is to
@@ -1031,6 +959,14 @@ class DrawBotContext(BaseContext):
         True
         """
         return pt(self.b.sizes().get('screen', None))
+
+    def Variable(self, variables, workSpace):
+        """Offers interactive global value manipulation in DrawBot. Should be
+        ignored in other contexts.
+
+        Variable is a DrawBot context global, used to make simple UI with
+        controls on input parameters."""
+        Variable(variables, workSpace)
 
 if __name__ == '__main__':
     import doctest
