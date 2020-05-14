@@ -119,62 +119,9 @@ class DrawBotContext(BaseContext):
     def setStyles(self, styles):
         pass
 
-    #   D R A W I N G
-
-    def bluntCornerRect(self, x, y, w, h, offset=5):
-        """Draws a rectangle in the canvas. This method is using the Bézier
-        path to draw on.
-
-        TODO: move to elements.
-
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
-        >>> context.bluntCornerRect(pt(0), pt(0), pt(100), pt(100))
-        >>> context.bluntCornerRect(0, 0, 100, 100)
-        """
-
-        xPt, yPt, wPt, hPt, offsetPt = upt(x, y, w, h, offset)
-        path = self.newPath() #
-        path.moveTo((xPt+offsetPt, yPt))
-        path.lineTo((xPt+wPt-offsetPt, yPt))
-        path.lineTo((xPt+wPt, yPt+offsetPt))
-        path.lineTo((xPt+wPt, yPt+hPt-offsetPt))
-        path.lineTo((xPt+w-offsetPt, y+hPt))
-        path.lineTo((xPt+offsetPt, y+hPt))
-        path.lineTo((xPt, yPt+h-offsetPt))
-        path.lineTo((xPt, yPt+offsetPt))
-        self.closePath()
-        self.drawPath(path)
-
-    def roundedRect(self, x, y, w, h, offset=25):
-        """Draw a rectangle in the canvas. This method is using the Bézier path
-        as path to draw on.
-
-        TODO: move to elements.
-
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
-        >>> context.roundedRect(pt(0), pt(0), pt(100), pt(100))
-        >>> context.roundedRect(0, 0, 100, 100)
-        """
-        xPt, yPt, wPt, hPt, offsetPt = upt(x, y, w, h, offset)
-        path = self.newPath()
-        path.moveTo((xPt+offsetPt, yPt))
-        path.lineTo((xPt+wPt-offsetPt, yPt))
-        path.curveTo((xPt+wPt, yPt), (xPt+wPt, yPt), (xPt+wPt, yPt+offsetPt))
-        path.lineTo((xPt+wPt, yPt+hPt-offsetPt))
-        path.curveTo((xPt+wPt, yPt+hPt), (xPt+wPt, yPt+hPt), (xPt+wPt-offsetPt, yPt+hPt))
-        path.lineTo((xPt+offsetPt, yPt+hPt))
-        path.curveTo((xPt, yPt+hPt), (xPt, yPt+hPt), (xPt, yPt+hPt-offsetPt))
-        path.lineTo((xPt, yPt+offsetPt))
-        path.curveTo((xPt, yPt), (xPt, yPt), (xPt+offsetPt, yPt))
-        self.closePath()
-        self.drawPath(path)
-
     #   T E X T
-    #
 
-    def textLines(self, fs, w=None, h=None):
+    def getTextLines(self, fs, w=None, h=None):
         """Answers the list of BabelLineInfo instances, after rendering it by
         self. By default, w render the full height of the text, so other
         functions (self.overfill)
@@ -188,7 +135,7 @@ class DrawBotContext(BaseContext):
         >>> bs = context.newString(loremipsum(), style, w=pt(500))
         >>> bs.tw, bs.th
         (497.89pt, 1216pt)
-        >>> lines = bs.lines # Equivalent of context.textLines(bs.cs, bs.w)
+        >>> lines = bs.lines # Equivalent of context.getTextLines(bs.cs, bs.w)
         >>> lines[2]
         <BabelLineInfo x=0pt y=43pt runs=1>
         >>> lines[-1]
@@ -306,64 +253,19 @@ class DrawBotContext(BaseContext):
         """
         fs = self.b.FormattedString()
 
-
-        # TODO: move to base context, separate function for styles. Only
-        # FormattedString is DrawBot-specific.
         for run in bs.runs:
             fsStyle, hyphenation = run.getFSStyle()
-            self.b.hyphenation(hyphenation)
+
+            # TODO: take care of hyphenation in BabelStrings or during draw.
+            #self.b.hyphenation(hyphenation)
             fs.append(run.s, **fsStyle)
         return fs
-
 
     def text(self, s, p, align=None):
         self.b.text(s, p, align=align)
 
     def textBox(self, s, box):
         self.b.textBox(s, box, align=None)
-
-    def textOverflow(self, bt, h):
-        """Answers the overflow text if flowing it in the box. In case a plain
-        string is given then the current font / fontSize / ... settings of the
-        builder are used.
-
-        `S` Can be a str, BabelString, or DrawBot FormattedString.
-
-        >>> from pagebot.toolbox.loremipsum import loremipsum
-        >>> from pagebot.toolbox.units import pt
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
-        >>> style = dict(font='PageBot-Regular', fontSize=pt(24))
-        >>> bs = context.newString(loremipsum(), style)
-        >>> lines = bs.lines # Same as context.textLines(bs.cs, bs.w)
-        >>> #of = context.textOverflow(lines, h=pt(100))
-        >>> #of[1]
-        <BabelLine $consectetu...$ x=0pt y=24pt *DrawBotContext>
-        """
-        # TODO: move to base context.
-        assert isinstance(bt, BabelText) # Container of BabelLine instances.
-
-        overflow = []
-
-        if bt.lines:
-            originY = bt.lines[0].y
-        for line in bt.lines:
-            y = line.y - originY
-            if y > h:
-                break
-            line.y -= originY
-            overflow.append(line)
-        return overflow
-
-    def textBoxBaselines(self, bs, w, h=None):
-        """Answers the list of relative baseline positions."""
-        # TODO: move to base context.
-        baselines = {}
-
-        for textLine in self.textLines(bs, w, h=h):
-            baselines[textLine.y] = textLine
-
-        return baselines
 
     def textSize(self, fs, w=None, h=None):
         """Answers the width and height of the formatted string with an
