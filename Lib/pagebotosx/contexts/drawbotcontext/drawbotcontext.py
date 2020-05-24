@@ -121,7 +121,7 @@ class DrawBotContext(BaseContext):
 
     #   T E X T
 
-    def getTextLines(self, fs, w=None, h=None):
+    def getTextLines(self, bs, w=None, h=None):
         """Answers the list of BabelLineInfo instances, after rendering it by
         self. By default, w render the full height of the text, so other
         functions (self.overfill)
@@ -142,6 +142,10 @@ class DrawBotContext(BaseContext):
         <BabelLineInfo x=0pt y=1211pt runs=1>
         """
         # FIXME: isn't it better to determine lines in BabelRuns?
+        # Petr: Then we have to detect all hyphenation outselves, and going
+        # through OSX is much faster. If the context knows how to do a function
+        # then let it. Finally it will do the type setting too, unless we are
+        # drwaing line by line.
         if w is None:
             w = 1000
         if h is None:
@@ -149,7 +153,9 @@ class DrawBotContext(BaseContext):
 
         textLines = []
         wpt, hpt = upt(w, h)
-        attrString = fs.getNSObject()
+        # Get the FormattedString bs.cs. Let the context create it, 
+        # if it does not exist.
+        attrString = bs.cs.getNSObject()
         setter = CTFramesetterCreateWithAttributedString(attrString)
         path = CGPathCreateMutable()
         CGPathAddRect(path, None, CGRectMake(0, 0, wpt, hpt))
@@ -261,15 +267,15 @@ class DrawBotContext(BaseContext):
             fs.append(run.s, **fsStyle)
         return fs
 
-    def text(self, s, p, align=None):
-        self.b.text(s, p, align=align)
+    def text(self, bs, p, align=None):
+        self.b.text(bs.cs, p, align=align)
 
-    def textBox(self, s, box):
-        self.b.textBox(s, box, align=None)
+    def textBox(self, bs, box):
+        self.b.textBox(bs.cs, box, align=None)
 
-    def textSize(self, fs, w=None, h=None):
-        """Answers the width and height of the formatted string with an
-        optional given w or h.
+    def textSize(self, bs, w=None, h=None):
+        """Answers the width and height of the native @fs formatted string 
+        with an optional given w or h.
 
         >>> from pagebot.document import Document
         >>> from pagebot.contexts import getContext
@@ -278,7 +284,7 @@ class DrawBotContext(BaseContext):
         >>> # Make the string, we can adapt the document/page size to it.
         >>> style = dict(font='PageBot-Regular', leading=em(1), fontSize=pt(100))
         >>> bs = context.newString('Hkpx', style)
-        >>> tw, th = context.textSize(bs.cs) # Same as bs.textSize, Show size of the text box, with baseline.
+        >>> tw, th = context.textSize(bs) # Same as bs.textSize, Show size of the text box, with baseline.
         >>> (tw, th) == bs.textSize
         True
         >>> m = 50
@@ -294,22 +300,22 @@ class DrawBotContext(BaseContext):
         >>> doc.export('_export/DrawBotContext-textSize.pdf')
 
         >>> bs = context.newString('Hkpx', style)
-        >>> tw, th = context.textSize(bs.cs, w=bs.w, h=bs.h) # Answering point units. Same as bs.textSize
+        >>> tw, th = context.textSize(bs, w=bs.w, h=bs.h) # Answering point units. Same as bs.textSize
         >>> tw.rounded, th.rounded
         (210pt, 100pt)
         >>> bs.fontSize *= 0.5 # Same as bs.runs[0].style['fontSize'] *= 0.5 to scale by 50%
-        >>> tw, th = context.textSize(bs.cs, w=bs.w, h=bs.h) # Render to FormattedString for new size.
+        >>> tw, th = context.textSize(bs, w=bs.w, h=bs.h) # Render to FormattedString for new size.
         >>> tw.rounded, th.rounded
         (105pt, 50pt)
         >>>
         """
         if w is not None:
-            return pt(self.b.textSize(fs, width=w, align=LEFT))
+            return pt(self.b.textSize(bs.cs, width=w, align=LEFT))
 
         if h is not None:
-            return pt(self.b.textSize(fs, height=h, align=LEFT))
+            return pt(self.b.textSize(bs.cs, height=h, align=LEFT))
 
-        return pt(self.b.textSize(fs, align=LEFT))
+        return pt(self.b.textSize(bs.cs, align=LEFT))
 
     #   P A T H
     #
