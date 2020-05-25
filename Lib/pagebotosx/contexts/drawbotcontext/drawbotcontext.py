@@ -303,6 +303,9 @@ class DrawBotContext(BaseContext):
         (105pt, 50pt)
         >>>
         """
+        if isinstance(fs, BabelString):
+            fs = fs.cs
+
         if w is not None:
             return pt(self.b.textSize(fs, width=w, align=LEFT))
 
