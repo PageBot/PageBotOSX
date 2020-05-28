@@ -37,7 +37,7 @@ from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, DEFAULT_FONT_SIZE
 from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
-from pagebot.toolbox.units import pt, upt, point2D, em
+from pagebot.toolbox.units import pt, upt, point2D, em, units
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from pagebot.fonttoolbox.objects.font import findFont
 
@@ -121,7 +121,21 @@ class DrawBotContext(BaseContext):
 
     #   T E X T
 
-    def getBaselines(self, bs, box, align=None):
+    def getTextSize(self, bs, w=None, h=None, align=None):
+        """Answers the width and height of a BabelString with an
+        optional given w or h.
+        bs.cs is supposed to contain a DrawBot.FormattedString.
+        """
+        assert bs.context == self
+        if w is not None:
+            w = upt(w)
+            h = None
+        elif h is not None:
+            w = None
+            h = upt(h0)
+        return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
+
+    def getTextLines(self, bs, w=None, h=None):
         """Answers the list of BabelLineInfo instances, after rendering it by
         self. By default, w render the full height of the text, so other
         functions (self.overfill)
@@ -137,9 +151,9 @@ class DrawBotContext(BaseContext):
         (497.89pt, 1216pt)
         >>> lines = bs.lines # Equivalent of context.getTextLines(bs.cs, bs.w)
         >>> lines[2]
-        <BabelLineInfo x=0pt y=43pt runs=1>
+        <BabelLineInfo y=43pt>
         >>> lines[-1]
-        <BabelLineInfo x=0pt y=1211pt runs=1>
+        <BabelLineInfo y=651pt>
         """
         _, _, w, h = box
         # FIXME: isn't it better to determine lines in BabelRuns?
@@ -229,7 +243,7 @@ class DrawBotContext(BaseContext):
                             s += part
                         elif len(part) >= 4:
                             s += chr(int(part[0:4], 16))
-                    lineInfo.runs.append(BabelRunInfo(s, style))
+                    lineInfo.runs.append(BabelRunInfo(s, style, context=self, cRun=ctRun))
 
         return textLines
 
@@ -311,8 +325,7 @@ class DrawBotContext(BaseContext):
         (105pt, 50pt)
         >>>
         """
-        if isinstance(bs, BabelString):
-            bs = bs.cs
+        assert isinstance(bs, BabelString)
 
         if w is not None:
             return pt(self.b.textSize(bs.cs, width=w, align=LEFT))
