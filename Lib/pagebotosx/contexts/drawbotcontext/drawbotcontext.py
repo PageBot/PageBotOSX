@@ -121,7 +121,7 @@ class DrawBotContext(BaseContext):
 
     #   T E X T
 
-    def getTextLines(self, bs, w=None, h=None):
+    def getBaselines(self, bs, box, align=None):
         """Answers the list of BabelLineInfo instances, after rendering it by
         self. By default, w render the full height of the text, so other
         functions (self.overfill)
@@ -141,19 +141,21 @@ class DrawBotContext(BaseContext):
         >>> lines[-1]
         <BabelLineInfo x=0pt y=1211pt runs=1>
         """
+        _, _, w, h = box
         # FIXME: isn't it better to determine lines in BabelRuns?
-        # Petr: Then we have to detect all hyphenation outselves, and going
+        # Petr: Then we have to detect all hyphenation ourselves, and going
         # through OSX is much faster. If the context knows how to do a function
         # then let it. Finally it will do the type setting too, unless we are
-        # drwaing line by line.
+        # drawing line by line.
         if w is None:
             w = 1000
         if h is None:
             h = 10000
 
+
         textLines = []
         wpt, hpt = upt(w, h)
-        # Get the FormattedString bs.cs. Let the context create it, 
+        # Get the FormattedString bs.cs. Let the context create it,
         # if it does not exist.
         attrString = bs.cs.getNSObject()
         setter = CTFramesetterCreateWithAttributedString(attrString)
@@ -274,7 +276,7 @@ class DrawBotContext(BaseContext):
         self.b.textBox(bs.cs, box, align=None)
 
     def textSize(self, bs, w=None, h=None):
-        """Answers the width and height of the native @fs formatted string 
+        """Answers the width and height of the native @fs formatted string
         with an optional given w or h.
 
         >>> from pagebot.document import Document
@@ -309,8 +311,8 @@ class DrawBotContext(BaseContext):
         (105pt, 50pt)
         >>>
         """
-        if isinstance(fs, BabelString):
-            fs = fs.cs
+        if isinstance(bs, BabelString):
+            bs = bs.cs
 
         if w is not None:
             return pt(self.b.textSize(bs.cs, width=w, align=LEFT))
