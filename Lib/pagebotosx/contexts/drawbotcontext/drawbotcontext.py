@@ -155,7 +155,7 @@ class DrawBotContext(BaseContext):
         >>> lines[-1]
         <BabelLineInfo y=651pt>
         """
-        _, _, w, h = box
+        #_, _, w, h = box
         # FIXME: isn't it better to determine lines in BabelRuns?
         # Petr: Then we have to detect all hyphenation ourselves, and going
         # through OSX is much faster. If the context knows how to do a function
