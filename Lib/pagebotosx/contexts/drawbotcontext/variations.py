@@ -14,12 +14,34 @@
 #
 #     variations.py
 #
-
+import drawBot as drawBotBuilder
 from copy import copy
 from pagebot.fonttoolbox.objects.font import getFont, getInstance
 from pagebot.style import css
 from pagebot.toolbox.units import upt
-from pagebotosx.contexts.drawbotcontext.drawbotstring import pixelBounds
+#from pagebotosx.contexts.drawbotcontext.drawbotstring import pixelBounds
+
+def pixelBounds(fs):
+    """Answers the pixel-bounds rectangle of the text.
+    NOTE that @by can be a negative value, if there is text (e.g. overshoot)
+    below the baseline.
+    - @bh is the amount of pixels above the baseline.
+    - For the total height of the pixel-map, calculate @ph - @py.
+    - For the total width of the pixel-map, calculate @pw - @px."""
+    if not fs:
+        return pt(0, 0, 0, 0)
+    p = drawBotBuilder.BezierPath()
+    p.text(fs, (0, 0))
+
+    '''
+    OS X answers `bw` and `bh` as difference with `bx` and `by`. This is not
+    very intuitive; in this situation the the total (width, height) always
+    needs to be calculated by the caller. Instead, the width and height
+    answered is the complete bounding box, and (x, y) is the position of the
+    bounding box, compared to (0, 0) of the string origin.
+    '''
+    bx, by, bw, bh = p.bounds()
+    return pt(bx, by, bw - bx, bh - by)
 
 class Variations:
 
@@ -119,12 +141,12 @@ class Variations:
 
         # In case font is not a variable font, or not [wdth] or [XTRA] present,
         # then using normal string fit is the best we can do.
-        if not 'wdth' in font.axes and not 'XTRA' in font.axes:
+        if 'wdth' not in font.axes and 'XTRA' not in font.axes:
             return cls.newString(t, context, e=e, style=style, w=w, h=h, pixelFit=pixelFit)
 
         # Decide which axis to use for width adjustments and get the axis
         # values.
-        if not useXTRA or not 'XTRA' in font.axes:
+        if not useXTRA or 'XTRA' not in font.axes:
             # Try to force usage of [XTRA] if it exists, otherwise use[wdth]
             axisTag = 'wdth'
         else:

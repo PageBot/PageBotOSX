@@ -26,18 +26,17 @@ from AppKit import NSFont
 import drawBot
 from drawBot import Variable
 
-from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, DEFAULT_FONT_SIZE,
-        DEFAULT_LANGUAGE, DEFAULT_WIDTH, LEFT, RIGHT, CENTER, FILETYPE_PDF,
-        FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG, FILETYPE_GIF, FILETYPE_MOV,
-        SCALE_TYPE_FITWH, SCALE_TYPE_FITW, SCALE_TYPE_FITH,
-        DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
+from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, LEFT, RIGHT,
+        CENTER, FILETYPE_PDF, FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG,
+        FILETYPE_GIF, FILETYPE_MOV, SCALE_TYPE_FITWH, SCALE_TYPE_FITW,
+        SCALE_TYPE_FITH, DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
 
 # TODO: switch to our own Bézier path format.
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
 from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
-from pagebot.toolbox.units import pt, upt, point2D, em, units
+from pagebot.toolbox.units import pt, upt, point2D, units
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from pagebot.fonttoolbox.objects.font import findFont
 
@@ -132,7 +131,7 @@ class DrawBotContext(BaseContext):
             h = None
         elif h is not None:
             w = None
-            h = upt(h0)
+            h = upt(h)
         return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
 
     def getTextLines(self, bs, w=None, h=None):
@@ -541,7 +540,7 @@ class DrawBotContext(BaseContext):
         if p is None:
             p = ORIGIN
 
-        iw, ih = self.imageSize(path or imo.path)
+        iw, ih = self.imageSize(path)
 
         if not w and not h:
             w = iw
