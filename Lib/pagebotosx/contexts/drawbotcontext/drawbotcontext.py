@@ -150,9 +150,9 @@ class DrawBotContext(BaseContext):
         (497.89pt, 1216pt)
         >>> lines = bs.lines # Equivalent of context.getTextLines(bs.cs, bs.w)
         >>> lines[2]
-        <BabelLineInfo y=43pt>
+        <BabelLineInfo y=44pt>
         >>> lines[-1]
-        <BabelLineInfo y=651pt>
+        <BabelLineInfo y=652pt>
         """
         # FIXME: isn't it better to determine lines in BabelRuns?
         # Petr: Then we have to detect all hyphenation ourselves, and going
@@ -294,7 +294,8 @@ class DrawBotContext(BaseContext):
         >>> from pagebot.document import Document
         >>> from pagebot.contexts import getContext
         >>> from pagebot.elements import *
-        >>> context = getContext('DrawBot')
+        >>> from pagebot.toolbox.units import em
+        >>> context = getContext()
         >>> # Make the string, we can adapt the document/page size to it.
         >>> style = dict(font='PageBot-Regular', leading=em(1), fontSize=pt(100))
         >>> bs = context.newString('Hkpx', style)

@@ -14,11 +14,11 @@
 #
 #     variations.py
 #
-import drawBot as drawBotBuilder
 from copy import copy
+import drawBot as drawBotBuilder
 from pagebot.fonttoolbox.objects.font import getFont, getInstance
 from pagebot.style import css
-from pagebot.toolbox.units import upt
+from pagebot.toolbox.units import upt, pt
 #from pagebotosx.contexts.drawbotcontext.drawbotstring import pixelBounds
 
 def pixelBounds(fs):
@@ -284,4 +284,3 @@ class Variations:
             isFitting = False
     else:
     """
-
