@@ -154,19 +154,19 @@ class DrawBotContext(BaseContext):
         >>> lines[-1]
         <BabelLineInfo y=652pt>
         """
-        # FIXME: isn't it better to determine lines in BabelRuns?
-        # Petr: Then we have to detect all hyphenation ourselves, and going
-        # through OSX is much faster. If the context knows how to do a function
-        # then let it. Finally it will do the type setting too, unless we are
-        # drawing line by line.
+
+        '''
         if w is None:
             w = 1000
         if h is None:
             h = 10000
+        '''
 
 
         textLines = []
         wpt, hpt = upt(w, h)
+
+        print('drawbotcontext textlines wpt, hpt;', wpt, hpt)
         # Get the FormattedString bs.cs. Let the context create it,
         # if it does not exist.
         attrString = bs.cs.getNSObject()
@@ -279,6 +279,7 @@ class DrawBotContext(BaseContext):
             # TODO: take care of hyphenation in BabelStrings or during draw.
             #self.b.hyphenation(hyphenation)
             fs.append(run.s, **fsStyle)
+
         return fs
 
     def text(self, bs, p, align=None):
