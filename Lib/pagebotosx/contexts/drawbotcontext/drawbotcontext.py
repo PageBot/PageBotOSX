@@ -155,18 +155,17 @@ class DrawBotContext(BaseContext):
         <BabelLineInfo y=652pt>
         """
 
-        '''
+        # FIXME: use canvas dimensions.
         if w is None:
             w = 1000
         if h is None:
             h = 10000
-        '''
 
 
         textLines = []
         wpt, hpt = upt(w, h)
 
-        print('drawbotcontext textlines wpt, hpt;', wpt, hpt)
+        #print('drawbotcontext textlines wpt, hpt;', wpt, hpt)
         # Get the FormattedString bs.cs. Let the context create it,
         # if it does not exist.
         attrString = bs.cs.getNSObject()
