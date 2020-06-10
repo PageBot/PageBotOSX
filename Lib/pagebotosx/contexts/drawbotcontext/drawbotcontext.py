@@ -126,12 +126,17 @@ class DrawBotContext(BaseContext):
         bs.cs is supposed to contain a DrawBot.FormattedString.
         """
         assert bs.context == self
+
         if w is not None:
             w = upt(w)
             h = None
         elif h is not None:
             w = None
             h = upt(h)
+        else:
+            w = bs.w
+            #h = bs.h
+
         return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
 
     def getTextLines(self, bs, w=None, h=None):
