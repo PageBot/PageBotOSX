@@ -345,6 +345,8 @@ class DrawBotContext(BaseContext):
         #self._bezierpath = BezierPath()
         return self.bezierpath
 
+    # Glyphs.
+
     def drawGlyphPath(self, glyph):
         """Converts the cubic commands to a drawable path."""
         path = self.getGlyphPath(glyph)
@@ -429,6 +431,14 @@ class DrawBotContext(BaseContext):
                     flattenedContours.append(contour)
 
         return flattenedContours
+
+    def onBlack(self, p, path=None):
+        """Answers if the single point (x, y) is on black."""
+        if path is None:
+            path = self.bezierpath
+        p = point2D(p)
+        return path._bezierpath.containsPoint_(p)
+
 
     # Path drawing behavior.
 
