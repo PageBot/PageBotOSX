@@ -120,25 +120,6 @@ class DrawBotContext(BaseContext):
 
     #   T E X T
 
-    def getTextSize(self, bs, w=None, h=None, align=None):
-        """Answers the width and height of a BabelString with an
-        optional given w or h.
-        bs.cs is supposed to contain a DrawBot.FormattedString.
-        """
-        assert bs.context == self
-
-        if w is not None:
-            w = upt(w)
-            h = None
-        elif h is not None:
-            w = None
-            h = upt(h)
-        else:
-            w = bs.w
-            #h = bs.h
-
-        return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
-
     def getTextLines(self, bs, w=None, h=None):
         """Answers the list of BabelLineInfo instances, after rendering it by
         self. By default, w render the full height of the text, so other
@@ -292,7 +273,7 @@ class DrawBotContext(BaseContext):
     def textBox(self, bs, box):
         self.b.textBox(bs.cs, box, align=None)
 
-    def textSize(self, bs, w=None, h=None):
+    def textSize(self, bs, w=None, h=None, align=None):
         """Answers the width and height of the native @fs formatted string
         with an optional given w or h.
 
@@ -329,15 +310,43 @@ class DrawBotContext(BaseContext):
         (105pt, 50pt)
         >>>
         """
-        assert isinstance(bs, BabelString)
+        #assert isinstance(bs, BabelString)
+        assert bs.context == self
 
         if w is not None:
-            return pt(self.b.textSize(bs.cs, width=w, align=LEFT))
+            w = upt(w)
+            h = None
+        elif h is not None:
+            w = None
+            h = upt(h)
+        else:
+            w = bs.w
+            #h = bs.h
 
-        if h is not None:
-            return pt(self.b.textSize(bs.cs, height=h, align=LEFT))
+        #return pt(self.b.textSize(bs.cs, width=w, hegiht=h, align=align or LEFT))
+        return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
 
-        return pt(self.b.textSize(bs.cs, align=LEFT))
+    '''
+    def getTextSize(self, bs, w=None, h=None, align=None):
+        """Answers the width and height of a BabelString with an
+        optional given w or h.
+        bs.cs is supposed to contain a DrawBot.FormattedString.
+        """
+        assert bs.context == self
+
+        if w is not None:
+            w = upt(w)
+            h = None
+        elif h is not None:
+            w = None
+            h = upt(h)
+        else:
+            w = bs.w
+            #h = bs.h
+
+        return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
+    '''
+
 
     #   P A T H
     #
