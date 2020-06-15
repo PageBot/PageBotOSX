@@ -33,7 +33,7 @@ from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, LEFT, RIGHT,
 
 # TODO: switch to our own Bézier path format.
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
-from pagebot.contexts.basecontext.babelstring import BabelString, BabelLineInfo, BabelRunInfo
+from pagebot.contexts.basecontext.babelstring import BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D, units
