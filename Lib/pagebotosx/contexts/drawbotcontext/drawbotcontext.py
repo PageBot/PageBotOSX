@@ -239,6 +239,7 @@ class DrawBotContext(BaseContext):
         >>> from pagebot.elements import *
         >>> context = getContext('DrawBot')
         >>> style = dict(font='PageBot-Regular', fontSize=pt(100), leading=em(1))
+        >>> from pagebot.contexts.basecontext.babelstring import BabelString
         >>> bs = BabelString('Hkpx', style, context=context)
         >>> bs.textStrokeWidth = pt(4)
         >>> bs.textStroke = (1, 0, 0)
