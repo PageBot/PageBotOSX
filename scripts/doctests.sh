@@ -7,7 +7,6 @@ python3 $PWD/errors.py
 python3 $PWD/contexts/__init__.py
 python3 $PWD/contexts/drawbotcontext/__init__.py
 python3 $PWD/contexts/drawbotcontext/drawbotcontext.py
-python3 $PWD/contexts/drawbotcontext/drawbotstring.py
 python3 $PWD/graphics/__init__.py
 python3 $PWD/graphics/graphic.py
 python3 $PWD/fonttoolbox/__init__.py
@@ -15,6 +14,4 @@ python3 $PWD/fonttoolbox/svg2drawbot.py
 python3 $PWD/strings/__init__.py
 python3 $PWD/strings/formattedstring.py
 python3 $PWD/strings/pattern.py
-python3 $PWD/strings/textline.py
-python3 $PWD/strings/textrun.py
 python3 $PWD/strings/tryinstallfont.py

@@ -136,9 +136,9 @@ class DrawBotContext(BaseContext):
         (497.89pt, 1216pt)
         >>> lines = bs.lines # Equivalent of context.getTextLines(bs.cs, bs.w)
         >>> lines[2]
-        <BabelLineInfo y=44pt>
+        <BabelLineInfo y=43pt>
         >>> lines[-1]
-        <BabelLineInfo y=652pt>
+        <BabelLineInfo y=1211pt>
         """
 
         # FIXME: use canvas dimensions.
