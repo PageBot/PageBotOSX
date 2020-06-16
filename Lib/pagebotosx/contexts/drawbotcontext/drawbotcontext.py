@@ -135,10 +135,12 @@ class DrawBotContext(BaseContext):
         >>> bs.tw, bs.th
         (497.89pt, 1216pt)
         >>> lines = bs.lines # Equivalent of context.getTextLines(bs.cs, bs.w)
-        >>> lines[2]
-        <BabelLineInfo y=43pt>
-        >>> lines[-1]
-        <BabelLineInfo y=1211pt>
+        >>> line = lines[2]
+        >>> 43 <= line.y.pt <= 44
+        True
+        >>> line = lines[-1]
+        >>> 1211 <= line.y.pt <= 1212
+        True
         """
 
         # FIXME: use canvas dimensions.
@@ -162,7 +164,7 @@ class DrawBotContext(BaseContext):
         ctLines = CTFrameGetLines(ctBox)
         origins = CTFrameGetLineOrigins(ctBox, (0, len(ctLines)), None)
 
-        if origins: # Only if there is content
+        if origins:
             # Make origin at top line, not at bottom line, as OSX does.
             offsetY = origins[-1].y - origins[0].y
 
