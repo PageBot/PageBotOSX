@@ -33,7 +33,8 @@ from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, LEFT, RIGHT,
 
 # TODO: switch to our own Bézier path format.
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
-from pagebot.contexts.basecontext.babelstring import BabelLineInfo, BabelRunInfo
+from pagebot.contexts.basecontext.babelstring import BabelString
+from pagebot.contexts.basecontext.babelrun import BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D, units
@@ -194,7 +195,7 @@ class DrawBotContext(BaseContext):
                         language=attributes['NSLanguage'],
                         textFill=color(r=c.redComponent(), g=c.greenComponent(),
                             b=c.blueComponent(), a=c.alphaComponent()),
-                        xTextAlign={0:LEFT, 1:RIGHT, 2:CENTER}.get(paragraph.alignment()),
+                        xTextAlign = {0: LEFT, 1: RIGHT, 2: CENTER}.get(paragraph.alignment()),
                         firstLineIndent=pt(paragraph.firstLineHeadIndent()),
                         indent=pt(paragraph.headIndent()),
                         tailIndent=pt(paragraph.tailIndent()),
@@ -270,11 +271,17 @@ class DrawBotContext(BaseContext):
 
         return fs
 
-    def text(self, bs, p, align=None):
-        self.b.text(bs.cs, p, align=align)
+    def text(self, s, p, align=None):
+        if isinstance(s, str):
+            s = self.newString(s)
+        assert isinstance(s, BabelString)
+        self.b.text(s.cs, p, align=align)
 
-    def textBox(self, bs, box):
-        self.b.textBox(bs.cs, box, align=None)
+    def textBox(self, s, box):
+        if isinstance(s, str):
+            s = self.newString(s)
+        assert isinstance(s, BabelString)
+        self.b.textBox(s.cs, box, align=None)
 
     def textSize(self, bs, w=None, h=None, align=None):
         """Answers the width and height of the native @fs formatted string
@@ -364,11 +371,6 @@ class DrawBotContext(BaseContext):
 
     # Glyphs.
 
-    def drawGlyphPath(self, glyph):
-        """Converts the cubic commands to a drawable path."""
-        path = self.getGlyphPath(glyph)
-        self.drawPath(path)
-
     def getGlyphPath(self, glyph, p=None, path=None):
         """Answers the DrawBot path. Allow optional position offset and path,
         in case we do recursive component drawing.
@@ -392,6 +394,8 @@ class DrawBotContext(BaseContext):
             py = p[1]
 
         for command, t in glyph.cubic:
+            # TODO: quadTo()
+
             if command == 'moveTo':
                 path.moveTo((px+t[0], py+t[1]))
             elif command == 'lineTo':
@@ -459,7 +463,7 @@ class DrawBotContext(BaseContext):
 
     # Path drawing behavior.
 
-    def strokeWidth(self, w):
+    def strokeWidth(self, w=0.5):
         """Set the current stroke width.
 
         >>> from pagebot.toolbox.units import pt, mm
@@ -534,31 +538,6 @@ class DrawBotContext(BaseContext):
             url = CTFontDescriptorCopyAttribute(fontRef, kCTFontURLAttribute)
             return url.path()
         return None
-
-    #   G L Y P H
-
-    def drawGlyph(self, glyph, x, y, fill=noColor, stroke=noColor,
-            strokeWidth=0, fontSize=None, xTextAlign=CENTER):
-        """Draw the font[glyphName] at the defined position with the defined
-        fontSize."""
-        font = glyph.font
-
-        if fontSize is None:
-            fontSize = font.info.unitsPerEm
-        s = fontSize/font.info.unitsPerEm
-
-        if xTextAlign == CENTER:
-            x -= (glyph.width or 0)/2*s
-        elif xTextAlign == RIGHT:
-            x -= glyph.width*s
-
-        self.save()
-        self.fill(fill)
-        self.stroke(stroke, w=strokeWidth)
-        self.translate(x, y)
-        self.scale(s)
-        self.drawGlyphPath(glyph)
-        self.restore()
 
     #   I M A G E
 
