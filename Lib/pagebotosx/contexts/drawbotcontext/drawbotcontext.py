@@ -548,21 +548,23 @@ class DrawBotContext(BaseContext):
             p = ORIGIN
 
         iw, ih = self.imageSize(path)
+        assert iw, ih
 
         if not w and not h:
             w = iw
             h = ih
             sx = sy = 1
         elif scaleType == SCALE_TYPE_FITWH:
-            sx = upt(w/iw)
-            sy = upt(h/ih)
+            sx = upt(w / iw)
+            sy = upt(h / ih)
         elif scaleType == SCALE_TYPE_FITW:
-            sx = sy = upt(w/iw)
+            sx = sy = upt(w / iw)
         elif scaleType == SCALE_TYPE_FITH:
-            sx = sy = upt(h/ih)
+            sx = sy = upt(h / ih)
         else:
             # scaleType in (None, SCALE_TYPE_PROPORTIONAL):
-            sx = sy = min(pt(w/iw), upt(h/ih))
+            assert w, h
+            sx = sy = min(pt(w / iw), upt(h / ih))
 
         # Else both w and h are defined, scale disproportionally.
         xpt, ypt, = point2D(p)
