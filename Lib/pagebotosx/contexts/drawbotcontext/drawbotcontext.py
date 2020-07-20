@@ -31,11 +31,11 @@ from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, LEFT, RIGHT,
         FILETYPE_GIF, FILETYPE_MOV, SCALE_TYPE_FITWH, SCALE_TYPE_FITW,
         SCALE_TYPE_FITH, DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
 
-# TODO: switch to our own Bézier path format.
-#from pagebot.contexts.basecontext.bezierpath import BezierPath
 from pagebot.contexts.basecontext.babelstring import BabelString
 from pagebot.contexts.basecontext.babelrun import BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
+#from pagebot.contexts.basecontext.bezierpath import BezierPath
+from drawBot.context.baseContext import BezierPath
 from pagebot.toolbox.color import color, noColor
 from pagebot.toolbox.units import pt, upt, point2D, units
 from pagebot.toolbox.transformer import path2Name, path2Dir
@@ -47,6 +47,7 @@ drawBotBuilder.PB_ID = 'drawBot'
 
 class DrawBotContext(BaseContext):
     """DrawBotContext adapts DrawBot functionality to PageBot."""
+    # TODO: switch entirely to our own Bézier path format.
 
     EXPORT_TYPES = (FILETYPE_PDF, FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG,
             FILETYPE_GIF, FILETYPE_MOV)
@@ -150,11 +151,9 @@ class DrawBotContext(BaseContext):
         if h is None:
             h = 10000
 
-
         textLines = []
         wpt, hpt = upt(w, h)
 
-        #print('drawbotcontext textlines wpt, hpt;', wpt, hpt)
         # Get the FormattedString bs.cs. Let the context create it,
         # if it does not exist.
         attrString = bs.cs.getNSObject()
@@ -167,12 +166,12 @@ class DrawBotContext(BaseContext):
 
         if origins:
             # Make origin at top line, not at bottom line, as OSX does.
-            offsetY = origins[-1].y - origins[0].y
+            offsetY = h - origins[-1].y - origins[0].y
 
             for index, ctLine in enumerate(ctLines):
                 origin = origins[index]
                 x = pt(origin.x)
-                y = pt(h-origin.y)
+                y = pt(h - origin.y) + offsetY
 
                 if y > h:
                     break
@@ -275,13 +274,22 @@ class DrawBotContext(BaseContext):
         if isinstance(s, str):
             s = self.newString(s)
         assert isinstance(s, BabelString)
-        self.b.text(s.cs, p, align=align)
+        if isinstance(p, BezierPath):
+            self.textPath(s, p, align=align)
+        else:
+            self.b.text(s.cs, p, align=align)
 
     def textBox(self, s, box):
         if isinstance(s, str):
             s = self.newString(s)
         assert isinstance(s, BabelString)
         self.b.textBox(s.cs, box, align=None)
+
+    def textPath(self, s, p, align=None):
+        p.text(s.cs) # font='', fontSize='')
+        print(s.style)
+        self.b.fill(0)
+        self.b.textBox(s.cs, p)
 
     def textSize(self, bs, w=None, h=None, align=None):
         """Answers the width and height of the native @fs formatted string
