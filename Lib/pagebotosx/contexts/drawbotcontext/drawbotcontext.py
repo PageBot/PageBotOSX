@@ -144,8 +144,8 @@ class DrawBotContext(BaseContext):
         >>> 1211 <= line.y.pt <= 1212
         True
         """
-        w = bs.w or bs.tw or w
-        h = bs.h or bs.tw or h
+        w = w or bs.w or bs.tw
+        h = h or  bs.h or bs.th
         assert w
         assert h
         textLines = []
