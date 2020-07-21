@@ -144,13 +144,10 @@ class DrawBotContext(BaseContext):
         >>> 1211 <= line.y.pt <= 1212
         True
         """
-
-        # FIXME: use canvas dimensions.
-        if w is None:
-            w = 1000
-        if h is None:
-            h = 10000
-
+        w = bs.w or bs.tw or w
+        h = bs.h or bs.tw or h
+        assert w
+        assert h
         textLines = []
         wpt, hpt = upt(w, h)
 
@@ -166,12 +163,13 @@ class DrawBotContext(BaseContext):
 
         if origins:
             # Make origin at top line, not at bottom line, as OSX does.
-            offsetY = h - origins[-1].y - origins[0].y
+            #offsetY = h - origins[-1].y - origins[0].y
 
             for index, ctLine in enumerate(ctLines):
                 origin = origins[index]
                 x = pt(origin.x)
-                y = pt(h - origin.y) + offsetY
+                #y = pt(h - origin.y)# + offsetY
+                y = pt(origin.y)# + offsetY
 
                 if y > h:
                     break
