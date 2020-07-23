@@ -178,57 +178,87 @@ class DrawBotContext(BaseContext):
                 textLines.append(lineInfo)
 
                 for ctRun in CTLineGetGlyphRuns(ctLine):
-                    attributes = CTRunGetAttributes(ctRun)
-                    c = attributes['NSColor']
-                    fontName = attributes['NSFont'].fontDescriptor()['NSFontNameAttribute']
-                    font = findFont(fontName) or findFont(DEFAULT_FONT)
-                    paragraph = attributes['NSParagraphStyle']
-                    #glyphOrder = font.ttFont.getGlyphOrder()
-                    style = dict(
-                        font=font,
-                        fontSize=pt(attributes['NSFont'].pointSize()),
-                        leading=pt(paragraph.lineHeightMultiple()),
-                        baselineShift=pt(attributes['NSBaselineOffset']),
-                        language=attributes['NSLanguage'],
-                        textFill=color(r=c.redComponent(), g=c.greenComponent(),
-                            b=c.blueComponent(), a=c.alphaComponent()),
-                        xTextAlign = {0: LEFT, 1: RIGHT, 2: CENTER}.get(paragraph.alignment()),
-                        firstLineIndent=pt(paragraph.firstLineHeadIndent()),
-                        indent=pt(paragraph.headIndent()),
-                        tailIndent=pt(paragraph.tailIndent()),
-                        paragraphBottomSpacing=pt(paragraph.paragraphSpacing()),
-                        paragraphTopSpacing=pt(paragraph.paragraphSpacingBefore()),
-                        # https://developer.apple.com/documentation/uikit/nsparagraphstyle
-                        # paragraph.maximumLineHeight()
-                        # paragraph.minimumLineHeight()
-                        # paragraph.lineSpacing()
-                        # paragraph.tabStops()
-                        # paragraph.defaultTabInterval()
-                        # paragraph.textBlocks()
-                        # paragraph.textLists()
-                        # paragraph.lineBreakMode()
-                        # paragraph.hyphenationFactor()
-                        # paragraph.tighteningFactorForTruncation()
-                        # paragraph.allewsDefaultTighteningForTruncation()
-                        # paragraph.headerLevel()
-                    )
+                    style = self.getStyleFromRun(ctRun)
+                    '''
+                    Reconstruct the CTLine runs back into a styled BabelString.
+                    Not that this string can only be used as reference (e.g. to
+                    determine the fontSize(s) in the first line or to find the
+                    pattern of markers.  The reconstructed string cannot be
+                    used for display, as it is missing important style
+                    parameters, such as OT-feature settings.  Hack for now to
+                    find the string in repr-string if self._ctLine.
+                    '''
                     #for uCode in CTRunGetGlyphs(ctRun, (0, CTRunGetGlyphCount(ctRun)), None):
                     #    s += glyphOrder[uCode]
-                    # Reconstruct the CTLine runs back into a styled BabelString.
-                    # Not that this string can only be used as reference (e.g. to determine the
-                    # fontSize(s) in the first line or to find the pattern of markers.
-                    # The reconstructed string cannot be used for display, as it is missing
-                    # important style parameters, such as OT-feature settings.
-                    # Hack for now to find the string in repr-string if self._ctLine.
                     s = ''
-                    for index, part in enumerate(str(ctRun).split('"')[1].replace('\\n', '').split('\\u')):
+                    splitString = str(ctRun).split('"')[1].replace('\\n', '').split('\\u')
+                    for index, part in enumerate(splitString):
                         if index == 0:
                             s += part
                         elif len(part) >= 4:
                             s += chr(int(part[0:4], 16))
-                    lineInfo.runs.append(BabelRunInfo(s, style, context=self, cRun=ctRun))
+
+                    babelRunInfo = BabelRunInfo(s, style, context=self, cRun=ctRun)
+                    lineInfo.runs.append(babelRunInfo)
 
         return textLines
+
+    def getStyleFromRun(self, ctRun):
+        """Reverse-engineers typographic elements from a CoreText Run."""
+        # https://developer.apple.com/documentation/uikit/nsparagraphstyle
+        # paragraph.maximumLineHeight()
+        # paragraph.minimumLineHeight()
+        # paragraph.lineSpacing()
+        # paragraph.tabStops()
+        # paragraph.defaultTabInterval()
+        # paragraph.textBlocks()
+        # paragraph.textLists()
+        # paragraph.lineBreakMode()
+        # paragraph.hyphenationFactor()
+        # paragraph.tighteningFactorForTruncation()
+        # paragraph.allewsDefaultTighteningForTruncation()
+        # paragraph.headerLevel()
+        attributes = CTRunGetAttributes(ctRun)
+        c = attributes['NSColor']
+        textFill = color(r=c.redComponent(),
+                        g=c.greenComponent(),
+                        b=c.blueComponent(),
+                        a=c.alphaComponent())
+        fontName = attributes['NSFont'].fontDescriptor()['NSFontNameAttribute']
+        font = findFont(fontName) or findFont(DEFAULT_FONT)
+        paragraph = attributes['NSParagraphStyle']
+
+        absLeading = pt(paragraph.maximumLineHeight())
+        fontSize = pt(attributes['NSFont'].pointSize())
+        leading = absLeading / fontSize
+        #print(paragraph.lineHeightMultiple())
+        #print(paragraph.minimumLineHeight())
+        baselineShift = pt(attributes['NSBaselineOffset'])
+        language = attributes['NSLanguage']
+        xTextAlign = {0: LEFT, 1: RIGHT, 2: CENTER}.get(paragraph.alignment())
+        firstLineIndent = pt(paragraph.firstLineHeadIndent())
+        indent = pt(paragraph.headIndent())
+        tailIndent = pt(paragraph.tailIndent())
+        paragraphBottomSpacing = pt(paragraph.paragraphSpacing())
+        paragraphTopSpacing = pt(paragraph.paragraphSpacingBefore())
+        #glyphOrder = font.ttFont.getGlyphOrder()
+
+        style = dict(
+            font=font,
+            fontSize=fontSize,
+            leading=leading,
+            baselineShift=baselineShift,
+            language=language,
+            textFill=textFill,
+            xTextAlign = xTextAlign,
+            firstLineIndent=firstLineIndent,
+            indent=indent,
+            tailIndent=tailIndent,
+            paragraphBottomSpacing=paragraphBottomSpacing,
+            paragraphTopSpacing=paragraphTopSpacing,
+        )
+
+        return style
 
     def fromBabelString(self, bs):
         """Convert the BabelString into a DrawBot FormattedString
@@ -285,11 +315,10 @@ class DrawBotContext(BaseContext):
 
     def textPath(self, s, p, align=None):
         p.text(s.cs) # font='', fontSize='')
-        print(s.style)
         self.b.fill(0)
         self.b.textBox(s.cs, p)
 
-    def textSize(self, bs, w=None, h=None, align=None):
+    def textSize(self, bs, w=None, h=None, align=None, ascDesc=False):
         """Answers the width and height of the native @fs formatted string
         with an optional given w or h.
 
@@ -339,29 +368,23 @@ class DrawBotContext(BaseContext):
             w = bs.w
             #h = bs.h
 
-        #return pt(self.b.textSize(bs.cs, width=w, hegiht=h, align=align or LEFT))
-        return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
-
-    '''
-    def getTextSize(self, bs, w=None, h=None, align=None):
-        """Answers the width and height of a BabelString with an
-        optional given w or h.
-        bs.cs is supposed to contain a DrawBot.FormattedString.
-        """
-        assert bs.context == self
-
-        if w is not None:
-            w = upt(w)
-            h = None
-        elif h is not None:
-            w = None
-            h = upt(h)
+        if not ascDesc:
+            return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
         else:
-            w = bs.w
-            #h = bs.h
+            textHeight = 0
+            for line in bs.lines:
+                lineHeight = 0
+                for run in  line.runs:
+                    size = run.style['fontSize']
+                    #from pagebot.toolbox.units import em
+                    leading = 1.2# run.style['leading']
+                    runHeight = size * leading
+                    lineHeight = max(lineHeight, runHeight)
+                textHeight += lineHeight
 
-        return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
-    '''
+            textWidth, _ = units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
+            return (textWidth, textHeight)
+
 
 
     #   P A T H
