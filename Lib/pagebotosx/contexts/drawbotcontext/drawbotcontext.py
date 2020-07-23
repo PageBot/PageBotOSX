@@ -375,10 +375,14 @@ class DrawBotContext(BaseContext):
             for line in bs.lines:
                 lineHeight = 0
                 for run in  line.runs:
+
                     size = run.style['fontSize']
-                    #from pagebot.toolbox.units import em
-                    leading = 1.2# run.style['leading']
-                    runHeight = size * leading
+                    font = run.style['font']
+                    upem = font.upem
+                    #print('bs', bs.ascender)
+                    #print('fontinfo', font.info.typoAscender)
+                    #print('fontasc', font.ascender)
+                    runHeight = size * (font.info.typoAscender - font.info.typoDescender) / upem
                     lineHeight = max(lineHeight, runHeight)
                 textHeight += lineHeight
 
