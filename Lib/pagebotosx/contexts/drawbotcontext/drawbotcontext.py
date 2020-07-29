@@ -144,8 +144,8 @@ class DrawBotContext(BaseContext):
         >>> 1211 <= line.y.pt <= 1212
         True
         """
-        w = w or bs.w or bs.tw
-        h = h or  bs.h or bs.th
+        w = w or bs.tw
+        h = h or bs.th
         assert w
         assert h
         textLines = []
@@ -163,16 +163,16 @@ class DrawBotContext(BaseContext):
 
         if origins:
             # Make origin at top line, not at bottom line, as OSX does.
-            #offsetY = h - origins[-1].y - origins[0].y
+            offsetY = h - origins[-1].y - origins[0].y
 
             for index, ctLine in enumerate(ctLines):
                 origin = origins[index]
                 x = pt(origin.x)
-                #y = pt(h - origin.y)# + offsetY
-                y = pt(origin.y)# + offsetY
+                y = pt(h - origin.y) + offsetY
+                #y = pt(origin.y)# + offsetY
 
-                if y > h:
-                    break
+                #if y > h:
+                #    break
 
                 lineInfo = BabelLineInfo(x, y, ctLine, self)
                 textLines.append(lineInfo)
@@ -371,6 +371,9 @@ class DrawBotContext(BaseContext):
         if not ascDesc:
             return units(self.b.textSize(bs.cs, width=w, height=h, align=align or LEFT))
         else:
+            # FIXME: runs into recursion error in case of multiple lines, for
+            # now setting Flat counterpart to ascDesc=False.
+            # textSize -> bs.lines -> getTextLines -> testSize
             textHeight = 0
             for line in bs.lines:
                 lineHeight = 0
