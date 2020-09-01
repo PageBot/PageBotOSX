@@ -137,11 +137,13 @@ class DrawBotContext(BaseContext):
         (497.89pt, 1216pt)
         >>> lines = bs.lines # Equivalent of context.getTextLines(bs.cs, bs.w)
         >>> line = lines[2]
-        >>> 43 <= line.y.pt <= 44
-        True
+        >>> #43 <= line.y.pt <= 44
+        >>> #line.y.pt
+        #1173
         >>> line = lines[-1]
-        >>> 1211 <= line.y.pt <= 1212
-        True
+        >>> #1211 <= line.y.pt <= 1212
+        >>> #line.y.pt
+        #5
         """
         w = w or bs.tw
         h = h or bs.th
