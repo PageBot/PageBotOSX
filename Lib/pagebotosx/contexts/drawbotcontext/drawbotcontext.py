@@ -25,18 +25,17 @@ from AppKit import NSFont
 
 import drawBot
 from drawBot import Variable
+from drawBot.context.baseContext import BezierPath
 
 from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, LEFT, RIGHT,
         CENTER, FILETYPE_PDF, FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG,
         FILETYPE_GIF, FILETYPE_MOV, SCALE_TYPE_FITWH, SCALE_TYPE_FITW,
         SCALE_TYPE_FITH, DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
-
 from pagebot.contexts.basecontext.babelstring import BabelString
 from pagebot.contexts.basecontext.babelrun import BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
 #from pagebot.contexts.basecontext.bezierpath import BezierPath
-from drawBot.context.baseContext import BezierPath
-from pagebot.toolbox.color import color, noColor
+from pagebot.toolbox.color import color #, noColor
 from pagebot.toolbox.units import pt, upt, point2D, units
 from pagebot.toolbox.transformer import path2Name, path2Dir
 from pagebot.fonttoolbox.objects.font import findFont
@@ -155,11 +154,13 @@ class DrawBotContext(BaseContext):
         box = (0, 0, bs.tw, bs.th)
         baselines = self.b.textBoxBaselines(bs.cs, box)
 
+        '''
         # We can simply get the info from textBoxBaslines, do we really need to deconstruct runs?
         for x, y in baselines:
             print('textBoxBaseline info', x, y)
             #lineInfo = BabelLineInfo(x, y, None, self)
             #textLines.append(lineInfo)
+        '''
 
         # Get the FormattedString bs.cs. Let the context create it,
         # if it does not exist.
@@ -174,7 +175,7 @@ class DrawBotContext(BaseContext):
         if origins:
             # Make origin at top line, not at bottom line, as OSX does.
             #offsetY = h - origins[-1].y - origins[0].y
-            print('origins', origins)
+            #print('origins', origins)
 
             for index, ctLine in enumerate(ctLines):
                 origin = origins[index]
