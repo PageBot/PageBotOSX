@@ -159,7 +159,6 @@ class DrawBotContext(BaseContext):
         '''
         # We can simply get the info from textBoxBaslines, do we really need to deconstruct runs?
         for x, y in baselines:
-            print('textBoxBaseline info', x, y)
             #lineInfo = BabelLineInfo(x, y, None, self)
             #textLines.append(lineInfo)
         '''
@@ -177,14 +176,11 @@ class DrawBotContext(BaseContext):
         if origins:
             # Make origin at top line, not at bottom line, as OSX does.
             #offsetY = h - origins[-1].y - origins[0].y
-            #print('origins', origins)
 
             for index, ctLine in enumerate(ctLines):
                 origin = origins[index]
                 x = pt(origin.x)
-                #print('h', h)
                 #y = pt(h - origin.y) #+ offsetY
-                #print(h, origin.y, y)
                 y = pt(origin.y)# + offsetY
 
                 #if y > h:
@@ -245,8 +241,6 @@ class DrawBotContext(BaseContext):
         absLeading = pt(paragraph.maximumLineHeight())
         fontSize = pt(attributes['NSFont'].pointSize())
         leading = absLeading / fontSize
-        #print(paragraph.lineHeightMultiple())
-        #print(paragraph.minimumLineHeight())
         baselineShift = pt(attributes['NSBaselineOffset'])
         language = attributes['NSLanguage']
         xTextAlign = {0: LEFT, 1: RIGHT, 2: CENTER}.get(paragraph.alignment())
@@ -325,7 +319,6 @@ class DrawBotContext(BaseContext):
         if isinstance(s, str):
             s = self.newString(s)
         assert isinstance(s, BabelString)
-        print('textbox', box)
         self.b.textBox(s.cs, box, align=None)
 
     def textPath(self, s, p, align=None):
@@ -397,9 +390,6 @@ class DrawBotContext(BaseContext):
                     size = run.style['fontSize']
                     font = run.style['font']
                     upem = font.upem
-                    #print('bs', bs.ascender)
-                    #print('fontinfo', font.info.typoAscender)
-                    #print('fontasc', font.ascender)
                     runHeight = size * (font.info.typoAscender - font.info.typoDescender) / upem
                     lineHeight = max(lineHeight, runHeight)
                 textHeight += lineHeight
