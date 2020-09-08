@@ -153,11 +153,13 @@ class DrawBotContext(BaseContext):
         wpt, hpt = upt(w, h)
 
         # bs.x and bs.y don't exist yet.
-        box = (0, 0, bs.tw, bs.th)
-        baselines = self.b.textBoxBaselines(bs.cs, box)
+        box = (0, 0, w, h)
 
         '''
-        # We can simply get the info from textBoxBaslines, do we really need to deconstruct runs?
+        baselines = self.b.textBoxBaselines(bs.cs, box)
+        # We can also get the baseline coordinates from textBoxBaslines, do we
+        # really need to deconstruct CoreText runs?
+
         for x, y in baselines:
             #lineInfo = BabelLineInfo(x, y, None, self)
             #textLines.append(lineInfo)
@@ -175,13 +177,12 @@ class DrawBotContext(BaseContext):
 
         if origins:
             # Make origin at top line, not at bottom line, as OSX does.
-            #offsetY = h - origins[-1].y - origins[0].y
 
             for index, ctLine in enumerate(ctLines):
                 origin = origins[index]
                 x = pt(origin.x)
-                #y = pt(h - origin.y) #+ offsetY
-                y = pt(origin.y)# + offsetY
+                y = pt(h - origin.y)
+                #y = pt(origin.y)
 
                 #if y > h:
                 #    break
@@ -192,11 +193,11 @@ class DrawBotContext(BaseContext):
                 for ctRun in CTLineGetGlyphRuns(ctLine):
                     style = self.getStyleFromRun(ctRun)
                     # Reconstruct the CTLine runs back into a styled BabelString.
-                    # Not that this string can only be used as reference (e.g. to
+                    # Note that this string can only be used as reference (e.g. to
                     # determine the fontSize(s) in the first line or to find the
-                    # pattern of markers.  The reconstructed string cannot be
+                    # pattern of markers. The reconstructed string cannot be
                     # used for display, as it is missing important style
-                    # parameters, such as OT-feature settings.  Hack for now to
+                    # parameters, such as OT-feature settings. Hack for now to
                     # find the string in repr-string if self._ctLine.
                     # for uCode in CTRunGetGlyphs(ctRun, (0, CTRunGetGlyphCount(ctRun)), None):
                     #    s += glyphOrder[uCode]
