@@ -642,7 +642,7 @@ class DrawBotContext(BaseContext):
         >>> from pagebot.filepaths import getResourcesPath
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
-        >>> path = getResourcesPath() + '/images/peppertom_lowres_398x530.png'
+        >>> path = getResourcesPath() + '/images/peppertom.png'
         >>> imo = context.getImageObject(path)
 
         """
@@ -691,7 +691,7 @@ class DrawBotContext(BaseContext):
         >>> from pagebot.filepaths import getResourcesPath
         >>> from pagebot import getContext
         >>> context = getContext('DrawBot')
-        >>> path = getResourcesPath() + '/images/peppertom_lowres_398x530.png'
+        >>> path = getResourcesPath() + '/images/peppertom.png'
         >>> scaledImagePath = context.scaleImage(path, 300, 400)
         >>> os.path.exists(scaledImagePath)
         True
