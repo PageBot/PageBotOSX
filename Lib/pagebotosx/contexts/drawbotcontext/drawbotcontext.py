@@ -135,12 +135,12 @@ class DrawBotContext(BaseContext):
         functions (self.overfill)
 
         >>> from pagebot.toolbox.units import mm, pt, em
-        >>> from pagebot.toolbox.loremipsum import loremipsum
+        >>> from pagebot.toolbox.loremipsum import loremIpsum
         >>> from pagebot import getContext
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> context = getContext('DrawBot')
         >>> style = dict(font='PageBot-Regular', fontSize=pt(16), leading=em(1))
-        >>> bs = context.newString(loremipsum(), style, w=pt(500))
+        >>> bs = context.newString(loremIpsum(), style, w=pt(500))
         >>> bs.tw, bs.th
         (497.89pt, 1216pt)
         >>> lines = bs.lines # Equivalent of context.getTextLines(bs.cs, bs.w)
