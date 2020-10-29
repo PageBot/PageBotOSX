@@ -34,7 +34,7 @@ from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, LEFT, RIGHT,
 from pagebot.contexts.basecontext.babelstring import BabelString
 from pagebot.contexts.basecontext.babelrun import BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
-#from pagebot.contexts.basecontext.bezierpath import BezierPath
+#from pagebot.contexts.basecontext.basebezierpath import BaseBezierPath
 from pagebot.toolbox.color import color #, noColor
 from pagebot.toolbox.units import pt, upt, point2D, units
 from pagebot.toolbox.transformer import path2Name, path2Dir
@@ -118,6 +118,14 @@ class DrawBotContext(BaseContext):
 
     def setStyles(self, styles):
         pass
+
+    # Graphic state.
+
+    def save(self):
+        self.b.save()
+
+    def restore(self):
+        self.b.restore()
 
     #   T E X T
 
@@ -408,7 +416,7 @@ class DrawBotContext(BaseContext):
     def newPath(self):
         # TODO: use our own Bézier path.
         self._bezierpath = self.b.BezierPath()
-        #self._bezierpath = BezierPath()
+        #self._bezierpath = BaseBezierPath()
         return self.bezierpath
 
     # Glyphs.
@@ -448,6 +456,7 @@ class DrawBotContext(BaseContext):
             elif command == 'closePath':
                 path.closePath()
             elif command == 'component':
+                # Recursively for components.
                 (x, y), componentGlyph = t
                 self.getGlyphPath(componentGlyph, (px+x, py+y), path)
 
