@@ -1,10 +1,10 @@
 # PageBotOSX
 
-Mac OS X context for PageBot, based on DrawBot.
+Mac OS X counterpart for PageBot, based on DrawBot.
 
 # Installation
 
-Pagebot runs on Python 3. We recommend updating to version 3.7 / 3.8.
+Pagebot runs on Python 3. We recommend updating to 3.7+.
 
 ## System Wide
 
