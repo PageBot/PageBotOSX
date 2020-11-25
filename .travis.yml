@@ -19,6 +19,7 @@ matrix:
       script:
         - ./scripts/pylint.sh
         - ./scripts/doctests.sh
+          #- coverage run -m pytest
 branches:
   only:
     - master

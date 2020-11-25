@@ -65,8 +65,7 @@ class DrawBotContext(BaseContext):
         True
         >>> drawBotBuilder is not None and drawBotBuilder.PB_ID == 'drawBot'
         True
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> context.name
         'DrawBotContext'
         """
@@ -84,8 +83,7 @@ class DrawBotContext(BaseContext):
     def newDrawing(self, w=None, h=None, doc=None):
         """Clear output canvas, start new export file. DrawBot function.
 
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> context.newDrawing()
         """
         self.b.newDrawing()
@@ -98,8 +96,7 @@ class DrawBotContext(BaseContext):
         image as path, rendering depending on the extension of the path file.
         In case the path starts with "_export", create its directories.
 
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> context.saveImage('_export/PageBotContext-saveDrawing.pdf')
 
         """
@@ -136,9 +133,8 @@ class DrawBotContext(BaseContext):
 
         >>> from pagebot.toolbox.units import mm, pt, em
         >>> from pagebot.toolbox.loremipsum import loremIpsum
-        >>> from pagebot import getContext
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> style = dict(font='PageBot-Regular', fontSize=pt(16), leading=em(1))
         >>> bs = context.newString(loremIpsum(), style, w=pt(500))
         >>> bs.tw, bs.th
@@ -280,11 +276,10 @@ class DrawBotContext(BaseContext):
     def fromBabelString(self, bs):
         """Convert the BabelString into a DrawBot FormattedString
 
-        >>> from pagebot.contexts import getContext
         >>> from pagebot.toolbox.units import pt, em
         >>> from pagebot.document import Document
         >>> from pagebot.elements import *
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> style = dict(font='PageBot-Regular', fontSize=pt(100), leading=em(1))
         >>> from pagebot.contexts.basecontext.babelstring import BabelString
         >>> bs = BabelString('Hkpx', style, context=context)
@@ -340,10 +335,9 @@ class DrawBotContext(BaseContext):
         with an optional given w or h.
 
         >>> from pagebot.document import Document
-        >>> from pagebot.contexts import getContext
         >>> from pagebot.elements import *
         >>> from pagebot.toolbox.units import em
-        >>> context = getContext()
+        >>> context = DrawBotContext()
         >>> # Make the string, we can adapt the document/page size to it.
         >>> style = dict(font='PageBot-Regular', leading=em(1), fontSize=pt(100))
         >>> bs = context.newString('Hkpx', style)
@@ -426,8 +420,7 @@ class DrawBotContext(BaseContext):
         in case we do recursive component drawing.
 
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> f = findFont('Roboto-Regular')
         >>> print(f)
         <Font Roboto-Regular>
@@ -518,8 +511,7 @@ class DrawBotContext(BaseContext):
         """Set the current stroke width.
 
         >>> from pagebot.toolbox.units import pt, mm
-        >>> from pagebot import getContext
-        >>> context = getContext()
+        >>> context = DrawBotContext()
         >>> context.newDrawing()
         >>> context.newPage(420, 420)
         >>> context.setStrokeWidth(pt(0.5))
@@ -557,8 +549,7 @@ class DrawBotContext(BaseContext):
 
         >>> import os
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> # Does not exist.
         >>> findFont('Aaa.ttf') is None
         True
@@ -640,8 +631,7 @@ class DrawBotContext(BaseContext):
         * http://www.drawbot.com/content/image/imageObject.html
 
         >>> from pagebot.filepaths import getResourcesPath
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> path = getResourcesPath() + '/images/peppertom.png'
         >>> imo = context.getImageObject(path)
 
@@ -651,8 +641,7 @@ class DrawBotContext(BaseContext):
     def path2ScaledImagePath(self, path, w, h, index=None, exportExtension=None):
         """Answers the path to the scaled image.
 
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> context.path2ScaledImagePath('/xxx/yyy/zzz/This.Is.An.Image.jpg', 110, 120)
         ('/xxx/yyy/zzz/_scaled/', 'This.Is.An.Image.110x120.0.jpg')
 
@@ -689,8 +678,7 @@ class DrawBotContext(BaseContext):
         non-PDF files).
 
         >>> from pagebot.filepaths import getResourcesPath
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> path = getResourcesPath() + '/images/peppertom.png'
         >>> scaledImagePath = context.scaleImage(path, 300, 400)
         >>> os.path.exists(scaledImagePath)
@@ -747,8 +735,7 @@ class DrawBotContext(BaseContext):
         """Answers the list of all fonts (name or path) that are installed on
         the OS.
 
-        >>> from pagebot import getContext
-        >>> context = getContext()
+        >>> context = DrawBotContext()
         >>> installed = context.installedFonts()
         >>> len(installed) > 0
         True
@@ -775,8 +762,7 @@ class DrawBotContext(BaseContext):
         (in which case the path is used) or a full font path.
 
         >>> from pagebot.fonttoolbox.objects.font import findFont
-        >>> from pagebot import getContext
-        >>> context = getContext()
+        >>> context = DrawBotContext()
         >>> installed = context.installedFonts()
         >>> len(installed) > 0
         True
@@ -854,8 +840,7 @@ class DrawBotContext(BaseContext):
 
         ``def openTypeFeatures(self, *args, **features):``
 
-        >>> from pagebot import getContext
-        >>> context = getContext()
+        >>> context = DrawBotContext()
         >>> context.newDrawing()
         >>> context.newPage(420, 420)
         >>> context.openTypeFeatures(dict(smcp=True, zero=True))
@@ -896,8 +881,7 @@ class DrawBotContext(BaseContext):
         """
         """
         FIXME
-        >>> from pagebot import getContext
-        >>> context = getContext('DrawBot')
+        >>> context = DrawBotContext()
         >>> from pagebot.toolbox.units import pt, mm
         >>> window = context.window('My Window', 50, 50, pt(200), mm(50))
         >>> window.open()
@@ -936,8 +920,7 @@ class DrawBotContext(BaseContext):
         """Answers the current screen size in DrawBot. Otherwise default is to
         do nothing. PageBot function.
 
-        >>> from pagebot import getContext
-        >>> context = getContext()
+        >>> context = DrawBotContext()
         >>> size = context.screenSize()
         >>> size[0] > 100 and size[1] > 100
         True

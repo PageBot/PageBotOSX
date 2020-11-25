@@ -5,7 +5,7 @@ pyobjc
 git+https://github.com/PageBot/PageBot.git
 
 # Dependencies that are not available on PyPI:
-git+https://github.com/typemytype/drawbot.git#egg=drawbot
+git+https://github.com/typemytype/drawbot.git
 git+https://github.com/PageBot/SketchApp2Py.git
 git+https://github.com/PageBot/flat.git # Until we get flat from PyPi again.
 .
