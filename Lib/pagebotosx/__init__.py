@@ -15,8 +15,7 @@
 #     __init__.py
 #
 
-VERSION = '1.0'
-STATUS = 'beta'
+VERSION = '1.0.1'
 __doc__ = """PageBotCocoa module"""
-__version__ = '%s-%s' % (VERSION, STATUS)
+__version__ = VERSION
 

@@ -21,7 +21,8 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pagebotosx',
-    use_scm_version=True,
+    #use_scm_version=True,
+    version='1.0.2',
     description='Mac OS X context for PageBot based on DrawBot.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -55,6 +56,11 @@ setup(
     install_requires=[
         'pyobjc',
         'pagebot',
-        #'drawbot',
-        ]
+        'drawbot',
+        'pysketch'
+        ],
+    dependency_links = [
+        'git+https://github.com/typemytype/drawbot.git',
+        'git+https://github.com/PageBot/PySketch.git'
+    ]
 )
