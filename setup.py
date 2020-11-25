@@ -56,11 +56,7 @@ setup(
     install_requires=[
         'pyobjc',
         'pagebot',
-        'drawbot',
-        'pysketch'
+        'drawbot @ git+https://github.com/typemytype/drawbot.git ',
+        'pysketch @ git+https://github.com/PageBot/PySketch.git'
         ],
-    dependency_links = [
-        'git+https://github.com/typemytype/drawbot.git',
-        'git+https://github.com/PageBot/PySketch.git'
-    ]
 )
