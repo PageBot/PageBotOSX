@@ -56,7 +56,14 @@ setup(
     install_requires=[
         'pyobjc',
         'pagebot',
-        'drawbot @ git+https://github.com/typemytype/drawbot.git ',
-        'pysketch @ git+https://github.com/PageBot/PySketch.git'
+        # Direct URL's not allowed on PyPI: https://github.com/pypa/pip/issues/6301
+        #'drawbot @ git+https://github.com/typemytype/drawbot.git',
+        #'pysketch @ git+https://github.com/PageBot/PySketch.git'
+        'drawbot',
+        'pysketch',
         ],
+    dependency_links = [
+        'git+https://github.com/typemytype/drawbot.git',
+        'git+https://github.com/PageBot/PySketch.git'
+    ]
 )
