@@ -16,7 +16,7 @@ matrix:
         - pip3 install --upgrade pip
       install:
         - pip3 install -r requirements.txt
-        - pip3 install pylint pytest
+        - pip3 install -r test-requirements.txt
       script:
         - ./scripts/pylint.sh
         - coverage run -m pytest
