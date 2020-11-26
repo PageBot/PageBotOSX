@@ -91,13 +91,15 @@ class Variations:
         instance for the rectangle fit. In case the fontSize is set and the
         width w is set, then just use the [wdth] or [XTRA] to make a horizontal
         fit, keeping the size. If the axes run to extreme, the string is return
-        without changing width. In case a font path was supplied, then try
-        to get a Font instance for that path, as we need to test it for
-        existing axes as Variable Font.
+        without changing width. In case a font path was supplied, then try to
+        get a Font instance for that path, as we need to test it for existing
+        axes as Variable Font.
 
         FIXME: Fitting does not work anymore.
         TODO: Move to base.
 
+        >>> from pagebotosx.contexts.drawbotcontext.drawbotcontext import DrawBotContext
+        >>> context = DrawBotContext()
         >>> from pagebot.toolbox.color import blackColor, noColor
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('RobotoDelta-VF')
@@ -106,22 +108,15 @@ class Variations:
 
         >>> 'wdth' in font.axes.keys() or 'XTRA' in font.axes.keys() # One of them is there
         True
-
-        """
-
-        """
-        >>> from pagebotosx.context.drawbotcontext.drawbotcontext import DrawBotContext
-        >>> context = DrawBotContext()
-        >>> s = DrawBotString.newString('Hello', context, style=style, w=pt(300))
-        >>> s.bounds() # Rounded width
-        (297, 195)
-        >>> s = DrawBotString.fitString('Hello', context, style=style, w=pt(400), h=pt(220))
-        >>> int(round(s.bounds()[2]-s.bounds()[0])) # Rounded pixel width
-        399
-        >>> int(round(s.bounds()[3]-s.bounds()[1])) # Rounded pixel height
-        220
+        >>> s = context.newString('Hello', style=style, w=pt(300))
+        >>> #Variations.fitString('Hello', context, style=style, w=pt(400), h=pt(220))
+        >>> #s.bounds() # Rounded width
+        #(297, 195)
+        >>> #int(round(s.bounds()[2]-s.bounds()[0])) # Rounded pixel width
+        #399
+        >>> #int(round(s.bounds()[3]-s.bounds()[1])) # Rounded pixel height
+        #220
         >>> #s.bounds()
-
         """
         style = copy(style)
 
@@ -142,7 +137,7 @@ class Variations:
         # In case font is not a variable font, or not [wdth] or [XTRA] present,
         # then using normal string fit is the best we can do.
         if 'wdth' not in font.axes and 'XTRA' not in font.axes:
-            return cls.newString(t, context, e=e, style=style, w=w, h=h, pixelFit=pixelFit)
+            return context.newString(t, style=style, w=w, h=h)#, pixelFit=pixelFit)
 
         # Decide which axis to use for width adjustments and get the axis
         # values.
@@ -155,12 +150,12 @@ class Variations:
 
         if h is not None:
             # Fitting in heigt, calculate/iterate for the fitting font size.
-            bs = cls.newString(t, context, e=e, style=style, h=h, pixelFit=pixelFit)
+            bs = context.newString(t, style=style, h=h)#, pixelFit=pixelFit)
             style['fontSize'] = bs.fittingFontSize
         else:
             # Assuming there is a fontSize set, we'll use that as vertical
             # requirement.
-            bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
+            bs = context.newString(t, style=style)#, pixelFit=pixelFit)
 
         # Now we have a formatted string with a given fontSize, guess to fit on
         # the width.
@@ -191,7 +186,7 @@ class Variations:
                 loc[axisTag] = axisValue
                 loc['opsz'] = upt(style['fontSize'])
                 style['font'] = getInstance(font, loc)
-                bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
+                bs = context.newString(t, style=style, pixelFit=pixelFit)
 
                 # Get pixel bounds of the string.
                 tx, ty, tw, th = bs.bounds()
@@ -215,7 +210,7 @@ class Variations:
                 loc[axisTag] = axisValue
                 loc['opsz'] = upt(style['fontSize'])
                 style['font'] = getInstance(font, loc)
-                bs = cls.newString(t, context, e=e, style=style, pixelFit=pixelFit)
+                bs = context.newString(t, style=style, pixelFit=pixelFit)
 
                 # Get pixel bounds of the string.
                 tx, ty, tw, th = bs.bounds()
@@ -284,3 +279,8 @@ class Variations:
             isFitting = False
     else:
     """
+
+if __name__ == '__main__':
+    import doctest
+    import sys
+    sys.exit(doctest.testmod()[0])

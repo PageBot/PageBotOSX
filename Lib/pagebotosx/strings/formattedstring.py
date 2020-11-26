@@ -99,6 +99,13 @@ class FormattedString:
     )
 
     def __init__(self, txt=None, **kwargs):
+        """
+        >>> attrs = {'fill': (0, 0, 0), 'stroke': (1, 0, 0), 'strokeWidth': 0.5, 'align': 'right'}
+        >>> fs = FormattedString('test', **attrs)
+        >>> attrs2 = {'fill': (0, 1, 0), 'stroke': (0, 0, 1), 'strokeWidth': 1.5, 'align': 'center'}
+        >>> fs2 = FormattedString('test2', **attrs2)
+        >>> fs += fs2
+        """
         self.clear()
         # create all _<attributes> in the formatted text object
         # with default values
@@ -558,7 +565,8 @@ class FormattedString:
                 self._openTypeFeatures.clear()
             self._openTypeFeatures.update(features)
         currentFeatures = self.listOpenTypeFeatures()
-        currentFeatures.update(self._openTypeFeatures)
+        # FIXME: AttributeError: 'list' object has no attribute 'update'
+        #currentFeatures.update(self._openTypeFeatures)
         return currentFeatures
 
     def listOpenTypeFeatures(self, fontName=None):
@@ -935,3 +943,8 @@ class FormattedString:
                 logger.warning("font '%s' has no glyph with the name '%s'", font.fontName(), glyphName)
         self.openTypeFeatures(**_openTypeFeatures)
         self._fallbackFont = fallbackFont
+
+if __name__ == '__main__':
+    import doctest
+    import sys
+    sys.exit(doctest.testmod()[0])
