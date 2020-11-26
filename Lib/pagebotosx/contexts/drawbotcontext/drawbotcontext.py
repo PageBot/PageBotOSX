@@ -89,6 +89,10 @@ class DrawBotContext(BaseContext):
         self.b.newDrawing()
 
     def endDrawing(self, doc=None):
+        """
+        >>> context = DrawBotContext()
+        >>> context.endDrawing()
+        """
         self.b.endDrawing()
 
     def saveDrawing(self, path, multiPage=None):
@@ -98,7 +102,6 @@ class DrawBotContext(BaseContext):
 
         >>> context = DrawBotContext()
         >>> context.saveImage('_export/PageBotContext-saveDrawing.pdf')
-
         """
         self.checkExportPath(path)
 
@@ -311,21 +314,52 @@ class DrawBotContext(BaseContext):
         return fs
 
     def text(self, s, p, align=None):
+        """
+        >>> context = DrawBotContext()
+        >>> s = 'test'
+        >>> p = (0, 0)
+        >>> context.text(s, p)
+        >>> bs = context.newString(s)
+        >>> context.text(bs, p)
+        """
+
         if isinstance(s, str):
             s = self.newString(s)
         assert isinstance(s, BabelString)
+
         if isinstance(p, BezierPath):
             self.textPath(s, p, align=align)
         else:
             self.b.text(s.cs, p, align=align)
 
     def textBox(self, s, box):
+        """
+        >>> context = DrawBotContext()
+        >>> s = 'test'
+        >>> box = (0, 0, 100, 100)
+        >>> context.textBox(s, box)
+        >>> bs = context.newString(s)
+        >>> context.textBox(bs, box)
+        """
+
         if isinstance(s, str):
             s = self.newString(s)
         assert isinstance(s, BabelString)
         self.b.textBox(s.cs, box, align=None)
 
     def textPath(self, s, p, align=None):
+        """
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> context = DrawBotContext()
+        >>> f = findFont('Roboto-Regular')
+        >>> g = f['H']
+        >>> s = 'test'
+        >>> path = context.getGlyphPath(g)
+        >>> context.textPath(s, path)
+        """
+        if isinstance(s, str):
+            s = self.newString(s)
+        assert isinstance(s, BabelString)
         p.text(s.cs) # font='', fontSize='')
         self.b.fill(0)
         self.b.textBox(s.cs, p)
@@ -408,6 +442,10 @@ class DrawBotContext(BaseContext):
     #
 
     def newPath(self):
+        """
+        >>> context = DrawBotContext()
+        >>> path = context.newPath()
+        """
         # TODO: use our own Bézier path.
         self._bezierpath = self.b.BezierPath()
         #self._bezierpath = BaseBezierPath()
@@ -422,8 +460,6 @@ class DrawBotContext(BaseContext):
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> context = DrawBotContext()
         >>> f = findFont('Roboto-Regular')
-        >>> print(f)
-        <Font Roboto-Regular>
         >>> g = f['H']
         >>> path = context.getGlyphPath(g)
         """
@@ -469,12 +505,26 @@ class DrawBotContext(BaseContext):
         return path._path.bezierPathByFlatteningPath()
 
     def getFlattenedPath(self, path=None):
+        """
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> context = DrawBotContext()
+        >>> f = findFont('Roboto-Regular')
+        >>> g = f['H']
+        >>> path = context.getGlyphPath(g)
+        >>> path = context.getFlattenedPath(path)
+        """
         return self.bezierPathByFlatteningPath(path=path)
 
     def getFlattenedContours(self, path=None):
         """Answers the flattened Bézier path as  a contour list [contour,
         contour, ...] where contours are lists of point2D() points.
 
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> context = DrawBotContext()
+        >>> f = findFont('Roboto-Regular')
+        >>> g = f['H']
+        >>> path = context.getGlyphPath(g)
+        >>> path = context.getFlattenedContours(path)
         """
         contour = []
         flattenedContours = [contour]
@@ -498,11 +548,23 @@ class DrawBotContext(BaseContext):
         return flattenedContours
 
     def onBlack(self, p, path=None):
-        """Answers if the single point (x, y) is on black."""
+        """Answers if the single point (x, y) is on black.
+
+        >>> from pagebot.fonttoolbox.objects.font import findFont
+        >>> context = DrawBotContext()
+        >>> f = findFont('Roboto-Regular')
+        >>> g = f['H']
+        >>> path = context.getGlyphPath(g)
+        >>> p = (0, 0)
+        >>> context.onBlack(p, path=path)
+        False
+        >>> # TODO: find out coordinate that is inside 'H'.
+        >>> #context.onBlack((120, 10), path=path)
+        """
         if path is None:
             path = self.bezierpath
         p = point2D(p)
-        return path._bezierpath.containsPoint_(p)
+        return path._path.containsPoint_(p)
 
 
     # Path drawing behavior.
