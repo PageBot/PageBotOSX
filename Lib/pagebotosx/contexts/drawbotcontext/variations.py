@@ -98,9 +98,7 @@ class Variations:
         FIXME: Fitting does not work anymore.
         TODO: Move to base.
 
-        >>> from pagebot import getContext
-        >>> from pagebot.toolbox.color import blackColor
-        >>> context = getContext('DrawBot')
+        >>> from pagebot.toolbox.color import blackColor, noColor
         >>> from pagebot.fonttoolbox.objects.font import findFont
         >>> font = findFont('RobotoDelta-VF')
         >>> #font = findFont('Fit-Variable_1') # DJR-Fit needs to be installed.
@@ -112,6 +110,8 @@ class Variations:
         """
 
         """
+        >>> from pagebotosx.context.drawbotcontext.drawbotcontext import DrawBotContext
+        >>> context = DrawBotContext()
         >>> s = DrawBotString.newString('Hello', context, style=style, w=pt(300))
         >>> s.bounds() # Rounded width
         (297, 195)

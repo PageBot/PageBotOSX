@@ -19,7 +19,9 @@ matrix:
         - pip3 install pylint pytest
       script:
         - ./scripts/pylint.sh
-          #- coverage run -m pytest
+        - coverage run -m pytest
+      after_success:
+        - codecov
 branches:
   only:
     - master
