@@ -1,0 +1,54 @@
+name: PageBot Test Bench
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  test-macos:
+    runs-on: macos-latest
+    steps:
+    - name: Check python
+      run: |
+        python3 --version
+        python3 -c "import platform; print('macOS version:', platform.mac_ver()[0])"
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Setup Virtual Environment
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        python -c "import sys; print('\n'.join(sys.path))"
+    - name: Install
+      run: |
+        source venv/bin/activate
+        pip3 install --upgrade pip
+        pip3 install -r ./requirements.txt
+        pip3 install -r ./test-requirements.txt
+        git clone https://github.com/PageBot/PageBotOSX.git
+        pip3 install -r ./PageBotOSX/requirements.txt
+        pip3 install pagebotosx
+    - name: Run tests
+      run: |
+        mkdir _export
+        pip3 search pagebot
+        source venv/bin/activate
+        ./scripts/pylint.sh
+        ./scripts/tests-osx.sh 
+        coverage run -m pytest
+    - name: Codecov Upload
+      - uses: actions/checkout@master
+      - uses: codecov/codecov-action@v1
+        with:
+          #token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          file: ./coverage.xml # optional
+          files: ./coverage1.xml,./coverage2.xml # optional
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
