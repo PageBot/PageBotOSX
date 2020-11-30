@@ -2,7 +2,7 @@ matrix:
   fast_finish: true
   include:
     - os: osx
-      osx_image: xcode12.2
+      osx_image: xcode12u
       language: sh
       env:
           - HOMEBREW_NO_ANALYTICS=1
