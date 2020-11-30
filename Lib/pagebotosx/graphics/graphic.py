@@ -17,7 +17,7 @@
 
 from pagebotosx.osxcolor import OSXColor
 #from pagebotosx.bezierpaths.bezierpath import BezierPath
-from pagebotosx.strings.formattedstring import FormattedString
+#from pagebotosx.strings.formattedstring import FormattedString
 
 class Graphic:
     """A graphical object to be drawn."""
@@ -36,7 +36,7 @@ class Graphic:
         self.lineCap = None
         self.lineJoin = None
         self.miterLimit = 10
-        self.text = FormattedString()
+        #self.text = FormattedString()
         self.hyphenation = None
         self.path = None
 
