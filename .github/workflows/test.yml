@@ -42,5 +42,4 @@ jobs:
         ./scripts/tests-osx.sh 
         coverage run -m pytest
     - name: Codecov Upload
-        uses: actions/checkout@master
         uses: codecov/codecov-action@v1
