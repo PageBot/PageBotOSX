@@ -98,12 +98,18 @@ class FormattedString:
         language=None,
     )
 
-    def __init__(self, txt=None, **kwargs):
+    def __init__(self, txt=None, addDefaults=False, **kwargs):
         """
         >>> attrs = {'fill': (0, 0, 0), 'stroke': (1, 0, 0), 'strokeWidth': 0.5, 'align': 'right'}
         >>> fs = FormattedString('test', **attrs)
-        >>> attrs2 = {'fill': (0, 1, 0), 'stroke': (0, 0, 1), 'strokeWidth': 1.5, 'align': 'center'}
-        >>> fs2 = FormattedString('test2', **attrs2)
+        >>> from pagebot.toolbox.color import color, rgb2Cmyk
+        >>> green = color(rgb=(0, 1, 0))
+        >>> green
+        Color(r=0, g=1, b=0)
+        >>> # TODO: test CMYK colors, add support for pagebot Color objects.
+        >>> attrs2 = {'fill': green.rgb, 'stroke': (0, 0, 1), 'strokeWidth': 1.5, 'align': 'center'}
+        >>> tabs = ((85, "center"), (232, "right"), (300, "left"))
+        >>> fs2 = FormattedString('test2', addDefaults=True, tabs=tabs, **attrs2)
         >>> fs += fs2
         """
         self.clear()
@@ -115,7 +121,8 @@ class FormattedString:
             if isinstance(value, list):
                 value = list(value)
             setattr(self, "_%s" % key, value)
-        attributes = self._validateAttributes(kwargs, addDefaults=False)
+        attributes = self._validateAttributes(kwargs, addDefaults=addDefaults)
+
         if txt:
             self.append(txt, **attributes)
         else:
@@ -234,6 +241,7 @@ class FormattedString:
                     ff = _FALLBACKFONT
                 logger.warning("font: '%s' is not installed, back to the fallback font: '%s'", self._font, ff)
                 font = AppKit.NSFont.fontWithName_size_(ff, self._fontSize)
+
             coreTextfeatures = []
 
             if self._openTypeFeatures:
@@ -247,7 +255,6 @@ class FormattedString:
                         coreTextFeatureTag = "%s_off" % featureTag
 
 
-                    '''
                     if coreTextFeatureTag in featureMap:
                         if value and featureTag not in existingOpenTypeFeatures:
                             # only warn when the feature is on and not existing for the current font
@@ -256,7 +263,6 @@ class FormattedString:
                         coreTextfeatures.append(feature)
                     else:
                         logger.warning("OpenType feature '%s' not available", featureTag)
-                    '''
 
             coreTextFontVariations = dict()
 
@@ -775,7 +781,16 @@ class FormattedString:
         return None
 
     def listFontGlyphNames(self):
-        """Returns a list of glyph names supported by the current font."""
+        """Returns a list of glyph names supported by the current font.
+
+        >>> attrs = {'font': 'PageBot-Regular', 'fill': (0, 0, 0),
+        ...     'stroke': (1, 0, 0), 'strokeWidth': 0.5, 'align': 'right'}
+        >>> fs = FormattedString('test', **attrs)
+        >>> fs._font
+        'PageBot-Regular'
+        >>> len(fs.listFontGlyphNames())
+        92
+        """
         path = self.fontFilePath()
         if path is None:
             return []
