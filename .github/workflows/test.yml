@@ -19,6 +19,12 @@ jobs:
         python3 -c "import platform; print('macOS version:', platform.mac_ver()[0])"
     - name: Checkout
       uses: actions/checkout@v1
+    - name: XCode select
+      run: |
+        #sudo xcode-select --switch /Library/Developer/CommandLineTools
+        xcode-select --version
+        sudo xcode-select -s "/Applications/Xcode_12.0.app"
+        xcode-select --version
 
     - name: Setup Virtual Environment
       run: |
