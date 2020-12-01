@@ -23,8 +23,9 @@ jobs:
       run: |
         #sudo xcode-select --switch /Library/Developer/CommandLineTools
         xcode-select --version
-        sudo xcode-select -s "/Applications/Xcode_12.0.1.app"
+        sudo xcode-select -s "/Applications/Xcode_11.7.app"
         xcode-select --version
+        clang --version
 
     - name: Setup Virtual Environment
       run: |
