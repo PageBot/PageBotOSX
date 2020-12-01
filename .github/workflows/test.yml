@@ -9,8 +9,9 @@ on:
     - master
 
 jobs:
+  # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners
   test-macos:
-    runs-on: macos-latest
+    runs-on: macos-11.0
     steps:
     - name: Check python
       run: |
@@ -30,9 +31,9 @@ jobs:
         pip3 install --upgrade pip
         pip3 install -r ./requirements.txt
         pip3 install -r ./test-requirements.txt
-        git clone https://github.com/PageBot/PageBotOSX.git
-        pip3 install -r ./PageBotOSX/requirements.txt
-        pip3 install pagebotosx
+        #git clone https://github.com/PageBot/PageBotOSX.git
+        #pip3 install -r ./PageBotOSX/requirements.txt
+        #pip3 install pagebotosx
     - name: Run tests
       run: |
         mkdir _export
@@ -40,6 +41,17 @@ jobs:
         source venv/bin/activate
         ./scripts/pylint.sh
         ./scripts/tests-osx.sh 
-        coverage run -m pytest
+        #coverage run -m pytest
+        pytest --cov=./ --cov-report=xml
     - name: Codecov Upload
       uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        files: ./coverage1.xml,./coverage2.xml
+        directory: ./coverage/reports/
+        flags: unittests
+        env_vars: OS,PYTHON
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        path_to_write_report: ./codecov_report.txt
+        verbose: true
