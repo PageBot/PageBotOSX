@@ -11,7 +11,7 @@ on:
 jobs:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners
   test-macos:
-    runs-on: macos-11.0
+    runs-on: macos-10.5
     steps:
     - name: Check python
       run: |
@@ -23,7 +23,7 @@ jobs:
       run: |
         #sudo xcode-select --switch /Library/Developer/CommandLineTools
         xcode-select --version
-        sudo xcode-select -s "/Applications/Xcode_12.app"
+        sudo xcode-select -s "/Applications/Xcode_12.0.1.app"
         xcode-select --version
 
     - name: Setup Virtual Environment
