@@ -30,7 +30,7 @@ from drawBot.context.baseContext import BezierPath
 from pagebot.constants import (DEFAULT_FILETYPE, DEFAULT_FONT, LEFT, RIGHT,
         CENTER, FILETYPE_PDF, FILETYPE_SVG, FILETYPE_PNG, FILETYPE_JPG,
         FILETYPE_GIF, FILETYPE_MOV, SCALE_TYPE_FITWH, SCALE_TYPE_FITW,
-        SCALE_TYPE_FITH, DEFAULT_FALLBACK_FONT_PATH, ORIGIN)
+        SCALE_TYPE_FITH, DEFAULT_FALLBACK_FONT_PATH, ORIGIN, EXPORT)
 from pagebot.contexts.basecontext.babelstring import BabelString
 from pagebot.contexts.basecontext.babelrun import BabelLineInfo, BabelRunInfo
 from pagebot.contexts.basecontext.basecontext import BaseContext
@@ -95,14 +95,20 @@ class DrawBotContext(BaseContext):
         """
         self.b.endDrawing()
 
+
+    # Saving / export.
+
     def saveDrawing(self, path, multiPage=None):
-        """Select non-standard DrawBot export builders here. Save the current
-        image as path, rendering depending on the extension of the path file.
-        In case the path starts with "_export", create its directories.
+        """Save the current image as path, rendering depending on the
+        extension. In case the path starts with "_export", optionally creates
+        directories if they don't exist yet.
 
         >>> context = DrawBotContext()
         >>> context.saveImage('_export/PageBotContext-saveDrawing.pdf')
         """
+        #if not multiPage:
+        #    multiPage = True
+
         self.checkExportPath(path)
 
         if path.lower().endswith('.mov'):
@@ -112,12 +118,61 @@ class DrawBotContext(BaseContext):
 
     saveImage = saveDrawing
 
+    def export(self, fileName, folderName=None, extension=None):
+        """Saves file to filename with default folder name and extension."""
+        if not folderName:
+            folderName = EXPORT
+        if not extension:
+            extension = 'pdf'
+
+        path = '%s/%s.%s' % (folderName, fileName, extension)
+        self.saveImage(path)
+
     def getDrawing(self):
-        """Returns a PDF document of the current state."""
+        """Returns a PDF document of the current state.
+
+
+        FIXME: should return a drawing object, need separate function for PDF.
+        """
         return self.b.pdfImage()
 
     def setStyles(self, styles):
         pass
+
+    # Magic variables.
+
+    def _get_width(self):
+        return self.b.width()
+
+    def _get_height(self):
+        return self.b.height()
+
+    def sizes(self, paperSize=None):
+        return self.b.sizes(paperSize=paperSize)
+
+    def pageCount(self):
+        return self.b.pageCount()
+
+    # Public callbacks.
+
+    def setSize(self, width, height=None):
+        # Same as setSize?
+        return self.b.size(width, height=height)
+
+    def newPage(self, w=None, h=None, doc=None, **kwargs):
+        """Creates a new drawbot page.
+
+        >>> from pagebot.toolbox.units import px
+        >>> from pagebot import getContext
+        >>> context = getContext()
+        >>> context.newPage(pt(100), pt(100))
+        >>> context.newPage(100, 100)
+        """
+        if doc is not None:
+            w = w or doc.w
+            h = h or doc.h
+        wpt, hpt = upt(w, h)
+        self.b.newPage(wpt, hpt)
 
     # Graphic state.
 
@@ -365,8 +420,8 @@ class DrawBotContext(BaseContext):
         self.b.textBox(s.cs, p)
 
     def textSize(self, bs, w=None, h=None, align=None, ascDesc=False):
-        """Answers the width and height of the native @fs formatted string
-        with an optional given w or h.
+        """Answers the width and height of the native @fs formatted string with
+        an optional given w or h.
 
         >>> from pagebot.document import Document
         >>> from pagebot.elements import *
