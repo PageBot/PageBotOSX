@@ -52,7 +52,7 @@ class DrawBotContext(BaseContext):
             FILETYPE_GIF, FILETYPE_MOV)
 
     '''
-    /_scaled will be ignored with default .gitignore settings.  If the
+    /_scaled will be ignored with default .gitignore settings. If the
     docs/images/_scaled folder need to be committed to a Git repository, remove
     _scaled from .gitignore.
     '''
@@ -81,7 +81,7 @@ class DrawBotContext(BaseContext):
     # Drawing.
 
     def newDrawing(self, w=None, h=None, doc=None):
-        """Clear output canvas, start new export file. DrawBot function.
+        """Clears the canvas, starts a file.
 
         >>> context = DrawBotContext()
         >>> context.newDrawing()
@@ -160,7 +160,8 @@ class DrawBotContext(BaseContext):
         return self.b.size(width, height=height)
 
     def newPage(self, w=None, h=None, doc=None, **kwargs):
-        """Creates a new drawbot page.
+        """Creates a new page. takes document size, w and h, or 1000 x 1000px
+        if no arguments are provided.
 
         >>> from pagebot.toolbox.units import px
         >>> from pagebot import getContext
@@ -629,7 +630,7 @@ class DrawBotContext(BaseContext):
 
         >>> from pagebot.toolbox.units import pt, mm
         >>> context = DrawBotContext()
-        >>> context.newDrawing()
+        >>> #context.newDrawing()
         >>> context.newPage(420, 420)
         >>> context.setStrokeWidth(pt(0.5))
         >>> context.setStrokeWidth(mm(0.5))
@@ -958,7 +959,7 @@ class DrawBotContext(BaseContext):
         ``def openTypeFeatures(self, *args, **features):``
 
         >>> context = DrawBotContext()
-        >>> context.newDrawing()
+        >>> #context.newDrawing()
         >>> context.newPage(420, 420)
         >>> context.openTypeFeatures(dict(smcp=True, zero=True))
         """
