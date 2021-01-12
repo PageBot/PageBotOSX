@@ -156,7 +156,8 @@ class DrawBotContext(BaseContext):
     # Public callbacks.
 
     def setSize(self, width, height=None):
-        # Same as setSize?
+        width = upt(width)
+        height = upt(height)
         return self.b.size(width, height=height)
 
     def newPage(self, w=None, h=None, doc=None, **kwargs):
