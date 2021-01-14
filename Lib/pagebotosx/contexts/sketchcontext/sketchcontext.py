@@ -387,7 +387,7 @@ class SketchContext(BaseContext):
         >>> path = getResourcesPath() + '/sketch/TemplateText.sketch'
         >>> context = SketchContext(path=path) # Context now interacts with the default file.
         >>> # Create a PageBot Document instance, reading the current Sketch file data as source.
-        >>> doc = Document(name='TestReadDocument')
+        >>> doc = Document(name='TestReadDocument', context=context)
         >>> context.readDocument(doc)
         >>> page = doc[1]
         >>> e = page.elements[0]
