@@ -17,7 +17,7 @@
 #
 from pagebot.contexts.basecontext.basebuilder import BaseBuilder
 from pagebot.toolbox.units import upt
-from pysketch.sketchapi import SketchApi
+from pysketchapp.sketchapi import SketchApi
 
 class SketchBuilder(BaseBuilder):
     PB_ID = 'Sketch'

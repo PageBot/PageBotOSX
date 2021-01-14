@@ -44,7 +44,7 @@ from pagebot.toolbox.units import pt, units, upt, em
 from pagebot.toolbox.transformer import asIntOrNone
 from pagebot.fonttoolbox.objects.font import findFont, Font
 from pagebotosx.contexts.sketchcontext.sketchbuilder import SketchBuilder
-from pysketch.sketchclasses import *
+from pysketchapp.sketchclasses import *
 
 class SketchContext(BaseContext):
 
