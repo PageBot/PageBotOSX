@@ -15,7 +15,7 @@
 #     __init__.py
 #
 
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 __doc__ = """PageBotOSX module"""
 __version__ = VERSION
 
