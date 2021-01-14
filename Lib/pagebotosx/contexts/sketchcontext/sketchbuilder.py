@@ -24,7 +24,7 @@ class SketchBuilder(BaseBuilder):
 
     def __init__(self, path=None, **kwargs):
         """
-        >>> import pysketch
+        >>> import pysketchapp
         >>> from pagebot.filepaths import getResourcesPath
         >>> path = getResourcesPath() + '/sketch/TemplateSquare.sketch'
         >>> b = SketchBuilder(path)
@@ -58,7 +58,7 @@ class SketchBuilder(BaseBuilder):
     def _get_pages(self):
         """Answer the list of all SketchPage instances.
 
-        >>> import pysketch
+        >>> import pysketchapp
         >>> from pagebot.filepaths import getResourcesPath
         >>> path = getResourcesPath() + '/sketch/TemplateSquare.sketch'
         >>> b = SketchBuilder(path)
@@ -71,7 +71,7 @@ class SketchBuilder(BaseBuilder):
     def _get_artboards(self):
         """Answer a list with all artboards on the current selected page.
 
-        >>> import pysketch
+        >>> import pysketchapp
         >>> from pagebot.filepaths import getResourcesPath
         >>> path = getResourcesPath() + '/sketch/TemplateSquare.sketch'
         >>> b = SketchBuilder(path)
