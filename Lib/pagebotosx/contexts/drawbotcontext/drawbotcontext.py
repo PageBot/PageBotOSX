@@ -165,8 +165,7 @@ class DrawBotContext(BaseContext):
         if no arguments are provided.
 
         >>> from pagebot.toolbox.units import px
-        >>> from pagebot import getContext
-        >>> context = getContext()
+        >>> context = DrawBotContext()
         >>> context.newPage(pt(100), pt(100))
         >>> context.newPage(100, 100)
         """
