@@ -21,9 +21,8 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pagebotosx',
-    #use_scm_version=True,
-    version='1.0.2',
-    description='Mac OS X context for PageBot based on DrawBot.',
+    version='1.0.3',
+    description='OS X only contexts for PageBot.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/PageBot/PageBotOSX",
